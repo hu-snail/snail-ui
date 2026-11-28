@@ -55,7 +55,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="left-top"
       direction="down"
       :gap="{ top: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -83,7 +83,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="right-top"
       direction="left"
       :gap="{ top: 16, right: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -115,7 +115,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="left-bottom"
       direction="up"
       :gap="{ bottom: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -147,7 +147,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="bottom-center"
       direction="up"
       :gap="{ bottom: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -231,8 +231,4 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
   color: var(--sn-mp-color-text-primary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

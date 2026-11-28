@@ -8,12 +8,12 @@ import { SnButton } from '@snui/vue-web';
 
 <template>
   <div class="sn-demo">
-    <SnButton>默认</SnButton>
-    <SnButton type="primary">主要</SnButton>
-    <SnButton type="success">成功</SnButton>
-    <SnButton type="warning">警告</SnButton>
-    <SnButton type="danger">危险</SnButton>
-    <SnButton type="info">信息</SnButton>
+    <SnButton>默认按钮</SnButton>
+    <SnButton type="primary">主要按钮</SnButton>
+    <SnButton type="success">成功按钮</SnButton>
+    <SnButton type="info">信息按钮</SnButton>
+    <SnButton type="warning">警告按钮</SnButton>
+    <SnButton type="error">危险按钮</SnButton>
   </div>
 </template>
 

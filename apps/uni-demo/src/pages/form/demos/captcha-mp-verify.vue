@@ -14,9 +14,9 @@ import SnCaptcha from '@snui/uni-src/components/sn-captcha/sn-captcha.vue';
 
 /** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
 const SCENES = [
-  'https://picsum.photos/seed/snui-captcha-inline-a/600/400',
-  'https://picsum.photos/seed/snui-captcha-inline-b/600/400',
-  'https://picsum.photos/seed/snui-captcha-inline-c/600/400',
+  'https://cdn.uviewui.com/uview/album/9.jpg',
+  'https://cdn.uviewui.com/uview/album/10.jpg',
+  'https://cdn.uviewui.com/uview/album/1.jpg',
 ];
 
 const sceneIndex = ref(0);

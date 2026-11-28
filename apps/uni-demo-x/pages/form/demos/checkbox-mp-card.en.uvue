@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-card.en.vue sha256:59b597bde5a3e102 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-checkbox — 卡片模式（variant="card" + card 插槽）。 */
 import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';

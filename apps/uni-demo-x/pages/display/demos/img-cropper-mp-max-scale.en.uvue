@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-cropper-mp-max-scale.en.vue sha256:7d89e23e77be8cbe —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img-cropper (uni-end) — zoom cap (`maxScale`).
@@ -9,7 +10,7 @@ const visible = ref(false);
 const maxScale = ref(2);
 const result = ref('—');
 
-const imgSrc = 'https://picsum.photos/seed/snui-crop-export/1200/900';
+const imgSrc = 'https://cdn.uviewui.com/uview/album/1.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

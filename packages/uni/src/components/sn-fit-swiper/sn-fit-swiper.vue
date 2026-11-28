@@ -53,6 +53,7 @@
  */
 
 import { computed, getCurrentInstance, nextTick, onMounted, ref, watch } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnFitSwiper' });
 
@@ -91,7 +92,7 @@ interface UniHost {
 }
 
 function readUniHost(): UniHost | undefined {
-  return (globalThis as { uni?: UniHost }).uni;
+  return resolveUniHost<UniHost>() ?? undefined;
 }
 
 const props = withDefaults(

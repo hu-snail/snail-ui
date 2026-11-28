@@ -19,15 +19,54 @@
  * the N1-N4 penalty evaluation, Reed-Solomon over GF(2^8)). No dependency is
  * added and nothing is `eval`-ed (AGENTS.md §23).
  *
- * ## Two paint paths, one drawing routine
+ * ## Four canvas hosts, one drawing routine
  *
- * `uni.createCanvasContext` is the cross-end API (WeChat / Alipay / App) but is
- * absent in a plain browser and in unit tests. The component therefore tries
- * the uni context first and falls back to the element's own `getContext('2d')`
- * (H5 / docs preview). Both satisfy the same `CanvasLike` shape, so the module
- * loop is written once. When neither is available the grid simply stays
+ * `uni.createCanvasContext` is the legacy uni-app spec (WeChat / Alipay / App).
+ * uni-app x deprecated that spec: on its Web runtime the shim still exists but
+ * paints into a detached surface, so preferring it left every QR transparent.
+ * The resolver therefore branches on the host first:
+ *
+ *   - uni-app x App / Web → W3C-aligned `UniCanvasElement.getContext('2d')`
+ *     via `uni.getElementById`. The bitmap is sized from the element box ×
+ *     devicePixelRatio and the modules are drawn directly in device pixels —
+ *     no `scale()` (which the official sample requires exactly once, and which
+ *     a second sizing pass used to double).
+ *   - uni-app x mini-programs → `uni.createCanvasContextAsync({ id,
+ *     component })`. `getElementById` and template refs are NOT usable there;
+ *     the resolved context is cached and every repaint reuses it. When the
+ *     host exposes no resizable bitmap the context stays in logical px, so the
+ *     matrix is NOT multiplied by DPR (that used to push it off-screen).
+ *   - classic uni-app → `uni.createCanvasContext(canvasId, instance.proxy)`
+ *     with a `draw()` flush; the component proxy scopes the lookup inside a
+ *     custom component. On mini-programs the extent stays in logical px.
+ *   - plain H5 / docs preview / tests → the `<canvas>` element's own
+ *     `getContext('2d')`.
+ *
+ * All four satisfy the same `CanvasLike` shape, so the module loop is written
+ * once. Command-queue contexts (legacy and some mini-program 2d contexts) get
+ * a `draw()` flush. When no surface is available the grid simply stays
  * unpainted — rendering never throws (same degradation as the web-end
  * `SnQrCode`).
+ *
+ * First paint is retried a bounded number of times: uni-app x only exposes a
+ * real element box after layout / `@ready`, and a mini-program native canvas
+ * can hand out a context long before it is drawable, so a short repaint tail
+ * runs there even when the first paint appeared to succeed.
+ *
+ * ## Four rounded corner blocks (AUI extension)
+ *
+ * `cornerRadius` (design px, default 6, `0` = standard square corners) rounds
+ * the three finder patterns and — on version ≥ 2 — the bottom-right alignment
+ * pattern. Each block is repainted as a rounded 回 (dark outer ring → light
+ * ring → dark centre) with the same 7×7 / 5×5 module footprint, so no data
+ * module changes and the outer plate stays square; only the corner geometry is
+ * softened. Version 1 has no alignment pattern, so it has three corner blocks.
+ * The rounded-square filler degrades `roundRect` → an `arc` path → `fillRect`
+ * because legacy uni canvas contexts expose fewer path APIs.
+ *
+ * This prop is a deliberate AUI extension on top of the wd-qr-code prop
+ * surface; it is recorded as such in `ai-description.md` rather than being
+ * silently added to the parity list.
  *
  * ## Documented omissions (CONTRIBUTING §2.2 — no half-built props)
  *
@@ -52,8 +91,9 @@
  *
  * ## Dispose (AGENTS.md §41)
  *
- * One canvas context, no timer, no listener. `onBeforeUnmount` drops the
- * context so a late `exportImage` cannot resolve against a torn-down node.
+ * One cached legacy context, bounded retry timers and at most one pending
+ * async context request. `onBeforeUnmount` clears all of them so a late
+ * callback cannot paint against a torn-down node.
  *
  * Per AGENTS.md §32, this component handles rendering only: it does not
  * validate business payloads and does not fetch anything.
@@ -68,6 +108,7 @@
  */
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 import { encode, type SnQrEncoded } from './sn-qr-core';
 
 defineOptions({ name: 'SnQrCode' });
@@ -96,6 +137,20 @@ const CANVAS_LIGHT = 'white';
 /** Design px → rpx (750 design width, 1px = 2rpx — CONTRIBUTING §2.4). */
 const RPX_PER_PX = 2;
 
+/** Default corner-block radius in design px; `0` restores square corners. */
+const DEFAULT_CORNER_RADIUS = 6;
+/** Upper bound for `cornerRadius` before it is clamped against the module size. */
+const MAX_CORNER_RADIUS = 40;
+/** A radius bigger than 1.5 modules would turn a corner block into a circle. */
+const CORNER_RADIUS_CELL_LIMIT = 1.5;
+
+/**
+ * First-paint retries for uni-app x and mini-programs. Native canvases become
+ * drawable noticeably later than `onMounted` / `@ready` on WeChat MP, so the
+ * tail is longer than the two-tick retry H5 needs.
+ */
+const UNI_X_RETRY_DELAYS = [0, 50, 150, 350, 700];
+
 const props = withDefaults(
   defineProps<{
     /** Payload encoded into the code. */
@@ -114,6 +169,12 @@ const props = withDefaults(
     dotType?: QrDotType;
     /** Module fill ratio inside its cell, `0.4`-`1`. */
     dotScale?: number;
+    /**
+     * Corner-block radius in design px (AUI extension). Rounds the three
+     * finder patterns and, on version ≥ 2, the bottom-right alignment
+     * pattern. `0` restores the standard square corners.
+     */
+    cornerRadius?: number;
     /** Paint dark modules with a linear gradient. */
     enableGradient?: boolean;
     /** Gradient end color; `''` falls back to `colorDark`. */
@@ -138,6 +199,7 @@ const props = withDefaults(
     margin: 0,
     dotType: 'square',
     dotScale: 1,
+    cornerRadius: DEFAULT_CORNER_RADIUS,
     enableGradient: false,
     gradientColor: '',
     gradientColors: () => [],
@@ -154,6 +216,11 @@ const emit = defineEmits<{
 }>();
 
 const instance = getCurrentInstance();
+
+/** Union of the component scopes uni needs when looking up a canvas id. */
+function componentScope(): unknown {
+  return instance?.proxy ?? instance;
+}
 
 /** Unique canvas id per instance — two codes on one page must not collide. */
 const canvasIdValue = computed(() => props.canvasId || `sn-qr-code-${instance?.uid ?? 0}`);
@@ -174,6 +241,12 @@ const marginValue = computed(() => {
 const dotScaleValue = computed(() => {
   if (!Number.isFinite(props.dotScale)) return 1;
   return Math.min(1, Math.max(0.4, props.dotScale));
+});
+
+/** Corner-block radius in design px; `0` keeps the standard square corners. */
+const cornerRadiusValue = computed(() => {
+  if (!Number.isFinite(props.cornerRadius) || props.cornerRadius <= 0) return 0;
+  return Math.min(MAX_CORNER_RADIUS, props.cornerRadius);
 });
 
 /** Encode result, or the failure that `error` reports. */
@@ -208,8 +281,9 @@ interface CanvasGradientLike {
 /**
  * The subset of the canvas 2D API this component draws with.
  *
- * Every call except `fillRect` is optional because the uni canvas context
- * implements fewer methods than the DOM one; each use is feature-detected.
+ * Every call except `fillRect` is optional because the legacy uni canvas
+ * context implements fewer methods than the W3C one; each use is
+ * feature-detected.
  */
 interface CanvasLike {
   fillStyle: unknown;
@@ -217,69 +291,370 @@ interface CanvasLike {
   beginPath?: () => void;
   arc?: (x: number, y: number, r: number, start: number, end: number) => void;
   fill?: () => void;
-  scale?: (x: number, y: number) => void;
+  toDataURL?: () => string;
+  /** W3C context only: the element behind this context. */
+  canvas?: CanvasElementLike;
   roundRect?: (x: number, y: number, w: number, h: number, r: number) => void;
   createLinearGradient?: (x0: number, y0: number, x1: number, y1: number) => CanvasGradientLike;
-  /** uni canvas only: flush the command queue to the native canvas. */
+  /** Legacy uni canvas only: flush the command queue to the native canvas. */
   draw?: (reserve?: boolean, callback?: () => void) => void;
+}
+
+/** W3C-aligned canvas element (uni-app x `UniCanvasElement` / H5 `<canvas>`). */
+interface CanvasElementLike {
+  width?: number;
+  height?: number;
+  offsetWidth?: number;
+  offsetHeight?: number;
+  getContext?: (id: string) => unknown;
+  getBoundingClientRect?: () => { width?: number; height?: number };
+  toDataURL?: () => string;
+}
+
+/** uni-app x async context wrapper (`uni.createCanvasContextAsync`). */
+interface AsyncCanvasContextLike {
+  getContext?: (type: string) => unknown;
+  toDataURL?: () => string;
 }
 
 /** uni runtime subset this component touches. All lookups are guarded. */
 interface UniHost {
+  /** Legacy uni-app spec — NOT a rendering path on uni-app x. */
   createCanvasContext?: (id: string, component?: unknown) => CanvasLike;
   canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void;
+  /** uni-app x App / Web: synchronous W3C element lookup. */
+  getElementById?: (id: string) => unknown;
+  /** uni-app x mini-programs: async canvas context lookup. */
+  createCanvasContextAsync?: (options: Record<string, unknown>) => void;
+  /** devicePixelRatio sources, best available first. */
+  getDeviceInfo?: () => unknown;
+  getWindowInfo?: () => unknown;
+  /** Platform hint; present on both uni-app and uni-app x runtimes. */
+  getSystemInfoSync?: () => unknown;
+}
+
+/** A resolved drawing target plus the coordinate space it expects. */
+interface QrSurface {
+  ctx: CanvasLike;
+  /** Side length in `ctx` units (device px on W3C, design px on legacy). */
+  extent: number;
+  /** W3C element for `toDataURL` export; null on the legacy path. */
+  element: CanvasElementLike | null;
+  /** Legacy contexts queue commands and need `draw()` to flush. */
+  legacy: boolean;
 }
 
 function getUni(): UniHost | null {
-  const host = globalThis as { uni?: UniHost };
-  return host.uni ?? null;
+  return resolveUniHost<UniHost>();
 }
 
-/** Template ref on `<canvas>` — the H5 fallback surface. */
+/**
+ * uni-app x detection. Both APIs are exclusive to the uni-app x runtime;
+ * classic uni-app exposes neither. Keeping the legacy shim off this branch is
+ * the fix for the blank QR codes on uni-app x (Web/App/MP).
+ */
+function isUniAppX(): boolean {
+  const host = getUni();
+  return (
+    typeof host?.getElementById === 'function' ||
+    typeof host?.createCanvasContextAsync === 'function'
+  );
+}
+
+/**
+ * Mini-program host detection. `uni.getElementById` is App/Web only: on
+ * uni-app x mini-programs a canvas can ONLY be resolved through
+ * `uni.createCanvasContextAsync`, and a template ref there does not expose a
+ * usable W3C element. Also, mini-program 2d contexts may still queue commands
+ * and need a `draw()` flush even when they look W3C-shaped.
+ *
+ * This reads `globalThis` properties by `typeof` only (no DOM API call), so it
+ * stays valid on every target without compile-time `#ifdef` gates.
+ */
+function isMiniProgram(): boolean {
+  // The platform API is authoritative on both uni-app and uni-app x.
+  try {
+    const info = getUni()?.getSystemInfoSync?.() as
+      | { uniPlatform?: string; platform?: string }
+      | undefined;
+    const platform = info?.uniPlatform ?? info?.platform ?? '';
+    if (platform.startsWith('mp-') || platform === 'devtools') return true;
+    if (platform === 'web' || platform === 'h5' || platform === 'app') return false;
+  } catch {
+    // Fall through to the environment probe below.
+  }
+  const host = globalThis as Record<string, unknown>;
+  // Web / docs preview / happy-dom tests always have a document.
+  if (typeof host.document === 'object' && host.document !== null) return false;
+  // WeChat / Alipay / Douyin / Baidu / QQ / Kuaishou expose their bridge.
+  return ['wx', 'my', 'tt', 'swan', 'qq', 'ks', 'jd'].some(
+    (name) => typeof host[name] === 'object' && host[name] !== null,
+  );
+}
+
+/** Template ref on `<canvas>` — the H5 / docs-preview fallback surface. */
 const canvasEl = ref<unknown>(null);
 
-/** Cached surface + the canvas id it belongs to (single resource, §41). */
-let surface: CanvasLike | null = null;
-let surfaceCanvasId = '';
+/** Cached legacy context (only that path is stateful and worth caching). */
+let legacySurface: CanvasLike | null = null;
+let legacyCanvasId = '';
 
-/** Resolve the DOM canvas element, if this host rendered a real one. */
-function getDomCanvas(): { getContext?: (id: string) => unknown } | null {
-  const el = canvasEl.value;
-  if (el === null || typeof el !== 'object') return null;
-  const candidate = el as { getContext?: (id: string) => unknown };
-  return typeof candidate.getContext === 'function' ? candidate : null;
+/** W3C element of the last successful paint — used by `exportImage`. */
+let activeElement: CanvasElementLike | null = null;
+/** Data-URL exporter from the uni-app x async context path. */
+let asyncDataUrl: (() => string) | null = null;
+/**
+ * uni-app x mini-program surface. `createCanvasContextAsync` is the only way
+ * to get a context there, and it is asynchronous, so the resolved surface is
+ * cached and reused by every later repaint / prop change.
+ */
+let asyncSurface: QrSurface | null = null;
+
+/** True while the W3C element has no layout box yet (first paint too early). */
+let layoutPending = false;
+let disposed = false;
+let asyncPending = false;
+let asyncSeq = 0;
+
+/** devicePixelRatio from the host, falling back to the browser / 1. */
+function devicePixelRatio(): number {
+  let ratio = 1;
+  try {
+    const host = getUni();
+    const device = host?.getDeviceInfo?.() as { devicePixelRatio?: number } | undefined;
+    const windowInfo = host?.getWindowInfo?.() as { pixelRatio?: number } | undefined;
+    const globalDpr = (globalThis as { devicePixelRatio?: number }).devicePixelRatio;
+    const candidates: Array<number | undefined> = [
+      device?.devicePixelRatio,
+      windowInfo?.pixelRatio,
+      globalDpr,
+    ];
+    for (const candidate of candidates) {
+      if (typeof candidate === 'number' && Number.isFinite(candidate) && candidate > 0) {
+        ratio = candidate;
+        break;
+      }
+    }
+  } catch {
+    ratio = 1;
+  }
+  return ratio;
 }
 
-/** Acquire the drawing surface: uni context first, DOM canvas second. */
-function getSurface(): CanvasLike | null {
-  if (surface !== null && surfaceCanvasId === canvasIdValue.value) return surface;
-
-  const createCanvasContext = getUni()?.createCanvasContext;
-  if (typeof createCanvasContext === 'function') {
+/** Resolve the W3C canvas element by id (uni-app x) or template ref (H5). */
+function getCanvasElement(): CanvasElementLike | null {
+  // Mini-programs have no synchronous element lookup; a ref there is not a
+  // W3C canvas. Returning null forces the async CanvasContext path instead of
+  // painting into a context that never reaches the screen.
+  if (isMiniProgram()) return null;
+  const host = getUni();
+  if (typeof host?.getElementById === 'function') {
     try {
-      surface = createCanvasContext(canvasIdValue.value, instance);
-      surfaceCanvasId = canvasIdValue.value;
-      return surface;
-    } catch (error) {
-      emit('error', error);
-    }
-  }
-
-  const domCanvas = getDomCanvas();
-  if (domCanvas !== null) {
-    try {
-      const context = domCanvas.getContext?.('2d');
-      if (context !== null && typeof context === 'object') {
-        surface = context as CanvasLike;
-        surfaceCanvasId = canvasIdValue.value;
-        return surface;
+      const found = host.getElementById(canvasIdValue.value);
+      if (found !== null && typeof found === 'object') {
+        const element = found as CanvasElementLike;
+        if (typeof element.getContext === 'function') return element;
       }
     } catch (error) {
       emit('error', error);
     }
   }
-
+  const refValue = canvasEl.value;
+  if (refValue !== null && typeof refValue === 'object') {
+    const element = refValue as CanvasElementLike;
+    if (typeof element.getContext === 'function') return element;
+  }
   return null;
+}
+
+/** Measured CSS side length in px, or 0 before first layout. */
+function elementBoxSize(element: CanvasElementLike): number {
+  let side = typeof element.offsetWidth === 'number' ? element.offsetWidth : 0;
+  if (side <= 0 && typeof element.offsetHeight === 'number' && element.offsetHeight > 0) {
+    side = element.offsetHeight;
+  }
+  if (side <= 0 && typeof element.getBoundingClientRect === 'function') {
+    try {
+      const rect = element.getBoundingClientRect();
+      if (rect !== null && typeof rect === 'object') {
+        if (typeof rect.width === 'number' && rect.width > 0) side = rect.width;
+        else if (typeof rect.height === 'number' && rect.height > 0) side = rect.height;
+      }
+    } catch {
+      // No layout box yet — the caller falls back to design px and retries.
+    }
+  }
+  return side > 0 ? side : 0;
+}
+
+/**
+ * W3C path: size the bitmap to the real element box × DPR, then paint in
+ * device pixels. Setting `width`/`height` resets the context state, so no
+ * `scale()` is needed and repeated paints cannot accumulate a transform.
+ */
+function tryW3cSurface(): QrSurface | null {
+  const element = getCanvasElement();
+  if (element === null) return null;
+
+  const hasBitmap =
+    typeof element.width === 'number' && typeof element.height === 'number';
+  // On uni-app x, a real UniCanvasElement (App/Web) always has a resizable
+  // backing store. Mini-program refs do not: their context must be obtained
+  // through createCanvasContextAsync, so reject the fake synchronous element
+  // instead of painting into a surface that never reaches the screen.
+  if (isUniAppX() && !hasBitmap) return null;
+
+  const side = elementBoxSize(element);
+  layoutPending = side <= 0;
+  const box = side > 0 ? side : sizeValue.value;
+  // Device-pixel coordinates are only valid when we can actually resize the
+  // backing store. A canvas without width/height works in logical px;
+  // multiplying by DPR there pushes the whole matrix outside the visible area.
+  const extent = Math.max(1, Math.round(hasBitmap ? box * devicePixelRatio() : box));
+
+  try {
+    if (hasBitmap) {
+      element.width = extent;
+      element.height = extent;
+    }
+    const context = element.getContext?.('2d');
+    if (context === null || context === undefined || typeof context !== 'object') return null;
+    return { ctx: context as CanvasLike, extent, element, legacy: false };
+  } catch (error) {
+    emit('error', error);
+    return null;
+  }
+}
+
+/** Legacy uni-app path: command queue + `draw()`, scoped to this component. */
+function tryLegacySurface(): QrSurface | null {
+  const create = getUni()?.createCanvasContext;
+  if (typeof create !== 'function') return null;
+  if (legacySurface !== null && legacyCanvasId === canvasIdValue.value) {
+    return withLegacyBitmap(legacySurface);
+  }
+  try {
+    const context = create(canvasIdValue.value, componentScope());
+    if (context !== null && typeof context === 'object') {
+      legacySurface = context as CanvasLike;
+      legacyCanvasId = canvasIdValue.value;
+      return withLegacyBitmap(legacySurface);
+    }
+  } catch (error) {
+    emit('error', error);
+  }
+  return null;
+}
+
+/**
+ * Classic uni-app H5 still exposes the real `<canvas>` element behind the
+ * legacy context. Size its backing store to `size × DPR` (the default
+ * 300×150 would clip a `size > 150` code) and draw in those device pixels —
+ * no transform needed. Mini-programs expose no element and keep design px.
+ */
+function withLegacyBitmap(ctx: CanvasLike): QrSurface {
+  const element = getCanvasElement();
+  if (
+    element !== null &&
+    typeof element.width === 'number' &&
+    typeof element.height === 'number'
+  ) {
+    const extent = Math.max(1, Math.round(sizeValue.value * devicePixelRatio()));
+    element.width = extent;
+    element.height = extent;
+    return { ctx, extent, element: null, legacy: true };
+  }
+  return { ctx, extent: sizeValue.value, element: null, legacy: true };
+}
+
+/**
+ * Surface resolution order.
+ *
+ * - uni-app x mini-programs: ONLY `uni.createCanvasContextAsync` can resolve a
+ *   canvas (`getElementById` is App/Web-only there). The resolved surface is
+ *   cached and reused by every later repaint.
+ * - uni-app x App / Web: synchronous W3C element.
+ * - classic uni-app: legacy `createCanvasContext` + `draw()`.
+ *
+ * uni-app x MUST NOT take the legacy branch: `uni.createCanvasContext` is a
+ * deprecated shim there and paints into a surface that is never displayed.
+ */
+function acquireSurface(): QrSurface | null {
+  if (isUniAppX()) {
+    if (isMiniProgram()) return asyncSurface;
+    return tryW3cSurface();
+  }
+  return tryLegacySurface() ?? tryW3cSurface();
+}
+
+/**
+ * uni-app x mini-programs have no synchronous canvas element lookup; their
+ * context arrives asynchronously. One request at a time, guarded by a sequence
+ * number so a late callback cannot repaint after unmount or a newer request.
+ */
+function requestAsyncSurface(): void {
+  const createAsync = getUni()?.createCanvasContextAsync;
+  if (
+    typeof createAsync !== 'function' ||
+    asyncPending ||
+    disposed ||
+    asyncSurface !== null
+  ) {
+    return;
+  }
+  asyncPending = true;
+  const seq = ++asyncSeq;
+  try {
+    createAsync({
+      id: canvasIdValue.value,
+      component: componentScope(),
+      success: (value: unknown) => {
+        asyncPending = false;
+        if (disposed || seq !== asyncSeq || value === null || typeof value !== 'object') return;
+        try {
+          const holder = value as AsyncCanvasContextLike;
+          const context = holder.getContext?.('2d');
+          if (context === null || context === undefined || typeof context !== 'object') return;
+          const ctx = context as CanvasLike;
+          const element = ctx.canvas ?? null;
+          // Official uni-app x hidpi pattern: bitmap = box × DPR and either a
+          // `scale(dpr, dpr)` transform or drawing in device pixels. When the
+          // host gives us no resizable bitmap, the context stays in LOGICAL px
+          // and multiplying by DPR would push the whole matrix off-screen.
+          const hasBitmap =
+            element !== null &&
+            typeof element.width === 'number' &&
+            typeof element.height === 'number';
+          const side = element !== null ? elementBoxSize(element) : 0;
+          const box = side > 0 ? side : sizeValue.value;
+          const extent = Math.max(
+            1,
+            Math.round(hasBitmap ? box * devicePixelRatio() : sizeValue.value),
+          );
+          if (hasBitmap && element !== null) {
+            element.width = extent;
+            element.height = extent;
+          }
+          const surface: QrSurface = { ctx, extent, element, legacy: false };
+          asyncSurface = surface;
+          activeElement = element;
+          if (typeof holder.toDataURL === 'function') {
+            asyncDataUrl = () => holder.toDataURL?.() ?? '';
+          }
+          drawMatrix(surface);
+        } catch (error) {
+          emit('error', error);
+        }
+      },
+      fail: () => {
+        // A later first-paint retry will issue a fresh request.
+        asyncPending = false;
+      },
+    });
+  } catch (error) {
+    asyncPending = false;
+    emit('error', error);
+  }
 }
 
 /* ── Painting ───────────────────────────────────────────────────────────── */
@@ -293,7 +668,7 @@ const gradientStops = computed<string[]>(() => {
   return [start, end];
 });
 
-/** Gradient start / end points for the canvas, in canvas px. */
+/** Gradient start / end points for the canvas, in ctx units. */
 function gradientPoints(size: number): { x0: number; y0: number; x1: number; y1: number } {
   if (typeof props.gradientDirection === 'number') {
     const radians = (props.gradientDirection * Math.PI) / 180;
@@ -398,57 +773,249 @@ function paintModule(
     ctx.fillRect(left + cell / 2 - bridge, top + cell - bridge, bridge * 2, bridge * 2);
 }
 
-/** Pixel ratio used for the H5 canvas (kept at 1 where `window` is absent). */
-function devicePixelRatio(): number {
-  const host = globalThis as { devicePixelRatio?: number };
-  const ratio = host.devicePixelRatio;
-  return typeof ratio === 'number' && ratio > 0 ? ratio : 1;
+/* ── Corner blocks ──────────────────────────────────────────────────────── */
+
+/** A structural corner block, in module coordinates. */
+interface QrCornerBlock {
+  x: number;
+  y: number;
+  /** 7 for a finder pattern, 5 for the bottom-right alignment pattern. */
+  size: number;
 }
 
 /**
- * Paint the whole code. No-op when no surface is available (tests / SSR).
- *
- * Returns whether anything was drawn, so the watcher can retry after the H5
- * canvas element appears.
+ * The corner blocks: three 7×7 finder patterns plus the 5×5 bottom-right
+ * alignment pattern. Version 1 has no alignment pattern, so only three blocks
+ * are returned — painting a fourth one there would overwrite data modules.
  */
-function paint(): boolean {
-  const matrix = encoded.value;
-  if (matrix === null) return false;
-  const ctx = getSurface();
-  if (ctx === null) return false;
-
-  const size = sizeValue.value;
-  const margin = marginValue.value;
-  const cell = Math.max(1, size - margin * 2) / matrix.size;
-
-  // H5: size the backing store for the device pixel ratio (crisp modules).
-  const domCanvas = getDomCanvas() as { width?: number; height?: number } | null;
-  if (domCanvas !== null && typeof domCanvas.width === 'number') {
-    const ratio = devicePixelRatio();
-    domCanvas.width = Math.round(size * ratio);
-    domCanvas.height = Math.round(size * ratio);
-    if (typeof ctx.scale === 'function') ctx.scale(ratio, ratio);
+function cornerBlocks(matrix: SnQrEncoded): QrCornerBlock[] {
+  const far = matrix.size - 7;
+  const blocks: QrCornerBlock[] = [
+    { x: 0, y: 0, size: 7 },
+    { x: far, y: 0, size: 7 },
+    { x: 0, y: far, size: 7 },
+  ];
+  if (matrix.version >= 2) {
+    blocks.push({ x: matrix.size - 9, y: matrix.size - 9, size: 5 });
   }
+  return blocks;
+}
+
+/** True when `(x, y)` belongs to a corner block and is repainted separately. */
+function isCornerModule(x: number, y: number, blocks: QrCornerBlock[]): boolean {
+  for (const block of blocks) {
+    if (
+      x >= block.x &&
+      x < block.x + block.size &&
+      y >= block.y &&
+      y < block.y + block.size
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Fill a rounded square, degrading `roundRect` → an `arc` path → `fillRect`.
+ * Legacy uni canvas contexts expose fewer path APIs than the W3C one, so each
+ * step is feature-detected; a missing `fill` / `beginPath` ends in a plain rect.
+ */
+function paintRoundedRect(
+  ctx: CanvasLike,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  radius: number,
+): void {
+  const r = Math.max(0, Math.min(radius, w / 2, h / 2));
+  if (r <= 0 || typeof ctx.fill !== 'function' || typeof ctx.beginPath !== 'function') {
+    ctx.fillRect(x, y, w, h);
+    return;
+  }
+  try {
+    if (typeof ctx.roundRect === 'function') {
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+      ctx.fill();
+      return;
+    }
+    if (typeof ctx.arc === 'function') {
+      ctx.beginPath();
+      ctx.arc(x + r, y + r, r, Math.PI, Math.PI * 1.5);
+      ctx.arc(x + w - r, y + r, r, Math.PI * 1.5, Math.PI * 2);
+      ctx.arc(x + w - r, y + h - r, r, 0, Math.PI * 0.5);
+      ctx.arc(x + r, y + h - r, r, Math.PI * 0.5, Math.PI);
+      ctx.fill();
+      return;
+    }
+  } catch {
+    // A few mini-program 2d implementations expose the path methods but throw
+    // on non-trivial paths. Fall through to a square fill: the 回 geometry
+    // survives even if the rounded corners do not.
+  }
+  ctx.fillRect(x, y, w, h);
+}
+
+/**
+ * Repaint the corner blocks as rounded 回 shapes on top of the light plate.
+ * The finder / alignment geometry is preserved (1 dark ring, 1 light ring,
+ * 3×3 or 1×1 dark centre); only the corners are softened. The radius is a
+ * design-px value scaled into ctx units and capped at 1.5 modules.
+ */
+function paintCornerBlocks(
+  ctx: CanvasLike,
+  blocks: QrCornerBlock[],
+  cell: number,
+  margin: number,
+  ratio: number,
+  darkPaint: unknown,
+): void {
+  const lightPaint = props.colorLight || CANVAS_LIGHT;
+  const base = Math.min(cornerRadiusValue.value * ratio, cell * CORNER_RADIUS_CELL_LIMIT);
+  for (const block of blocks) {
+    const left = margin + block.x * cell;
+    const top = margin + block.y * cell;
+    const side = block.size * cell;
+    // The 5×5 alignment block gets a proportionally smaller radius so both
+    // kinds of corner block read as the same style at a glance.
+    const radius = Math.min(base * (block.size / 7), side * 0.25);
+
+    ctx.fillStyle = darkPaint;
+    paintRoundedRect(ctx, left, top, side, side, radius);
+    ctx.fillStyle = lightPaint;
+    paintRoundedRect(ctx, left + cell, top + cell, side - cell * 2, side - cell * 2, radius * 0.6);
+    ctx.fillStyle = darkPaint;
+    paintRoundedRect(
+      ctx,
+      left + cell * 2,
+      top + cell * 2,
+      side - cell * 4,
+      side - cell * 4,
+      radius * 0.35,
+    );
+  }
+}
+
+/**
+ * Paint the whole code onto one surface.
+ *
+ * `extent` is the drawing square in the context's own units; the quiet zone
+ * and module geometry scale from design px by `extent / size`. Drawing in
+ * device pixels (instead of a DPR transform) keeps the bitmap crisp and
+ * avoids the double-transform that a second sizing pass used to introduce.
+ */
+function drawMatrix(surface: QrSurface): void {
+  const matrix = encoded.value;
+  if (matrix === null) return;
+  const ctx = surface.ctx;
+  const extent = surface.extent;
+  const ratio = extent / Math.max(1, sizeValue.value);
+  const margin = marginValue.value * ratio;
+  const cell = Math.max(1, extent - margin * 2) / matrix.size;
+  const blocks = cornerRadiusValue.value > 0 ? cornerBlocks(matrix) : [];
 
   // Quiet zone: an opaque light plate, so the code scans on any page surface.
-  ctx.fillStyle = props.colorLight || CANVAS_LIGHT;
-  ctx.fillRect(0, 0, size, size);
+  // Skipped corner modules simply leave this plate showing through.
+  const lightPaint = props.colorLight || CANVAS_LIGHT;
+  ctx.fillStyle = lightPaint;
+  ctx.fillRect(0, 0, extent, extent);
 
-  ctx.fillStyle = resolveDarkPaint(ctx, size);
+  const darkPaint = resolveDarkPaint(ctx, extent);
+  ctx.fillStyle = darkPaint;
   for (let y = 0; y < matrix.size; y++) {
     for (let x = 0; x < matrix.size; x++) {
       if (!matrix.getModule(x, y)) continue;
+      if (isCornerModule(x, y, blocks)) continue;
       paintModule(ctx, x, y, cell, margin, matrix);
     }
   }
 
-  // uni canvas: flush the queued commands to the native surface.
-  if (typeof ctx.draw === 'function') ctx.draw();
+  if (blocks.length > 0) {
+    try {
+      paintCornerBlocks(ctx, blocks, cell, margin, ratio, darkPaint);
+    } catch (error) {
+      // Rounded corners are cosmetic. If the host rejects every path call,
+      // repaint the skipped corner modules square so the code stays complete
+      // and scannable rather than losing three finder patterns.
+      emit('error', error);
+      ctx.fillStyle = darkPaint;
+      for (let y = 0; y < matrix.size; y++) {
+        for (let x = 0; x < matrix.size; x++) {
+          if (!matrix.getModule(x, y) || !isCornerModule(x, y, blocks)) continue;
+          paintModule(ctx, x, y, cell, margin, matrix);
+        }
+      }
+    }
+  }
+
+  // Legacy uni canvas queues commands. So do some mini-program 2d contexts
+  // reached through the W3C-shaped async API — flush for both. A synchronously
+  // resolved W3C canvas (H5 / App) has no draw() and needs no flush.
+  if ((surface.legacy || surface === asyncSurface) && typeof ctx.draw === 'function') {
+    ctx.draw();
+  }
+}
+
+/** Paint once. Returns false when no surface could be acquired (tests / SSR). */
+function paint(): boolean {
+  const matrix = encoded.value;
+  if (matrix === null) return false;
+  const surface = acquireSurface();
+  if (surface === null) return false;
+  activeElement = surface.element;
+  drawMatrix(surface);
   return true;
 }
 
-/** Pending deferred first paint (cleared on unmount, §41). */
-let retryTimer: ReturnType<typeof setTimeout> | null = null;
+/* ── First-paint retries ────────────────────────────────────────────────── */
+
+let retryTimers: Array<ReturnType<typeof setTimeout>> = [];
+let singleRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
+function clearRetries(): void {
+  for (const timer of retryTimers) clearTimeout(timer);
+  retryTimers = [];
+  if (singleRetryTimer !== null) clearTimeout(singleRetryTimer);
+  singleRetryTimer = null;
+}
+
+/** Paint and report whether the picture is final (a box was measured). */
+function settledPaint(): boolean {
+  layoutPending = false;
+  const painted = paint();
+  if (!painted) requestAsyncSurface();
+  return painted && !layoutPending;
+}
+
+function scheduleFirstPaintRetries(): void {
+  clearRetries();
+  if (!isUniAppX() && !isMiniProgram()) {
+    // H5 can mount the element a tick late — one deferred retry, no interval.
+    singleRetryTimer = setTimeout(() => {
+      singleRetryTimer = null;
+      if (!disposed) settledPaint();
+    }, 0);
+    return;
+  }
+  // A mini-program canvas may hand out a context long before it is drawable,
+  // so an early "successful" paint must not cancel the remaining repaints.
+  UNI_X_RETRY_DELAYS.forEach((delay) => {
+    const timer = setTimeout(() => {
+      retryTimers = retryTimers.filter((entry) => entry !== timer);
+      if (disposed) return;
+      const settled = settledPaint();
+      if (settled && !isMiniProgram()) clearRetries();
+    }, delay);
+    retryTimers.push(timer);
+  });
+}
+
+/** The `<canvas>` `@ready` callback on uni-app x (notably MP-ALIPAY / MP-WEIXIN). */
+function onCanvasReady(): void {
+  if (!disposed) settledPaint();
+}
 
 /** Re-paint on every input that changes the picture. */
 watch(
@@ -460,32 +1027,36 @@ watch(
     props.colorLight,
     props.dotType,
     dotScaleValue.value,
+    cornerRadiusValue.value,
     props.enableGradient,
     props.gradientColor,
     props.gradientColors,
     props.gradientDirection,
   ],
-  () => paint(),
+  () => {
+    settledPaint();
+  },
   { deep: true },
 );
 
 onMounted(() => {
   // First paint after mount: the template ref / native canvas only exists then.
-  if (!paint()) {
-    // H5 can mount the element a tick late — one deferred retry, no interval.
-    retryTimer = setTimeout(() => {
-      retryTimer = null;
-      paint();
-    }, 0);
-  }
+  // Mini-programs keep a short repaint tail even when this first paint passed:
+  // the native canvas is often not drawable yet at onMounted time.
+  const settled = settledPaint();
+  if (!settled || isMiniProgram()) scheduleFirstPaintRetries();
 });
 
 onBeforeUnmount(() => {
-  // §41: the only owned resources are the surface handle and the retry timer.
-  if (retryTimer !== null) clearTimeout(retryTimer);
-  retryTimer = null;
-  surface = null;
-  surfaceCanvasId = '';
+  // §41: drop every owned resource so no late callback paints a dead node.
+  disposed = true;
+  asyncSeq++;
+  clearRetries();
+  legacySurface = null;
+  legacyCanvasId = '';
+  activeElement = null;
+  asyncDataUrl = null;
+  asyncSurface = null;
   canvasEl.value = null;
 });
 
@@ -499,14 +1070,49 @@ interface QrExportError {
 }
 
 /**
- * Export the canvas as a temporary file path (`wd-qr-code` `exportImage`).
+ * Export the canvas (`wd-qr-code` `exportImage`).
  *
- * Rejects with `CAPABILITY_UNSUPPORTED` on hosts without
- * `uni.canvasToTempFilePath` (tests / non-uni SSR) instead of throwing, so the
- * caller can branch on `error.code`.
+ * uni-app x / H5 resolve a `data:image/...` URL from the W3C canvas element
+ * (or the async CanvasContext); classic uni-app resolves a temp file path via
+ * `uni.canvasToTempFilePath`. Rejects with `CAPABILITY_UNSUPPORTED` on hosts
+ * without any export capability instead of throwing.
  */
 function exportImage(): Promise<string> {
   return new Promise<string>((resolve, reject) => {
+    const element = activeElement ?? (isUniAppX() ? getCanvasElement() : null);
+    if (typeof element?.toDataURL === 'function') {
+      try {
+        const dataUrl = element.toDataURL();
+        if (dataUrl.startsWith('data:image/')) {
+          resolve(dataUrl);
+          return;
+        }
+      } catch (error) {
+        reject({
+          code: 'EXPORT_FAILED',
+          message: 'canvas toDataURL failed',
+          cause: error,
+        } satisfies QrExportError);
+        return;
+      }
+    }
+    if (asyncDataUrl !== null) {
+      try {
+        const dataUrl = asyncDataUrl();
+        if (dataUrl.startsWith('data:image/')) {
+          resolve(dataUrl);
+          return;
+        }
+      } catch (error) {
+        reject({
+          code: 'EXPORT_FAILED',
+          message: 'CanvasContext toDataURL failed',
+          cause: error,
+        } satisfies QrExportError);
+        return;
+      }
+    }
+
     const toTempFilePath = getUni()?.canvasToTempFilePath;
     if (typeof toTempFilePath !== 'function') {
       reject({
@@ -538,7 +1144,7 @@ function exportImage(): Promise<string> {
             } satisfies QrExportError);
           },
         },
-        instance,
+        componentScope(),
       );
     } catch (error) {
       reject({
@@ -592,7 +1198,9 @@ const ariaLabel = computed(() => (props.text === '' ? 'QR code' : `QR code: ${pr
       :data-version="encoded ? encoded.version : 0"
       :data-modules="encoded ? encoded.size : 0"
       :data-margin="marginValue"
+      :data-corner-radius="cornerRadiusValue"
       :style="canvasStyle"
+      @ready="onCanvasReady"
     />
 
     <view v-if="hasEncodeError" class="sn-qr-code__error" role="alert">

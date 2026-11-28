@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-custom.vue sha256:de195f3b9cc32cf6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — radius 与 custom* 类名 / 样式插槽。
@@ -5,8 +6,8 @@
  */
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-c1/750/400', text: '第一张 · 自定义类名' },
-  { value: 'https://picsum.photos/seed/snui-sw-c2/750/400', text: '第二张 · 自定义文案样式' },
+  { value: 'https://cdn.uviewui.com/uview/album/5.jpg', text: '第一张 · 自定义类名' },
+  { value: 'https://cdn.uviewui.com/uview/album/6.jpg', text: '第二张 · 自定义文案样式' },
 ];
 </script>
 <template>

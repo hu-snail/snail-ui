@@ -30,7 +30,7 @@ const photos: Photo[] = [
     <SnWaterfall :columns="2" :column-gap="16" :row-gap="16">
       <view v-for="photo in photos" :key="photo.id" class="wall-card">
         <SnImg
-          :src="`https://picsum.photos/seed/snui-waterfall-${photo.id}/${photo.width}/${photo.height}`"
+          :src="`https://cdn.uviewui.com/uview/album/${([...String(photo.id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`"
           mode="widthFix"
           width="100%"
         />

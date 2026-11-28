@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-icon.en.vue sha256:3b417cdc696372f3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio — Icon cards (card variant with an icon body; the selected card gets a corner tick)。 */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';

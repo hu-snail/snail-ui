@@ -23,32 +23,100 @@
  * stealing the touch) settles the row closed, so it can never stick
  * half-open.
  *
+ * The row drags from where it actually sits: the content offset at
+ * `touchstart` is captured as the drag base, so touching an open row does not
+ * snap it shut and the finger position maps 1:1 onto the row position. On
+ * release the settle decision is:
+ *
+ *   1. an open row dragged back towards rest (same side, past the minimum
+ *      travel) closes first — without this rule a row carrying both slots
+ *      flipped sides on any opposite drag;
+ *   2. past the open threshold (30% of the side's distance, min 24px) — or
+ *      dragged across the centre onto the other side — settles that side;
+ *   3. a flick (≥0.5 px/ms) settles the side it points at even below the
+ *      threshold;
+ *   4. everything else springs back closed.
+ *
+ * Small drags therefore spring back instead of fully opening — the row only
+ * commits past the threshold, which is what keeps the mid-drag reveal states
+ * (button peeking from under the card) stable.
+ *
+ * ## MP wrapper node (virtualHost) — why the row must own the full width
+ *
+ * WeChat MP wraps every component in a custom-component host node, and that
+ * node shrink-wraps to its content (inline semantics): the row then measured /
+ * rendered at its max-content width instead of the container width — the
+ * right-anchored action pills sat mid-screen (~600rpx) with a dead zone to the
+ * screen edge, opened rows slid their cards under the screen edge, and the
+ * demo badge row stopped mid-screen (device-verified regression). The same
+ * switch wot-ui's components flip (AGENTS.md §112): `options: { virtualHost:
+ * true }` removes the wrapper so the root view participates directly.
+ * `customClass` / `customStyle` props are unaffected; `class` / `style` passed
+ * on the component tag merge onto the root only when the host app enables
+ * `mergeVirtualHostAttributes` (same caveat as sn-step).
+ *
+ * ## Why the component paints no background
+ *
+ * The mechanic is background-free: the sliding content and the action areas
+ * are whatever the consumer puts in the slots. This is what enables the
+ * floating-card form — content paints a rounded card, the revealed area shows
+ * the page canvas between the card and the pill buttons. Classic full-bleed
+ * rows keep working by painting the surface on the slot content itself.
+ *
+ * ## Action reveal fade (additive, CSS-var contract)
+ *
+ * The root publishes each side's reveal progress (0 = fully covered by the
+ * content, 1 = fully revealed) as CSS custom properties:
+ *
+ *   --sn-swipe-action-reveal-left / --sn-swipe-action-reveal-right
+ *
+ * The value follows the finger 1:1 during a drag and jumps to the settle
+ * target when the row settles (demo styles ease the transition). Action
+ * buttons bind their glyph/label opacity to it —
+ * `opacity: var(--sn-swipe-action-reveal-right, 1)` — so icon + name fade in
+ * while the card uncovers them and fade out as it covers them again, while
+ * the button surface stays fully painted. Where a runtime cannot resolve
+ * inline custom properties the fallback `1` keeps glyphs visible (no fade,
+ * no breakage).
+ *
  * ## How far the row slides (why there is a measurement)
  *
  * The open distance must equal the action area's real width, and that width is
  * whatever the consumer puts in the slot — there is no design-time number to
- * hard-code. It is therefore measured once per gesture:
+ * hard-code. It is therefore measured on mount (so v-model-driven opens land
+ * on the real width) and refreshed once per gesture:
  *
- *   1. `uni.createSelectorQuery()` — the cross-end API (H5 / MP / App);
- *   2. the DOM node's `getBoundingClientRect` — docs preview and tests;
+ *   1. the DOM node's `getBoundingClientRect` — H5 / docs preview. The
+ *      template ref is the uni-view component instance there, so the element
+ *      is unwrapped from `$el`; the read is synchronous, so the gesture never
+ *      starts on a stale distance;
+ *   2. `uni.createSelectorQuery()` — MP / App. The component instance is
+ *      captured at setup: `getCurrentInstance()` is null inside touch
+ *      handlers, and without it every scoped variant was skipped — classic mp
+ *      could only fire the page-level query, which cannot see inside a custom
+ *      component, so rows lived on the constant and multi-pill rows opened
+ *      half-way (device-verified). uni-app x mp keeps the page-level variant
+ *      because its runtime rejects scoped queries;
  *   3. `FALLBACK_ACTION_WIDTH` — last resort so the row still opens.
  *
  * Every path is guarded: a missing runtime falls through to the next one.
  * Nothing is observed or re-measured in the background, so no resource leaks
  * (§41).
  *
- * ## Why the action areas carry a hidden transform when the row is closed
+ * ## Why the action areas carry a hidden transform + visibility when closed
  *
- * The closed row used to rely on the content layer (opaque background +
- * `z-index`) painting over the action areas. That premise does not hold on
- * uni-app x App: native rounding / stacking leaves a 1–2px sliver of the
- * action area leaking at the row edges with the row fully closed (device
- * report). While nothing is exposed — no drag, no settle animation, no open
- * side — the areas are therefore translated fully outside the root's
- * `overflow: hidden` clip, which makes the closed state deterministic and
- * independent of paint order on every end. The offset is a percentage of the
- * area's own width so a failed / fallback measurement can never leave part of
- * it inside the row.
+ * The closed row relies on the content layer painting over the action areas —
+ * but with background-free surfaces the content layer is transparent, so the
+ * areas must be parked out of sight themselves. The park is doubled:
+ * `translateX(±100%)` moves them outside the root's `overflow: hidden` clip
+ * (a percentage of the area's own width so a failed / fallback measurement can
+ * never leave part of it inside the row), and `visibility: hidden` guarantees
+ * invisibility where clipping does not hold — uni-app x mp does not reliably
+ * clip translated absolute children, leaving a sliver of the parked pill at
+ * the screen edge on closed rows (device-verified regression). `visibility`
+ * hides them regardless of clipping while leaving layout and
+ * `boundingClientRect` measurement untouched; while a drag, a settle
+ * animation, or an open side exposes the areas, the park clears entirely.
  *
  * ## Documented divergences from wd-swipe-action
  *
@@ -59,11 +127,16 @@
  *     the event instead of activating the row's own handler.
  *   - `before-close` is also consulted for the swipe-driven close, not only
  *     for the `close()` method.
+ *   - The settle uses a travel threshold + flick instead of committing on
+ *     every horizontal travel: small drags spring back closed.
  *
  * ## Timers (AGENTS.md §41)
  *
  * One settle timer runs the open / closed transition and one generation token
- * drops a stale leg. Both are cleared in `onBeforeUnmount`.
+ * drops a stale leg. Both are cleared in `onBeforeUnmount`. The timer length
+ * must stay in sync with the CSS transition on
+ * `.sn-swipe-action__content--animating` (both derive from
+ * `DEFAULT_DURATION`).
  *
  * Usage:
  *   <sn-swipe-action>
@@ -78,10 +151,40 @@
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { nextUid } from '../../utils/uid';
+import {
+  pickSelectorQueryHost,
+  resolveUniHost,
+  type UniSelectorQuery,
+  type UniSelectorQueryHost,
+} from '../../utils/uni-host';
 
-defineOptions({ name: 'SnSwipeAction' });
+defineOptions({
+  name: 'SnSwipeAction',
+  // #ifdef MP-WEIXIN
+  options: { virtualHost: true },
+  // #endif
+});
+
+/**
+ * Per-instance DOM id prefix for the action areas — the measurement queries
+ * `#<actionsNodeId>-left|right`. Ids instead of classes because class
+ * selectors can cross scopes on mp and match a foreign row's (wider) action
+ * area, sliding every row to that foreign width (device-verified regression).
+ */
+const actionsNodeId = `sn-swipe-action-${nextUid()}`;
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
+
+/**
+ * The component instance, captured once at setup. `getCurrentInstance()` is
+ * null inside touch handlers, and measureSide runs from `touchstart` — with a
+ * fresh (null) lookup every scoped query variant was silently skipped. Classic
+ * mp then only had the page-level query left, which cannot see inside a custom
+ * component, so every row fell back to the 88px constant: two-pill rows opened
+ * half-way and the far pill stayed covered (device-verified regression).
+ */
+const componentInstance = getCurrentInstance();
 // Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
 onMounted(() =>
   registerOutsideClosable(instanceId, () => {
@@ -108,8 +211,23 @@ type SwipeActionBeforeClose = (
   position: SwipeActionPosition,
 ) => boolean | Promise<boolean>;
 
-/** Row open / close animation length in ms. */
-const DEFAULT_DURATION = 200;
+/** Row open / close animation length in ms (settle timer + CSS transition). */
+const DEFAULT_DURATION = 300;
+
+/** Drag past this fraction of the side's open distance settles that side. */
+const OPEN_THRESHOLD_RATIO = 0.3;
+
+/** Minimum travel (px) that can settle a side open or an open row closed. */
+const SETTLE_MIN_TRAVEL = 24;
+
+/** A flick at or above this speed (px/ms) settles the side it points at. */
+const FLICK_VELOCITY = 0.5;
+
+/** Floor (ms) for the gesture duration when computing flick speed. */
+const FLICK_DURATION_FLOOR = 40;
+
+/** Minimum travel (px) a flick still settles. */
+const FLICK_MIN_TRAVEL = 8;
 
 /** Design-px width used when the action area cannot be measured. */
 const FALLBACK_ACTION_WIDTH = 88;
@@ -163,9 +281,18 @@ const openDistance = ref<{ left: number; right: number }>({
   right: FALLBACK_ACTION_WIDTH,
 });
 
-/** Action-area nodes, used by the DOM measurement fallback. */
-const leftActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null);
-const rightActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null);
+/**
+ * Action-area nodes, used by the DOM measurement fallback. The template ref is
+ * the uni-view component instance on H5 — the element itself lives on `$el`
+ * (happy-dom tests mount the element directly).
+ */
+interface ActionAreaNode {
+  $el?: { getBoundingClientRect?: () => { width: number } };
+  getBoundingClientRect?: () => { width: number };
+}
+
+const leftActionsRef = ref<ActionAreaNode | null>(null);
+const rightActionsRef = ref<ActionAreaNode | null>(null);
 
 /** Single pending settle timer (cleared on unmount, §41). */
 let timer: ReturnType<typeof setTimeout> | null = null;
@@ -175,10 +302,16 @@ let generation = 0;
 /** Gesture origin. */
 let startX = 0;
 let startY = 0;
+/** Timestamp of the gesture start — feeds the flick-speed estimate. */
+let startAt = 0;
+/** Last seen touch x — the flick speed runs from the origin to this. */
+let lastX = 0;
 /** The gesture was recognised as horizontal and is being tracked. */
 let tracking = false;
 /** The gesture was rejected as a vertical scroll. */
 let rejected = false;
+/** Content offset (px) at gesture start: the open side's distance, 0 closed. */
+let baseOffset = 0;
 
 /** Which sides have an action area rendered. */
 const hasLeft = computed(() => slots.left !== undefined);
@@ -200,16 +333,19 @@ function clearTimer(): void {
 /**
  * Read the real width of one action area.
  *
- * Tries `uni.createSelectorQuery()` first (works on every uni target), then
- * the DOM node (docs preview / tests), then the fallback constant. Every step
- * is guarded — a failure just means "try the next one".
+ * Tries the DOM node first (H5 / docs preview — synchronous, so the gesture
+ * never starts on a stale distance), then `uni.createSelectorQuery()` (MP /
+ * App), then the fallback constant. Every step is guarded — a failure just
+ * means "try the next one".
  */
 function measureSide(side: SwipeActionPosition): void {
   const fallbackNode = side === 'left' ? leftActionsRef.value : rightActionsRef.value;
-  // (1) DOM node — available in H5 and in the docs preview.
-  if (fallbackNode && typeof fallbackNode.getBoundingClientRect === 'function') {
+  // (1) DOM node — available in H5 and in the docs preview. The template ref
+  // is the uni-view component instance there; the element is on `$el`.
+  const fallbackEl = fallbackNode?.$el ?? fallbackNode;
+  if (fallbackEl && typeof fallbackEl.getBoundingClientRect === 'function') {
     try {
-      const width = fallbackNode.getBoundingClientRect().width;
+      const width = fallbackEl.getBoundingClientRect().width;
       if (width > 0) {
         openDistance.value = { ...openDistance.value, [side]: width };
         return;
@@ -218,43 +354,71 @@ function measureSide(side: SwipeActionPosition): void {
       // Fall through to the next strategy.
     }
   }
-  // (2) uni runtime — the cross-end measurement API.
-  const host = globalThis as {
-    uni?: {
-      createSelectorQuery?: () => {
-        in?: (component: unknown) => unknown;
-        select?: (selector: string) => {
-          boundingClientRect?: (cb: (rect: { width?: number } | null) => void) => {
-            exec?: (cb?: () => void) => void;
-          };
-        };
-        exec?: (cb?: () => void) => void;
-      };
-    };
-  };
-  const queryFactory = host.uni?.createSelectorQuery;
-  if (typeof queryFactory !== 'function') return;
-  try {
-    const query = queryFactory();
-    // Scope to this component instance: without `.in()` a mini-program page
-    // resolves the selector against the PAGE, so every row in a list measures
-    // the first row's action width.
-    const scoped = (query.in?.(getCurrentInstance()?.proxy) as typeof query | undefined) ?? query;
-    const selection = scoped.select?.(`.sn-swipe-action__actions--${side}`);
-    const measured = selection?.boundingClientRect?.((rect) => {
-      const width = rect?.width;
-      if (typeof width === 'number' && width > 0) {
-        openDistance.value = { ...openDistance.value, [side]: width };
-      }
-    });
-    // `boundingClientRect` already returns the chainable node on most targets;
-    // fall back to the query itself when it does not.
-    const chain = measured ?? query;
-    chain.exec?.();
-  } catch {
-    // Measurement is best-effort; the fallback width keeps the row usable.
+  // (2) uni runtime — the cross-end measurement API. Every query variant
+  // fires at once and the first positive width wins:
+  //   a. the mp `$scope` host (`.in($scope)` scopes natively on classic mp);
+  //   b. the page-level uni query WITHOUT `.in()` — on uni-app x mp the
+  //      runtime's `.in()` rejects the scope objects and scoped variants
+  //      match nothing, while the page-level id query reaches inside nested
+  //      components (slider-bar precedent);
+  //   c. the page-level query with `.in(Vue proxy)` (best effort).
+  // All variants query the same PER-INSTANCE id (`#<actionsNodeId>-<side>`),
+  // so a hit from any of them measures THIS row — ids cannot cross-match
+  // between rows the way class selectors did (device-verified 312rpx bug).
+  const instance = componentInstance;
+  const proxy = instance?.proxy as
+    | { $scope?: UniSelectorQueryHost; $?: { scope?: UniSelectorQueryHost } }
+    | null;
+  const scopeHost = proxy?.$scope ?? proxy?.$?.scope;
+  const uniHost = resolveUniHost<UniSelectorQueryHost>();
+  const picked = pickSelectorQueryHost(scopeHost, uniHost, instance?.proxy);
+  const variants: Array<{ createQuery: () => UniSelectorQuery; queryScope: unknown | undefined }> =
+    [];
+  if (picked !== null) variants.push(picked);
+  if (
+    uniHost !== null &&
+    typeof uniHost.createSelectorQuery === 'function' &&
+    (picked === null || picked.createQuery !== uniHost.createSelectorQuery)
+  ) {
+    // Page-level (no `.in()`) — the variant that reaches nested components on
+    // uni-app x mp.
+    variants.push({ createQuery: uniHost.createSelectorQuery, queryScope: undefined });
+    // Best-effort scoped fallback for hosts where the page-level query is
+    // restricted.
+    variants.push({ createQuery: uniHost.createSelectorQuery, queryScope: instance?.proxy });
+  }
+  for (const variant of variants) {
+    try {
+      const query = variant.createQuery();
+      const scoped =
+        variant.queryScope === undefined
+          ? query
+          : ((query.in?.(variant.queryScope) as UniSelectorQuery | undefined) ?? query);
+      const selection = scoped.select?.(`#${actionsNodeId}-${side}`);
+      const measured = selection?.boundingClientRect?.((rect) => {
+        const width = rect?.width;
+        if (typeof width === 'number' && width > 0) {
+          openDistance.value = { ...openDistance.value, [side]: width };
+        }
+      });
+      // `boundingClientRect` already returns the chainable node on most
+      // targets; fall back to the query itself when it does not.
+      const chain = measured ?? query;
+      chain.exec?.();
+    } catch {
+      // Measurement is best-effort; the fallback width keeps the row usable.
+    }
   }
 }
+
+// Measure up front so v-model-driven opens (initial `modelValue: 'left' /
+// 'right'`, a host setting the state without a gesture) land on the real
+// action width — the gesture-time refresh only runs once a finger is down.
+// One-shot queries, no observer (§41).
+onMounted(() => {
+  if (hasLeft.value) measureSide('left');
+  if (hasRight.value) measureSide('right');
+});
 
 /**
  * Move the row to `next`.
@@ -317,12 +481,47 @@ function touchPoint(event: Event): { x: number; y: number } {
   };
 }
 
-/** Clamp a drag to the sides that actually have an action area. */
-function clampToAvailable(dx: number): number {
-  if (dx > 0 && !hasLeft.value) return 0;
-  if (dx < 0 && !hasRight.value) return 0;
-  const limit = dx > 0 ? openDistance.value.left : openDistance.value.right;
-  return Math.min(Math.max(dx, -limit), limit);
+/** Content offset for a status — the settle target the transition lands on. */
+function openOffsetFor(value: SwipeActionStatus): number {
+  if (value === 'left') return openDistance.value.left;
+  if (value === 'right') return -openDistance.value.right;
+  return 0;
+}
+
+/** Clamp a dragged offset to the sides that actually have an action area. */
+function clampOffset(value: number): number {
+  const min = hasRight.value ? -openDistance.value.right : 0;
+  const max = hasLeft.value ? openDistance.value.left : 0;
+  return Math.min(Math.max(value, min), max);
+}
+
+/** Travel (px) past which the `side` area settles open. */
+function openThreshold(side: SwipeActionPosition): number {
+  return Math.max(SETTLE_MIN_TRAVEL, openDistance.value[side] * OPEN_THRESHOLD_RATIO);
+}
+
+/**
+ * Decide the settle target from where the drag ended and how fast it moved.
+ *
+ * Order matters: the back-drag rule (1) must run before the threshold rules
+ * (2), otherwise an open row dragged back towards rest but not yet past the
+ * threshold reads as "still open" and never closes. The same-side check keeps
+ * a drag that crossed the centre eligible for the flip in (2).
+ */
+function decideSettle(final: number, velocity: number): SwipeActionStatus {
+  // (1) An open row dragged back towards rest closes — an opposite drag is
+  // closing intent first, a side flip only once it crosses the centre.
+  if (status.value !== 'close' && final * baseOffset > 0) {
+    if (Math.abs(baseOffset) - Math.abs(final) >= SETTLE_MIN_TRAVEL) return 'close';
+  }
+  // (2) Past the open threshold, or flipped across the centre to the other side.
+  if (hasLeft.value && final >= openThreshold('left')) return 'left';
+  if (hasRight.value && final <= -openThreshold('right')) return 'right';
+  // (3) A flick settles the side it points at even below the threshold.
+  if (velocity >= FLICK_VELOCITY && hasLeft.value && final >= FLICK_MIN_TRAVEL) return 'left';
+  if (velocity <= -FLICK_VELOCITY && hasRight.value && final <= -FLICK_MIN_TRAVEL) return 'right';
+  // (4) Everything else springs back closed.
+  return 'close';
 }
 
 function onTouchStart(event: Event): void {
@@ -331,9 +530,14 @@ function onTouchStart(event: Event): void {
   const point = touchPoint(event);
   startX = point.x;
   startY = point.y;
+  lastX = point.x;
+  startAt = Date.now();
   tracking = false;
   rejected = false;
-  dragOffset.value = 0;
+  // Drag from where the row actually sits. Starting from 0 made every touch
+  // on an open row snap the content shut before the first move arrived.
+  baseOffset = openOffsetFor(status.value);
+  dragOffset.value = baseOffset;
   isDragging.value = true;
   if (hasLeft.value) measureSide('left');
   if (hasRight.value) measureSide('right');
@@ -344,6 +548,7 @@ function onTouchMove(event: Event): void {
   const point = touchPoint(event);
   const dx = point.x - startX;
   const dy = point.y - startY;
+  lastX = point.x;
   if (rejected) return;
   if (!tracking) {
     // Decide once: a mostly-vertical gesture belongs to the page scroll.
@@ -357,24 +562,17 @@ function onTouchMove(event: Event): void {
   }
   // Keep the page from scrolling while the row follows the finger.
   event.preventDefault();
-  dragOffset.value = clampToAvailable(dx);
+  dragOffset.value = clampOffset(baseOffset + dx);
 }
 
 function onTouchEnd(): void {
   if (!isDragging.value) return;
   isDragging.value = false;
-  const travelled = dragOffset.value;
-  dragOffset.value = 0;
   if (!tracking) return;
-  if (travelled < 0 && hasRight.value) {
-    void settle('right', 'swipe');
-    return;
-  }
-  if (travelled > 0 && hasLeft.value) {
-    void settle('left', 'swipe');
-    return;
-  }
-  void settle('close', 'swipe');
+  const final = dragOffset.value;
+  const duration = Math.max(Date.now() - startAt, FLICK_DURATION_FLOOR);
+  const velocity = (lastX - startX) / duration;
+  void settle(decideSettle(final, velocity), 'swipe');
 }
 
 /** `touchcancel` — a system gesture took the touch; settle closed. */
@@ -407,7 +605,33 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
-const rootStyle = computed(() => props.customStyle || undefined);
+/**
+ * Reveal progress per side: 0 = the content fully covers the action area,
+ * 1 = fully revealed. During a drag it tracks the occluded fraction 1:1;
+ * at rest it snaps to the settle target (consumers transition the opacity).
+ */
+function revealProgressFor(side: SwipeActionPosition): number {
+  const distance = openDistance.value[side];
+  if (distance <= 0) return 0;
+  if (isDragging.value) {
+    const travelled = side === 'left' ? dragOffset.value : -dragOffset.value;
+    return Math.min(Math.max(travelled / distance, 0), 1);
+  }
+  return status.value === side ? 1 : 0;
+}
+
+/** Root-level CSS vars publishing the per-side reveal progress. */
+const revealVars = computed(() => {
+  const left = revealProgressFor('left').toFixed(3);
+  const right = revealProgressFor('right').toFixed(3);
+  return `--sn-swipe-action-reveal-left: ${left}; --sn-swipe-action-reveal-right: ${right};`;
+});
+
+const rootStyle = computed(() => {
+  const custom = props.customStyle.trim();
+  if (custom === '') return revealVars.value;
+  return custom.endsWith(';') ? `${custom} ${revealVars.value}` : `${custom}; ${revealVars.value}`;
+});
 
 /** Distance the row sits from rest, in design px. */
 const offset = computed(() => {
@@ -433,14 +657,27 @@ const isActionsExposed = computed(
   () => isDragging.value || isAnimating.value || isOpen.value,
 );
 
-/** Left area parked outside the left edge; `undefined` restores its CSS spot. */
+/**
+ * Left area parked outside the left edge; `undefined` restores its CSS spot.
+ *
+ * The park is doubled (`translateX` + `visibility: hidden`) on purpose:
+ * uni-app x mp does not reliably clip translated absolute children with the
+ * root's `overflow: hidden` — device-verified regression where the parked
+ * Mute pill's edge stayed visible at the screen edge on closed rows.
+ * `visibility: hidden` hides them regardless of clipping, and layout /
+ * measurement (`boundingClientRect`) are unaffected while hidden.
+ */
 const leftActionsStyle = computed(() =>
-  isActionsExposed.value ? undefined : 'transform: translateX(-100%)',
+  isActionsExposed.value
+    ? undefined
+    : "transform: translateX(-100%); visibility: hidden",
 );
 
 /** Right area parked outside the right edge; `undefined` restores its CSS spot. */
 const rightActionsStyle = computed(() =>
-  isActionsExposed.value ? undefined : 'transform: translateX(100%)',
+  isActionsExposed.value
+    ? undefined
+    : "transform: translateX(100%); visibility: hidden",
 );
 </script>
 
@@ -457,6 +694,7 @@ const rightActionsStyle = computed(() =>
     <view
       v-if="hasLeft"
       ref="leftActionsRef"
+      :id="`${actionsNodeId}-left`"
       class="sn-swipe-action__actions sn-swipe-action__actions--left"
       :style="leftActionsStyle"
     >
@@ -465,6 +703,7 @@ const rightActionsStyle = computed(() =>
 
     <view
       class="sn-swipe-action__content"
+      :class="{ 'sn-swipe-action__content--animating': isAnimating }"
       :style="contentStyle"
       role="button"
       :aria-expanded="isOpen ? 'true' : 'false'"
@@ -476,6 +715,7 @@ const rightActionsStyle = computed(() =>
     <view
       v-if="hasRight"
       ref="rightActionsRef"
+      :id="`${actionsNodeId}-right`"
       class="sn-swipe-action__actions sn-swipe-action__actions--right"
       :style="rightActionsStyle"
     >
@@ -488,12 +728,22 @@ const rightActionsStyle = computed(() =>
 /* uni side: --sn-mp-* aliases only (rpx units). Direct --sn-web-* / --aui-*
  * forbidden (enforced by `pnpm snui token-check --dir packages/uni --end mp`). */
 
+/* Background-free by design: surfaces belong to the slot content (see the
+ * header note) — a root background would paint behind the gaps between the
+ * consumer's card and its pill actions. */
+
 .sn-swipe-action {
   position: relative;
   display: block;
   box-sizing: border-box;
-  overflow: hidden;
-  background-color: var(--sn-mp-color-background-elevated);
+  /* The root clip is part of the gesture / layout contract, so it must survive
+   * a host-level reset. The demo shell resets every view with an element
+   * selector's `overflow: visible !important` to unclip uni-app x web popover
+   * bubbles; it also matched this root and the parked (translateX ±100%)
+   * action area then widened the page — document scrollWidth 552px on a 390px
+   * viewport, and swiping dragged the whole page sideways. Equal-important
+   * class rules win on specificity; a plain `overflow: hidden` cannot. */
+  overflow: hidden !important;
 }
 
 /* ── Action areas ──────────────────────────────────────────────────────── */
@@ -522,16 +772,17 @@ const rightActionsStyle = computed(() =>
   z-index: 1;
   display: block;
   box-sizing: border-box;
-  background-color: var(--sn-mp-color-background-elevated);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
 }
 
 /* The transition only runs while settling — during a drag the row must follow
- * the finger 1:1. */
-.sn-swipe-action--animating .sn-swipe-action__content {
-  transition: transform 200ms ease;
+ * the finger 1:1. Spring-feel deceleration curve; the duration is duplicated
+ * by the settle timer via DEFAULT_DURATION. Kept as a single-class rule (the
+ * uni-app x transform only keeps class selectors). */
+.sn-swipe-action__content--animating {
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .sn-swipe-action--disabled .sn-swipe-action__content {

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/navbar-mp-slots.vue sha256:22db59c6e9e9dd50 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-navbar — 左右插槽（#left / #right）。 */
 import SnNavbar from '@snui/uni-x/components/sn-navbar/sn-navbar.uvue';

@@ -9,7 +9,7 @@ const value = ref<Array<string | number>>(['苹果']);
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnPickerView v-model="value" :columns="[fruits]" />
+    <SnPickerView v-model="value" :columns="[fruits]" vibrate-short />
     <text class="sn-demo__meta">已选：{{ value[0] }}</text>
   </view>
 </template>

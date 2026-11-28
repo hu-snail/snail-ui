@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/scratchcard-mp-ratio.en.vue sha256:e30a0d206a2f5982 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-scratchcard (uni-end) — Scratch threshold: `ratio` (0.3 vs 0.9).
@@ -14,8 +15,7 @@ function resetAll(): void {
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__title"
-      >ratio threshold: 0.3 opens easily vs 0.9 needs a full scratch</text
-    >
+      >ratio threshold: 0.3 opens easily vs 0.9 needs a full scratch</text>
     <view class="scratch-pair">
       <SnScratchcard
         ref="easyRef"

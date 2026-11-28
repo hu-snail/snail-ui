@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/floating-panel-mp-custom.vue sha256:7cef9e251f059976 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-floating-panel (uni-end) — custom-style / custom-class.

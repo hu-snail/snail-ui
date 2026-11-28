@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/video-preview-mp-basic.en.vue sha256:c552b545e9c76c13 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-video-preview (uni-end) — open the video preview layer.
@@ -11,7 +12,7 @@ const preview = ref<{
 
 const clip = {
   src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-  poster: 'https://picsum.photos/seed/snui-video/750/420',
+  poster: 'https://cdn.uviewui.com/uview/album/7.jpg',
   title: 'Product overview',
 };
 

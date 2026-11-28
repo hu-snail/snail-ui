@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/count-down-mp-millisecond.vue sha256:91b326a59c69afba —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-count-down (uni-end) — 毫秒渲染（millisecond）。

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/circle-mp-size.vue sha256:f5c0df4e3d97ae7e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-circle (uni-end) — sizes and stroke widths.

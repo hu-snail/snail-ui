@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-basic.vue sha256:7143d6fd0ba2b2d9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — autoplay carousel with captions.
@@ -7,9 +8,9 @@ import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const current = ref(0);
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-a/750/400', text: '第一张 · 图片轮播' },
-  { value: 'https://picsum.photos/seed/snui-sw-b/750/400', text: '第二张 · 支持自动播放' },
-  { value: 'https://picsum.photos/seed/snui-sw-c/750/400', text: '第三张 · 循环播放' },
+  { value: 'https://cdn.uviewui.com/uview/album/2.jpg', text: '第一张 · 图片轮播' },
+  { value: 'https://cdn.uviewui.com/uview/album/3.jpg', text: '第二张 · 支持自动播放' },
+  { value: 'https://cdn.uviewui.com/uview/album/4.jpg', text: '第三张 · 循环播放' },
 ];
 </script>
 <template>

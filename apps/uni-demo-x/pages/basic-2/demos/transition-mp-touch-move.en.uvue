@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/transition-mp-touch-move.en.vue sha256:e0871aa1464b8a5b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-transition (uni-end) — block touch scroll (`disableTouchMove`).
@@ -31,8 +32,7 @@ function toggleGuarded(): void {
       <view class="sn-demo-box sn-demo-box--tall">
         <text class="sn-demo-box__text">disable-touch-move=true</text>
         <text class="sn-demo-box__hint"
-          >Drag on this panel and the scroll area below stays put</text
-        >
+          >Drag on this panel and the scroll area below stays put</text>
       </view>
     </SnTransition>
 

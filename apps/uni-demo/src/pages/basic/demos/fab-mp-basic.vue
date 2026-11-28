@@ -11,8 +11,10 @@
  *     （primary / success / warning 语义 token）。
  *   - 点动作项记录反馈并收起菜单；文案与 fab-mp-basic.en.vue 对等。
  *
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
- * the phone screen (the real runtime keeps `position: fixed`).
+ * Every instance pins into the demo stage with inline
+ * `custom-style="position: absolute;"` — the stage is the anchor container on
+ * every end (H5 / MP / uni-app x). A page-scope class rule cannot reach a
+ * child component's root through MP style isolation; inline style can.
  */
 import { ref } from 'vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
@@ -43,7 +45,7 @@ function pick(label: string): void {
       v-model:active="active"
       position="right-bottom"
       direction="up"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view class="sn-fab-demo__pill" role="button" aria-label="发布文章" @tap="pick('发布文章')">
         <SnIcon
@@ -135,8 +137,4 @@ function pick(label: string): void {
   color: var(--sn-mp-color-text-primary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

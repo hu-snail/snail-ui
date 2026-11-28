@@ -79,6 +79,8 @@ describe('sn-button', () => {
       props: { disabled: true },
       slots: { default: 'X' },
     });
+    // A uni `view` is not a native button — the role must be explicit (§52).
+    expect(wrapper.attributes('role')).toBe('button');
     expect(wrapper.attributes('aria-disabled')).toBe('true');
   });
 
@@ -162,6 +164,43 @@ describe('sn-button', () => {
       slots: { default: 'S' },
     });
     expect(wrapper.classes()).toContain('sn-button--variant-soft');
+  });
+
+  it('pairs plain / soft variants with every semantic type', () => {
+    // Regression: plain / soft paint rules used to cover only primary and
+    // danger, so variant=plain + type=success silently rendered a filled
+    // button. Every hue must keep its variant class (paint lives in CSS).
+    for (const variant of ['plain', 'soft'] as const) {
+      for (const type of ['primary', 'success', 'info', 'warning', 'danger'] as const) {
+        const wrapper = mount(SnButton, { props: { variant, type }, slots: { default: 'X' } });
+        expect(wrapper.classes()).toContain(`sn-button--variant-${variant}`);
+        expect(wrapper.classes()).toContain(`sn-button--${type}`);
+      }
+    }
+  });
+
+  it('toggles the hairline class on every type', () => {
+    // Regression: the hairline class used to be default-type-only, so
+    // :hairline="false" could not strip colored types' strokes.
+    for (const type of ['default', 'primary', 'success', 'info', 'warning', 'danger'] as const) {
+      const on = mount(SnButton, { props: { type }, slots: { default: 'X' } });
+      expect(on.classes()).toContain('sn-button--hairline');
+      const off = mount(SnButton, { props: { type, hairline: false }, slots: { default: 'X' } });
+      expect(off.classes()).not.toContain('sn-button--hairline');
+    }
+  });
+
+  it('places the icon after the label with iconPlacement=right', () => {
+    // web `iconPlacement` parity: left is the default, right flips the flex
+    // row (row-reverse) so the glyph (and the loading spinner) follow the
+    // label.
+    const left = mount(SnButton, { props: { iconName: 'check' }, slots: { default: 'L' } });
+    expect(left.classes()).not.toContain('sn-button--icon-right');
+    const right = mount(SnButton, {
+      props: { iconName: 'check', iconPlacement: 'right' },
+      slots: { default: 'R' },
+    });
+    expect(right.classes()).toContain('sn-button--icon-right');
   });
 
   it('honors variant=dashed for dashed border', () => {

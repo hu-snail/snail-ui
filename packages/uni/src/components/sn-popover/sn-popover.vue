@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * sn-popover (uni-end) — tap-triggered bubble with normal / menu modes.
+ * sn-popover (uni-end) — tap-triggered bubble with a text or menu body.
  *
  * Reference library: wot-ui `wd-popover`
  *   (https://wot-ui.cn/component/popover.html)
- * Per AGENTS.md §112, the prop surface below mirrors wd-popover 1:1.
+ * Per AGENTS.md §112, the wd-parity prop surface below mirrors wd-popover 1:1.
  * Anything new added here MUST also be added to the reference list in
  * AGENTS.md §112.
  *
@@ -15,39 +15,28 @@
  * Per AGENTS.md §32, this component handles rendering + interaction + DOM
  * bridge only. No schema validation; no business logic.
  *
+ * ## How the bubble is positioned (wd-popover `usePopover` parity)
+ *
+ * The bubble is positioned from REAL measurements, not CSS anchoring. A
+ * hidden copy of the bubble (`.sn-popover__pos--hidden`) stays mounted
+ * off-screen at `visibility: hidden` so its natural size can be read, and the
+ * trigger box is measured the same way. Opening folds both rects through the
+ * 12-entry placement table (`sn-popover-position.ts`) into inline styles —
+ * the bubble is `position: absolute` inside the component root on every
+ * platform. The `after-enter` leg re-measures the SHOWN bubble
+ * (`handleAfterEnter` → `updatePosition`) because slotted / async content may
+ * settle to a different natural size than the hidden copy.
+ *
  * ## Documented divergences from wd-popover
  *
- *   - `hover` / `click` trigger switching does not exist: miniprogram has no
- *     hover, so the trigger is always tapped (`@tap`). The `trigger` prop is
- *     therefore not declared.
- *   - `root-portal` is NOT implemented (miniprogram has no portal host). It is
- *     declared for parity and marked "未实现" on the docs page.
- *   - `updatePosition()` is a compatibility no-op: the bubble is placed by CSS
- *     (`placement` + `offset`), so there is no measurement to refresh.
- *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
- *     rather than a CSS class — uni has no font-icon layer.
- *
- * ## Click-outside close (AUI-OPT-07 — mask-free, tooltip parity)
- *
- * uni-app components cannot listen to taps outside their own subtree, so the
- * close rides the shared outside-close queue: while mounted (and
- * `closeOnClickOutside` is on, the default) the bubble registers an
- * idempotent close in `utils/outside-close.ts`, and the page root dispatches
- * it —
- *
- *     const { closeOutside } = useQueue();
- *     <view @tap="closeOutside"> … page … </view>
- *
- * A tap outside the bubble then closes it AND still reaches whatever button
- * sits under it — no full-viewport mask swallowed the gesture, so switching
- * to a sibling trigger (or any other control) is one tap, not two. The
- * trigger and the bubble bind `@tap.stop` so taps on them never reach the
- * dispatcher. Pages that never bind the handler simply never outside-close;
- * `closeOnClickOutside: false` unregisters the close while mounted.
- *
- * On uni-app x App the page-root dispatcher never sees page taps either
- * (taps stay inside their compilation unit), so the App close paths are the
- * trigger re-tap and the bubble's own close button.
+ *   - ADDITIVE (registered in AGENTS.md §112.3a): `arrowShape` ('sharp' |
+ *     'rounded' tip) and `borderColor` (1px consumer border that continues
+ *     around the sharp arrow through the outline triangle) — wd-popover has
+ *     neither.
+ *   - Menu row dividers are real elements, not `::after`: uni-app x App has
+ *     no pseudo-elements (AGENTS.md §116.2).
+ *   - `iconClass` resolves through `sn-icon` (registry → built-in catalog →
+ *     provider) instead of a font-icon class: this library ships no icon font.
  *
  * ## App trigger catcher (uni-app x App)
  *
@@ -55,198 +44,98 @@
  * App — the wrapper's `@tap` never fires from the page's trigger element, and
  * page-bound listeners on slotted components never fire either. The template
  * therefore ships an `#ifdef APP` transparent catcher over the trigger box
- * (a node this component owns) that receives the tap and runs the same
- * `onTriggerTap` toggle. Keep the default `trigger="slot"` for App; see the
- * `trigger` prop note for when `manual` is actually needed.
+ * (a node this component owns) that receives the tap and runs the same toggle.
  *
- * ## Auto height (AUI-OPT-07)
+ * ## Outside close (wd-popover `useQueue` parity)
  *
- * The bubble sizes to its content and never clips it: the pop is `height: auto`
- * with no cap, menu labels wrap instead of forcing one line, and no glyph lives
- * in a fixed square whose geometry disagrees with the icon's own scale — the
- * row glyph and the close glyph are sized by `--sn-mp-icon-size-*` tokens, so a
- * larger icon or a long label grows the bubble instead of overflowing it.
- *
- * ## Menu row icons (additive, AUI-OPT-07, AGENTS.md §112.3a)
- *
- * A `menu` row resolves its glyph from four sources, highest precedence first:
- *
- *   - `iconData`  — an inline `IconData` object; no registration step needed
- *   - `iconUrl`   — an image address, rendered as `<image>`
- *   - `icon`      — a name resolved by SnIcon (registry → built-in catalogue →
- *                   `prefix:rest` provider)
- *   - `iconClass` — wd-parity legacy field: a name, or an image address when
- *                   the value looks like one (`http` / `data` / `//` / `/`)
- *
- * The glyph scale is `--sn-popover-menu-icon-size` (wd
- * `--wot-popover-menu-icon-size` parity), defaulting to the `medium` icon tier;
- * the close glyph follows `--sn-popover-close-icon-size`, defaulting to
- * `small`. Both are published on the bubble, overridable via `custom-style`.
- *
- * ## Bubble palette (wot-ui parity: --wot-popover-bg / --wot-popover-color)
- *
- * The fill already defaults to the elevated surface (white in the light
- * theme) and the label to the page text color; both flip with the mp dark
- * theme. They are published as `--sn-popover-bg` / `--sn-popover-color` so
- * consumers can recolor the bubble through `custom-style="--sn-popover-bg: …"`
- * (inline beats the class default). The arrow follows the fill.
+ * uni-app components cannot listen to taps outside their own subtree, so the
+ * close rides the shared outside-close queue in `utils/outside-close.ts`: the
+ * page root binds `@tap="closeOutside"` and every open bubble registers an
+ * idempotent close. The trigger stops propagation so opening a bubble never
+ * immediately closes it again.
  *
  * ## Timers (AGENTS.md §41)
  *
- * One transition timer keeps the bubble mounted for the fade-out leg. It is
- * cleared on every leg change and in `onBeforeUnmount`; no global listener is
- * registered (miniprogram has no `document`).
+ * This component owns no timer — the fade legs belong to `sn-transition`,
+ * which disposes its own on unmount. The outside-close registration is
+ * removed in `onBeforeUnmount`.
  *
  * Usage:
- *   <sn-popover v-model="open" mode="menu" :content="items" @menuclick="onPick">
- *     <sn-button>更多</sn-button>
+ *   <sn-popover v-model="open" content="提示文字">
+ *     <sn-button>显示气泡</sn-button>
  *   </sn-popover>
  *
  * Not responsible for:
- *   - 纯文本提示 — 用 sn-tooltip
+ *   - 纯文字提示 — 用 sn-tooltip
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import {
-  computed,
-  getCurrentInstance,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
-import type { IconData } from '../sn-icon/sn-icon.vue';
+import SnTransition from '../sn-transition/sn-transition.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
 import {
-  closeOutside,
-  registerOutsideClosable,
-  unregisterOutsideClosable,
-} from '../../utils/outside-close';
+  resolveUniHost,
+  type UniSelectorQuery,
+  type UniSelectorQueryHost,
+} from '../../utils/uni-host';
+import {
+  createPopoverPosition,
+  type PopoverOffset,
+  type PopoverPlacement,
+  type PopoverRect,
+} from './sn-popover-position';
+import { registerOutsideClosable, unregisterOutsideClosable, closeOutside } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnPopover' });
 
-const instanceId = getCurrentInstance()?.uid ?? 0;
 
-/** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
-type PopoverPlacement =
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'left'
-  | 'left-start'
-  | 'left-end'
-  | 'right'
-  | 'right-start'
-  | 'right-end';
 
-/** Bubble display mode. */
 type PopoverMode = 'normal' | 'menu';
 
-/**
- * Gap between trigger and bubble. `number` applies to both axes, `[x, y]`
- * sets them individually, `{ x, y }` sets either one.
- */
-type PopoverOffset = number | number[] | { x?: number; y?: number };
-
-/** One row of the `menu` mode list. */
+/** One `menu` mode row (wd-popover `PopoverMenuItem`). */
 export interface SnPopoverMenuItem {
-  /** Row label. */
-  content?: string;
-  /**
-   * Row glyph as inline SVG data (additive, AUI-OPT-07). Highest precedence —
-   * pass a built-in set object and no registration step is needed.
-   */
-  iconData?: IconData;
-  /**
-   * Row glyph as an image address (additive, AUI-OPT-07), rendered as
-   * `<image>`. Beats `icon` / `iconClass`, loses to `iconData`.
-   */
-  iconUrl?: string;
-  /**
-   * Row glyph as a name (additive, AUI-OPT-07), resolved through SnIcon:
-   * registry (`registerSnIcons`) → built-in catalogue → `prefix:rest`
-   * provider. Beats `iconClass`, loses to the two sources above.
-   */
-  icon?: string;
-  /**
-   * wd-parity legacy glyph field: an SnIcon registry name, or an image address
-   * when the value looks like one (`http` / `data` / `//` / `/` / `./`).
-   * Lowest precedence of the four glyph sources.
-   */
+  /** Row text. */
+  content: string;
+  /** Icon name resolved through `sn-icon`. */
   iconClass?: string;
-  /** Disable the row — taps are ignored. */
-  disabled?: boolean;
 }
-
-/** Fade-out leg length in ms (the leave leg keeps the node mounted). */
-const ANIMATION_DURATION = 150;
-
-/**
- * Menu / close glyph scale. Published as component variables on the bubble so
- * a consumer can resize every glyph through `custom-style` (wd
- * `--wot-popover-menu-icon-size` / `--wot-popover-close-icon-size` parity).
- */
-const MENU_ICON_SIZE = 'var(--sn-popover-menu-icon-size)';
-const CLOSE_ICON_SIZE = 'var(--sn-popover-close-icon-size)';
 
 const props = withDefaults(
   defineProps<{
     /** Whether the bubble is shown (v-model). */
     modelValue?: boolean;
-    /**
-     * How the trigger reacts. `slot` (default) binds the tap on the trigger
-     * wrapper itself — on uni-app x App an App-only catcher node (see the
-     * template note) receives the tap because slot-content taps never reach
-     * this component's own views there. `manual` leaves toggling to the page
-     * via v-model: use it when the tap target lives outside the default slot
-     * (a remote button, imperative open/close), not as an App workaround —
-     * event listeners the page binds on components inside the slot never fire
-     * on App either, so a manual-mode slotted trigger is inert there too.
-     */
-    trigger?: 'slot' | 'manual';
-    /** Bubble body: a string in `normal` mode, a list in `menu` mode. */
+    /** Bubble body: a string in `normal` mode, a row list in `menu` mode. */
     content?: string | SnPopoverMenuItem[];
     /** Bubble display mode. */
     mode?: PopoverMode;
     /** Bubble anchor. */
     placement?: PopoverPlacement;
-    /** Gap between trigger and bubble, in design px. */
+    /** Extra distance from the trigger, in px. */
     offset?: PopoverOffset;
     /** Render the arrow pointing at the trigger. */
     visibleArrow?: boolean;
-    /** Disables the trigger — taps are ignored and the bubble stays closed. */
+    /** Disables the trigger — taps are ignored. */
     disabled?: boolean;
-    /** Render a close button inside the bubble. */
+    /** Render a close button at the bubble's top-right corner. */
     showClose?: boolean;
-    /**
-     * Close the bubble when the user taps outside it (additive, AUI-OPT-07).
-     * The close rides the page-root `closeOutside` channel and never swallows
-     * the tap — the same gesture still lands on whatever button sits under
-     * it. Pass `false` to unregister the outside-close while mounted.
-     */
-    closeOnClickOutside?: boolean;
     /** Extra class on the root node. */
     customClass?: string;
     /** Custom inline style for the root node. */
     customStyle?: string;
+    /** Arrow tip shape. `sharp` (default) is the border triangle;
+     * `rounded` is a soft-cornered square tip. */
+    arrowShape?: 'sharp' | 'rounded';
+    /** Custom bubble border colour. When set, the bubble body draws a 1px
+     * border in this colour (the reference card is borderless by default). */
+    borderColor?: string;
     /** Extra class on the arrow node. */
     customArrow?: string;
     /** Extra class on the bubble node. */
     customPop?: string;
-    /**
-     * Accepted for `wd-popover` parity, NOT implemented — miniprogram has no
-     * portal host, so the bubble cannot leave the page's document flow.
-     */
-    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
-    trigger: 'slot',
     content: '',
     mode: 'normal',
     placement: 'bottom',
@@ -254,19 +143,19 @@ const props = withDefaults(
     visibleArrow: true,
     disabled: false,
     showClose: false,
-    closeOnClickOutside: true,
     customClass: '',
     customStyle: '',
+    arrowShape: 'sharp',
+    borderColor: '',
     customArrow: '',
     customPop: '',
-    rootPortal: false,
   },
 );
 
 defineSlots<{
   /** Trigger content (the element the bubble points at). */
   default?(): unknown;
-  /** Custom bubble body; replaces `content`. */
+  /** Custom bubble body; replaces `content` in both modes. */
   content?(): unknown;
 }>();
 
@@ -278,222 +167,561 @@ const emit = defineEmits<{
   (e: 'menuclick', payload: { item: SnPopoverMenuItem; index: number }): void;
 }>();
 
-/** Bubble node present in the tree (survives the leave leg). */
-const isMounted = ref(props.modelValue);
-/** Target visible state — drives the opacity transition. */
-const isShown = ref(props.modelValue);
+const instance = getCurrentInstance();
+const instanceId = instance?.uid ?? 0;
+/**
+ * Close glyph size. SnIcon sizes its BOX from the `size` prop (default 32px),
+ * not from a CSS font-size on its wrapper — the class alone left a 32px X
+ * swallowing the bubble (user-reported). Single-hop consumption of the mp
+ * size token (MP contract rule 2).
+ */
+const CLOSE_ICON_SIZE = 'var(--sn-mp-icon-size-small)';
+/** Menu row glyph size — same box-sizing trap as the close glyph (SnIcon
+ * sizes its box from __TEXT	__DATA	__OBJC	others	dec	hex, not from the wrapper font-size). */
+const MENU_ICON_SIZE = 'var(--sn-mp-icon-size-medium)';
+/** Per-instance node ids: several popovers on one page must not share nodes. */
+const targetId = `sn-popover-target-${instanceId}`;
+const posId = `sn-popover-pos-${instanceId}`;
+const contentId = `sn-popover-content-${instanceId}`;
 
-/** Single pending transition timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null;
-/** Guards against a stale leg finishing after a newer one started. */
-let generation = 0;
-/** Animation leg currently playing. `none` = at rest. */
-let phase: 'none' | 'enter' | 'leave' = 'none';
+/** The reference watch: a wrong `content` type is a developer error. */
+watch(
+  () => props.content,
+  (value) => {
+    if (props.mode === 'normal' && typeof value !== 'string') {
+      console.error('The value type must be a string type in normal mode');
+    } else if (props.mode === 'menu' && !Array.isArray(value)) {
+      console.error('The value type must be a Array type in menu mode');
+    }
+  },
+);
 
-function clearTimer(): void {
-  if (timer !== null) {
-    clearTimeout(timer);
-    timer = null;
-  }
-}
+const isMenuContent = computed(() => Array.isArray(props.content));
+const menuItems = computed<SnPopoverMenuItem[]>(() =>
+  Array.isArray(props.content) ? props.content : [],
+);
+const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
-async function enter(): Promise<void> {
-  // One open per hidden→shown transition: without this guard the v-model sync
-  // that follows the trigger tap re-runs enter() and emits open / change twice.
-  if (phase === 'enter' || isShown.value) return;
-  phase = 'enter';
-  clearTimer();
-  const token = ++generation;
-  isMounted.value = true;
-  // One tick so the hidden style is committed before the shown class lands.
-  await nextTick();
-  if (token !== generation) return;
-  isShown.value = true;
-  emit('open');
-  emit('change', { show: true });
-  phase = 'none';
-}
+/* ── Visibility (wd-popover showPopover) ──────────────────────────────── */
 
-function leave(): void {
-  // One close per shown→hidden transition: a leave already in flight (the
-  // v-model sync arriving after an internal close), or a bubble that is
-  // neither shown nor mounted, has nothing to tear down.
-  if (phase === 'leave' || (!isShown.value && !isMounted.value)) return;
-  phase = 'leave';
-  clearTimer();
-  const token = ++generation;
-  isShown.value = false;
-  emit('close');
-  emit('change', { show: false });
-  timer = setTimeout(() => {
-    timer = null;
-    if (token !== generation) return;
-    isMounted.value = false;
-    phase = 'none';
-  }, ANIMATION_DURATION);
-}
+/** The shown state. Mirrors `modelValue` in, and emits `update:modelValue` out. */
+const showPopover = ref(props.modelValue);
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.disabled) return;
-    if (value) void enter();
-    else leave();
+    showPopover.value = value;
   },
 );
 
-onBeforeUnmount(clearTimer);
+watch(
+  () => showPopover.value,
+  (value) => {
+    if (value) resolvePlacement();
+    emit('change', { show: value });
+    if (value) emit('open');
+    else emit('close');
+  },
+);
 
-/** Show the bubble and notify the consumer (controlled + uncontrolled). */
+/** Turn the shown state without re-emitting `update:modelValue` (expose API). */
+function updateModelValue(value: boolean): void {
+  showPopover.value = value;
+  emit('update:modelValue', value);
+}
+
+function toggle(): void {
+  if (props.disabled) return;
+  if (!showPopover.value) closeOtherBubbles();
+  updateModelValue(!showPopover.value);
+}
+
 function open(): void {
-  if (props.disabled) return;
-  emit('update:modelValue', true);
-  if (!props.modelValue) void enter();
+  closeOtherBubbles();
+  updateModelValue(true);
 }
 
-/** Hide the bubble and notify the consumer. Idempotent (outside-close contract). */
+/**
+ * Idempotent — the outside-close queue contract: closing an already
+ * closed bubble is a no-op and emits nothing. This is what lets the open
+ * path dispatch `closeOutside()` first without emitting a phantom close.
+ */
 function close(): void {
-  // Idempotent: a second close gesture (the mask plus the page-root queue, a
-  // close button while the fade-out leg runs) must not replay the event pair.
-  // A bubble that is neither shown nor mounted is already fully closed.
-  const wasUp = props.modelValue || isShown.value || isMounted.value;
-  emit('update:modelValue', false);
-  if (wasUp) leave();
+  if (!showPopover.value) return;
+  updateModelValue(false);
 }
 
-/** Compatibility no-op — see the header note (CSS-driven placement). */
-function updatePosition(): void {
-  // Intentionally empty: nothing is measured, so there is nothing to refresh.
-}
-
-defineExpose({ open, close, updatePosition });
-
-// Outside-close registration (tooltip parity — the transparent mask is gone):
-// while `closeOnClickOutside` is on, the mounted bubble registers an
-// idempotent close in the queue; a page-root `@tap="closeOutside"` closes it
-// WITHOUT swallowing the tap, so the very same gesture still reaches whatever
-// button sits under it. `false` unregisters, keeping the bubble open until
-// its own trigger or close button handles it.
-let outsideRegistered = false;
-
-function syncOutsideRegistration(): void {
-  if (props.closeOnClickOutside && !outsideRegistered) {
-    outsideRegistered = true;
-    registerOutsideClosable(instanceId, () => {
-      // Idempotent: an already-closed bubble must not emit another close.
-      if (isShown.value || isMounted.value) close();
-    });
-  } else if (!props.closeOnClickOutside && outsideRegistered) {
-    outsideRegistered = false;
-    unregisterOutsideClosable(instanceId);
-  }
-}
-
-onMounted(syncOutsideRegistration);
-watch(() => props.closeOnClickOutside, syncOutsideRegistration);
-onBeforeUnmount(() => {
-  if (outsideRegistered) unregisterOutsideClosable(instanceId);
-});
-
+/** The trigger wrapper and the App catcher both run this. */
 function onTriggerTap(): void {
-  if (props.trigger === 'manual') return;
-  if (props.disabled) return;
-  // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
-  // bubble (consumer ignoring the v-model event) must still close on the
-  // second trigger tap.
-  if (isShown.value) {
-    close();
-    return;
-  }
-  // One-gesture switching: the trigger stops propagation (it must not close
-  // its own bubble through the page root), so it dispatches the outside-close
-  // itself before opening — every other overlay on the page folds in the same
-  // tap that opens this one.
-  closeOutside();
-  open();
+  toggle();
 }
 
-function onMenuTap(item: SnPopoverMenuItem, index: number): void {
-  if (item.disabled) return;
+/* ── Menu rows ────────────────────────────────────────────────────────── */
+
+function menuClick(index: number): void {
+  updateModelValue(false);
+  const item = menuItems.value[index];
+  if (item === undefined) return;
   emit('menuclick', { item, index });
 }
 
-/* ── Presentation ──────────────────────────────────────────────────────── */
+/* ── Placement (wd-popover usePopover) ────────────────────────────────── */
 
-/** Normalise `offset` into a `{ x, y }` pair of design px. */
-const offsetPair = computed<{ x: number; y: number }>(() => {
-  const value = props.offset;
-  if (typeof value === 'number') return { x: value, y: value };
-  if (Array.isArray(value)) {
-    const x = value[0];
-    const y = value[1];
-    return { x: typeof x === 'number' ? x : 0, y: typeof y === 'number' ? y : 0 };
-  }
-  return { x: value.x ?? 0, y: value.y ?? 0 };
-});
+const position = createPopoverPosition(props.visibleArrow);
+const { popStyle, arrowStyle, roundedStyle } = position;
 
-/** `menu` mode rows (an empty list in `normal` mode). */
-const menuItems = computed<SnPopoverMenuItem[]>(() =>
-  props.mode === 'menu' && Array.isArray(props.content) ? props.content : [],
+/**
+ * Bubble border, consumer-coloured: the reference card is borderless — a
+ * set `borderColor` draws a 1px border on the body AND carries around the
+ * sharp arrow through the outline triangle below. Rounded tips keep a
+ * body-only border (a rotated square has no per-edge outline to continue).
+ */
+const containerStyle = computed(() =>
+  props.borderColor ? `border: 1px solid ${props.borderColor};` : undefined,
 );
 
-/** Plain text body for `normal` mode. */
-const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
+/** The two element faces that become the outer slant edges after the 45°
+ * rotation, per placement family. rotate(45deg) maps the square's corners to
+ * points (TL→top, TR→right, BR→bottom, BL→left) — the tip is the corner
+ * pointing at the trigger, and its two adjacent faces are the visible
+ * border. bottom family (apex up) → tip = TL → top + left faces. */
+const BORDERED_FACES_BY_FAMILY: Record<string, [string, string]> = {
+  top: ['right', 'bottom'],
+  bottom: ['top', 'left'],
+  left: ['top', 'right'],
+  right: ['bottom', 'left'],
+};
 
-/** Looks like an image source rather than an icon name. */
-function isImageSource(value: string): boolean {
-  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
-}
+/**
+ * Bordered sharp tip's inline geometry: the rounded square's straddle
+ * (12px box centred on the anchored edge, rotate 45°) plus a 1px consumer
+ * border on exactly the two outer faces. Inline on purpose — per-face
+ * border widths ride inline so no stylesheet force (MP specificity, the
+ * uni-x combinator dropper) can flatten them; the background comes from the
+ * shared `.sn-popover__arrow--bordered` two-line palette block.
+ */
+const arrowBorderStyle = computed(() => {
+  if (!props.borderColor || props.arrowShape === 'rounded') return undefined;
+  const family = (position.actualPlacement.value ?? props.placement).split('-')[0] ?? '';
+  const faces = BORDERED_FACES_BY_FAMILY[family] ?? ['top', 'left'];
+  const borders = faces
+    .map((face) => `border-${face}-width: 1px;border-${face}-color: ${props.borderColor};`)
+    .join('');
+  return `${position.roundedStyle.value}${borders}`;
+});
 
-/** Which glyph source a `menu` row uses (precedence: see the header). */
-function rowIconSource(item: SnPopoverMenuItem): 'data' | 'url' | 'name' | 'none' {
-  if (item.iconData !== undefined) return 'data';
-  if (item.iconUrl !== undefined && item.iconUrl !== '') return 'url';
-  if (item.icon !== undefined && item.icon !== '') return 'name';
-  const legacy = item.iconClass;
-  if (legacy === undefined || legacy === '') return 'none';
-  return isImageSource(legacy) ? 'url' : 'name';
-}
-
-/** Image address of a `url` row — `iconUrl`, or the URL-shaped legacy field. */
-function rowIconUrl(item: SnPopoverMenuItem): string {
-  if (item.iconUrl !== undefined && item.iconUrl !== '') return item.iconUrl;
-  return item.iconClass ?? '';
-}
-
-/** Glyph name of a `name` row — `icon`, or the legacy field's name form. */
-function rowIconName(item: SnPopoverMenuItem): string {
-  return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
-}
-
+/** Root class: the component block + the bordered marker + the consumer class. */
 const rootClass = computed(() => [
   'sn-popover',
-  `sn-popover--${props.placement}`,
-  `sn-popover--${props.mode}`,
-  {
-    'sn-popover--disabled': props.disabled,
-    'sn-popover--shown': isShown.value,
-  },
+  /* The zoom origin anchors on the arrow's edge, so the body scales out of
+   * the junction instead of drifting away from the arrow mid-animation. */
+  `sn-popover--origin-${props.placement.split('-')[0]}`,
+  ...(props.borderColor ? ['sn-popover--bordered'] : []),
   props.customClass,
 ]);
 
-const rootStyle = computed(() => {
-  const { x, y } = offsetPair.value;
-  const base = [`--sn-popover-offset-x: ${x}px`, `--sn-popover-offset-y: ${y}px`].join('; ');
-  return props.customStyle ? `${base}; ${props.customStyle}` : base;
+/**
+ * The bubble's classes. `sn-transition` takes `customClass` as a STRING, so
+ * this joins — an array would be stringified with a trailing comma and break
+ * the `sn-popover__pos` rule. On mini-programs the bubble is `fixed`; its
+ * layer covers the viewport.
+ */
+
+/**
+ * Arrow orientation classes. On mini-programs they follow the ACTUAL
+ * placement — a bubble flipped to the opposite side needs the matching arrow.
+ */
+const arrowClass = computed(() => [
+  position.arrowClass(position.actualPlacement.value ?? props.placement),
+  props.customArrow,
+]);
+
+/** Rect fields the placement table reads (px). */
+interface MeasuredRect {
+  left?: number;
+  top?: number;
+  right?: number;
+  bottom?: number;
+  width?: number;
+  height?: number;
+}
+
+function toRect(rect: MeasuredRect | null | undefined): PopoverRect | null {
+  if (rect === null || rect === undefined) return null;
+  const width = rect.width ?? 0;
+  const height = rect.height ?? 0;
+  return {
+    left: rect.left ?? 0,
+    top: rect.top ?? 0,
+    width,
+    height,
+    bottom: rect.bottom ?? (rect.top ?? 0) + height,
+  };
+}
+
+/** One selector-query flavour: where it is created and what it is scoped to. */
+interface QueryVariant {
+  createQuery: () => UniSelectorQuery;
+  queryScope: unknown;
+}
+
+/**
+ * The query flavours that can see this component's nodes, best first:
+ *   a. the mp component's own `$scope` (`.in($scope)` scopes to this subtree);
+ *   b. page-level, no `.in()` — the variant that reaches nested components on
+ *      uni-app x mp / App (no `virtualHost` there, so a. does not exist);
+ *   c. page-level with `.in(Vue proxy)` (best effort where b. is restricted).
+ */
+function queryVariants(): QueryVariant[] {
+  const proxy = instance?.proxy as { $scope?: UniSelectorQueryHost } | undefined;
+  const uniHost = resolveUniHost<UniSelectorQueryHost>();
+  const variants: QueryVariant[] = [];
+  if (typeof proxy?.$scope?.createSelectorQuery === 'function') {
+    variants.push({ createQuery: proxy.$scope.createSelectorQuery, queryScope: proxy.$scope });
+  }
+  if (typeof uniHost?.createSelectorQuery === 'function') {
+    variants.push({ createQuery: uniHost.createSelectorQuery, queryScope: undefined });
+    if (instance?.proxy !== undefined) {
+      variants.push({ createQuery: uniHost.createSelectorQuery, queryScope: instance.proxy });
+    }
+  }
+  return variants;
+}
+
+/** Run one query flavour and report the rect it measured, if any. */
+function runQuery(variant: QueryVariant, selector: string): Promise<MeasuredRect | null> {
+  return new Promise((resolve) => {
+    let rect: MeasuredRect | null = null;
+    const finish = (): void => resolve(rect);
+    try {
+      const query = variant.createQuery();
+      const scoped =
+        variant.queryScope === undefined
+          ? query
+          : ((query.in?.(variant.queryScope) as UniSelectorQuery | undefined) ?? query);
+      scoped.select?.(`#${selector}`)?.boundingClientRect?.((value) => {
+        rect = value as MeasuredRect | null;
+      });
+      scoped.exec?.(() => finish());
+    } catch {
+      finish();
+    }
+  });
+}
+
+/**
+ * Read one node's rect (px), or `null` when no channel can measure it.
+ *
+ * Channels, in order:
+ *   1. the real DOM (H5 / web): `getBoundingClientRect` on the component
+ *      subtree — authoritative there, and the production H5 bundle
+ *      tree-shakes `uni.createSelectorQuery` away (nothing references it
+ *      statically), so the query channels are MP-only in practice;
+ *   2. the query flavours (mini-program): the component \`$scope\` first,
+ *      then the page-level uni query as fallback (`utils/uni-host.ts`).
+ */
+function measureRectDom(selector: string): PopoverRect | null {
+  // Bare `document` is stripped by the uni-app x compiler for non-web
+  // targets — reach it as a globalThis property, which survives everywhere
+  // (mini-programs and uni-app x App simply have no such property).
+  const g = globalThis as { document?: { querySelector?: (sel: string) => Element | null } };
+  const doc = g.document;
+  if (doc === undefined || doc === null || typeof doc.querySelector !== 'function') return null;
+  const node = doc.querySelector('#' + selector);
+  if (node === null) return null;
+  const rect = node.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  return { left: rect.left, top: rect.top, width: rect.width, height: rect.height, bottom: rect.bottom };
+}
+
+async function measureRect(selector: string): Promise<PopoverRect | null> {
+  const domRect = measureRectDom(selector);
+  if (domRect !== null) return domRect;
+  for (const variant of queryVariants()) {
+    const rect = await runQuery(variant, selector);
+    if (rect !== null && (rect.width ?? 0) > 0 && (rect.height ?? 0) > 0) {
+      return toRect(rect);
+    }
+  }
+  return null;
+}
+
+/**
+ * Whether a successful capture has ever landed. A zero-width trigger measured
+ * too early (slotted / lazily laid-out content) must NOT count — the old code
+ * initialised from it, produced `left: 0`, and never retried, so the bubble
+ * sat half a bubble away from its trigger with the arrow pointing at nothing
+ * (user-reported content-slot bug, reproducible on H5 too).
+ */
+let hasMeasurements = false;
+
+/** Capture trigger + hidden-bubble rects; `true` when both are usable. */
+function captureRects(preferShownPop: boolean): Promise<boolean> {
+  try { (globalThis as Record<string, unknown>).__snPopDiag = { step: 'capture-start', preferShownPop }; } catch {}
+  const popId = preferShownPop ? contentId : posId;
+  return Promise.all([measureRect(targetId), measureRect(popId)]).then(async ([trigger, primary]) => {
+    // Fall back to the other bubble node — the hidden copy and the shown body
+    // normally measure the same size, and one of them may not be laid out yet.
+    const pop = primary ?? (await measureRect(preferShownPop ? posId : contentId));
+    if (trigger === null || pop === null) return false;
+    position.init(trigger, pop);
+    hasMeasurements = true;
+    return true;
+  });
+}
+
+/**
+ * Position the bubble for an open. Paints instantly from the last good
+ * capture (never from a failed one), then always re-captures — the trigger
+ * may have been zero-sized at mount, and on mini-programs viewport
+ * coordinates go stale as soon as the page scrolls.
+ */
+/**
+ * Derive the inline placement styles from whatever was last measured — never
+ * measures by itself, so it is always synchronous and the bubble never
+ * appears at a stale spot while a query is in flight.
+ */
+function solve(): void {
+  try {
+    position.control(props.placement, props.offset);
+    (globalThis as Record<string, unknown>).__snPopDiag = { step: 'solved', popStyle: position.popStyle.value };
+  } catch (e) {
+    (globalThis as Record<string, unknown>).__snPopDiag = { step: 'solve-throw', msg: String(e).slice(0, 120) };
+  }
+}
+
+/**
+ * Bounded re-capture while a bubble stays open. The shown body mounts
+ * asynchronously on mini-programs (sn-transition gates it on `hasRendered`,
+ * and the MP render flush lands a frame later), so the first capture after
+ * an open can run before slotted content is laid out — the capture then
+ * reports nothing and the bubble would never position (user-reported MP
+ * content-slot dead screen). §86 caps the attempts.
+ */
+const CAPTURE_RETRY_ATTEMPTS = 3;
+const CAPTURE_RETRY_DELAY_MS = 60;
+let captureRetryTimer: ReturnType<typeof setTimeout> | null = null;
+
+function captureAndApply(preferShownPop: boolean, attemptsLeft: number): void {
+  void captureRects(preferShownPop).then((ok) => {
+    if (!showPopover.value) return;
+    if (ok) {
+      solve();
+      return;
+    }
+    if (attemptsLeft <= 0) return;
+    captureRetryTimer = setTimeout(() => {
+      captureRetryTimer = null;
+      captureAndApply(preferShownPop, attemptsLeft - 1);
+    }, CAPTURE_RETRY_DELAY_MS);
+  });
+}
+
+function resolvePlacement(): void {
+  if (captureRetryTimer !== null) {
+    clearTimeout(captureRetryTimer);
+    captureRetryTimer = null;
+  }
+  if (hasMeasurements) solve();
+  captureAndApply(false, CAPTURE_RETRY_ATTEMPTS);
+}
+
+/**
+ * Capture the trigger + hidden-bubble measurements. Runs on mount and again
+ * whenever `placement` changes (the reference `init`).
+ */
+async function initPosition(): Promise<void> {
+  const ok = await captureRects(false);
+  // The reference measures at rest and positions on open; a bubble that is
+  // ALREADY open needs the fresh numbers applied right away.
+  if (ok && showPopover.value) solve();
+}
+
+/**
+ * Re-measure and re-derive when the SHOWN bubble's natural size changed — the
+ * slotted content may settle to a different size than the hidden copy
+ * predicted — and refresh the trigger rect along the way (the reference
+ * `handleAfterEnter`).
+ */
+function updatePosition(): void {
+  captureAndApply(true, CAPTURE_RETRY_ATTEMPTS);
+}
+
+/* ── Outside close (wd-popover useQueue parity) ───────────────────────── */
+
+/**
+ * Close every other open bubble (the reference `closeOther`): one gesture
+ * switches bubbles. The shared queue closes ALL entries including this one,
+ * so it runs BEFORE the bubble is turned on, never after.
+ */
+function closeOtherBubbles(): void {
+  closeOutside();
+}
+
+onMounted(() => {
+  void initPosition();
+  // While mounted the page-root `closeOutside` may close this bubble.
+  registerOutsideClosable(instanceId, close);
 });
 
-const popClass = computed(() => ['sn-popover__pop', props.customPop]);
+onBeforeUnmount(() => {
+  if (captureRetryTimer !== null) {
+    clearTimeout(captureRetryTimer);
+    captureRetryTimer = null;
+  }
+  unregisterOutsideClosable(instanceId);
+});
 
-const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
+watch(
+  () => props.placement,
+  () => {
+    void initPosition();
+  },
+);
+
+defineExpose({ open, close, updatePosition });
 </script>
 
 <template>
-  <view data-snui-component="popover" :class="rootClass" :style="rootStyle">
+  <view data-snui-component="popover" :class="rootClass" :style="props.customStyle" @tap.stop>
+    <!-- Hidden measurement copy (the reference `#pos`): stays mounted
+         off-screen so the bubble's natural size can be read before it is
+         shown. It carries no placement styles. -->
+    <view :id="posId" class="sn-popover__pos sn-popover__pos--hidden" aria-hidden="true">
+      <view :class="['sn-popover__container', props.customPop]">
+        <!-- NO slot outlet here. WeChat mini-programs distribute page content
+             into the FIRST same-name slot node only (the uni-app x generated
+             json carries no `multipleSlots`), so a second outlet HERE stole
+             the content from the shown body and left it an empty zero-height
+             card — only the arrow showed (user-reported). The hidden copy
+             carries the PROP body only, gated on non-empty content so a
+             slotted bubble's copy measures zero height and the capture falls
+             through to the shown body (see captureAndApply). -->
+        <view
+          v-if="mode === 'normal' && normalText !== ''"
+          :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
+        >
+          <text class="sn-popover__text">{{ normalText }}</text>
+        </view>
+        <view
+          v-if="mode === 'menu' && isMenuContent"
+          :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
+        >
+          <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
+            <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__icon" />
+            <text class="sn-popover__text">{{ item.content }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!--
+      Positioning layer + transition layer are SEPARATE. The `.sn-popover__pos`
+      wrapper below is a node THIS component owns, so its scoped stylesheet
+      (position: absolute / fixed + the placement inline styles) provably
+      reaches it. Inside it, `sn-transition` only fades the CONTENT: a
+      custom-component stylesheet cannot style another component's internal
+      nodes on mini-programs (no `styleIsolation: shared` in the uni-app x
+      compile — verified: no component json carries it), so handing the
+      placement classes to sn-transition's custom-class put the bubble in the
+      document flow, unpositioned — the stray card over the trigger.
+    -->
+    <view class="sn-popover__pos" :style="popStyle">
+      <!--
+        The arrow is a SIBLING of the transition, not a child of the bubble:
+        mini-programs force `overflow: hidden` on every view (`uvue.wxss`), and
+        `sn-transition` — another component — carries no `overflow: visible`
+        override we could reach from here, so an arrow protruding past the
+        bubble box was clipped away entirely. This component's own
+        `.sn-popover__pos` stylesheet DOES set `overflow: visible`, and its box
+        coincides with the bubble box (the transition adds no box of its own),
+        so the arrow keeps the same coordinates while staying unclipped.
+      -->
+      <!-- The arrow LAYER fades as ONE GROUP. z 501 keeps it above the
+           container, white mouth included, for the whole fade. -->
+      <view
+        v-if="props.visibleArrow"
+        :class="['sn-popover__arrow-group', { 'sn-popover__arrow-group--shown': showPopover }]"
+        aria-hidden="true"
+      >
+        <!-- Bordered + sharp: ONE rotated square. Its white interior IS the
+             arrow's background; the consumer border rides only the two faces
+             that become the outer slant edges after the 45° rotation, so the
+             blue converges at the tip — white background, border only, no
+             colour shift and no blue cap (a two-triangle stack either bled
+             blue through the translucent fill mid-fade or left a solid blue
+             cap; user-reported both). Reuses the rounded square's straddle
+             geometry; radius 0 and per-family border faces differ. -->
+        <view
+          v-if="props.borderColor && props.arrowShape !== 'rounded'"
+          :class="['sn-popover__arrow', 'sn-popover__arrow--bordered', arrowClass]"
+          :style="arrowBorderStyle"
+        />
+        <view
+          v-else
+          :class="[
+            'sn-popover__arrow',
+            arrowClass,
+            { 'sn-popover__arrow--rounded': props.arrowShape === 'rounded' },
+          ]"
+          :style="props.arrowShape === 'rounded' ? roundedStyle : arrowStyle"
+        />
+      </view>
+      <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
+        <view
+          :id="contentId"
+          :class="[
+            'sn-popover__container',
+            { 'sn-popover__container--shown': showPopover },
+            props.customPop,
+          ]"
+          :style="containerStyle"
+          role="dialog"
+        >
+          <slot name="content">
+            <view
+              v-if="mode === 'normal'"
+              :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
+            >
+              <text class="sn-popover__text">{{ normalText }}</text>
+            </view>
+            <view
+              v-if="mode === 'menu'"
+              :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
+              role="menu"
+            >
+              <view
+                v-for="(item, index) in menuItems"
+                :key="index"
+                :class="['sn-popover__menu-inner', { 'sn-popover__menu-inner--first': index === 0 }]"
+                role="menuitem"
+                @tap="menuClick(index)"
+              >
+                <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__menu-icon" />
+                <text class="sn-popover__text">{{ item.content }}</text>
+                <view v-if="index > 0" class="sn-popover__menu-divider" aria-hidden="true" />
+              </view>
+            </view>
+          </slot>
+
+          <view
+            v-if="props.showClose"
+            class="sn-popover__close"
+            role="button"
+            aria-label="close"
+            @tap.stop="close"
+          >
+            <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" custom-class="sn-popover__close-icon" />
+          </view>
+        </view>
+      </SnTransition>
+    </view>
+
     <view
-      class="sn-popover__trigger"
+      :id="targetId"
+      class="sn-popover__target"
       role="button"
-      :aria-expanded="isShown ? 'true' : 'false'"
+      :aria-expanded="showPopover ? 'true' : 'false'"
       :aria-disabled="props.disabled ? 'true' : undefined"
       @tap.stop="onTriggerTap"
     >
@@ -504,10 +732,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
            a native bubble, not as a component emit — so the wrapper's @tap
            alone can never fire there. This App-only transparent catcher is a
            node this component owns that sits on top of the trigger box, so the
-           tap lands on it directly (the same component-internal tap path every
-           other App-working trigger uses). Web / MP strip it: there the slot
-           content taps reach the wrapper by native bubbling, and the catcher
-           would only steal the trigger's press feedback. -->
+           tap lands on it directly. Web / MP strip it: there the slot content
+           taps reach the wrapper by native bubbling, and the catcher would
+           only steal the trigger's press feedback. -->
       <view
         class="sn-popover__trigger-catcher"
         hover-class="sn-popover__trigger-catcher--pressed"
@@ -516,92 +743,381 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       />
       <!-- #endif -->
     </view>
-
-    <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
-      <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
-
-      <view v-if="mode === 'menu'" class="sn-popover__menu">
-        <slot name="content">
-          <view
-            v-for="(item, index) in menuItems"
-            :key="index"
-            class="sn-popover__menu-item"
-            :class="{ 'sn-popover__menu-item--disabled': item.disabled }"
-            role="menuitem"
-            :aria-disabled="item.disabled ? 'true' : 'false'"
-            @tap="onMenuTap(item, index)"
-          >
-            <!-- Row glyph precedence: inline data > image address > name. -->
-            <SnIcon
-              v-if="rowIconSource(item) === 'data'"
-              class="sn-popover__menu-icon"
-              :icon="item.iconData"
-              :size="MENU_ICON_SIZE"
-            />
-            <image
-              v-else-if="rowIconSource(item) === 'url'"
-              class="sn-popover__menu-icon"
-              :src="rowIconUrl(item)"
-              mode="aspectFit"
-              aria-hidden="true"
-            />
-            <SnIcon
-              v-else-if="rowIconSource(item) === 'name'"
-              class="sn-popover__menu-icon"
-              :icon="rowIconName(item)"
-              :size="MENU_ICON_SIZE"
-            />
-            <text class="sn-popover__menu-text">{{ item.content }}</text>
-          </view>
-        </slot>
-      </view>
-
-      <view v-else class="sn-popover__body">
-        <slot name="content">
-          <text v-if="normalText" class="sn-popover__text">{{ normalText }}</text>
-        </slot>
-      </view>
-
-      <view
-        v-if="showClose"
-        class="sn-popover__close"
-        role="button"
-        aria-label="close"
-        @tap="close"
-      >
-        <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" />
-      </view>
-    </view>
   </view>
 </template>
 
 <style scoped>
 /* uni side: --sn-mp-* aliases only (rpx units). Direct --sn-web-* / --aui-*
- * forbidden (enforced by `pnpm snui token-check --dir packages/uni --end mp`). */
+ * forbidden (enforced by `pnpm snui token-check --dir packages/uni --end mp`).
+ *
+ * Only class selectors; no pseudo-classes / pseudo-elements (uni-app x App
+ * has neither — AGENTS.md §116.2). Arrow geometry is written as per-side
+ * border longhands: the uni-x App flattener does not expand the 4-value
+ * `border-width` shorthand. */
 
 .sn-popover {
   position: relative;
   display: inline-block;
-  box-sizing: border-box;
-  /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
-  --sn-popover-bg: var(--sn-mp-color-background-elevated);
-  --sn-popover-border: var(--sn-mp-color-border-subtle);
-  --sn-popover-color: var(--sn-mp-color-text-primary);
-  /* Glyph scale (see header): tier tokens, overridable via `custom-style`. */
-  --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
-  --sn-popover-close-icon-size: var(--sn-mp-icon-size-small);
+  /* The bubble rides OUTSIDE this box (the shown bubble is absolutely /
+   * fixed anchored to the trigger) — explicit `overflow: visible` is
+   * load-bearing: uni-app x views clip children by default, which swallowed
+   * the whole bubble there. */
+  overflow: visible;
+  /* MP custom-property contract (0354cf95, device-verified): WeChat MP cannot
+   * resolve a custom-property PAYLOAD that itself contains var(), and a
+   * consuming `var(--x, fallback)` does NOT rescue it — a defined-but-
+   * unresolvable variable computes to initial (transparent), so the bubble
+   * surface AND the arrow border painted nothing. The contract:
+   *   1. `--sn-popover-*` definitions carry LITERAL payloads only (never var());
+   *   2. `--sn-mp-*` tokens are consumed DIRECTLY (the always-valid floor);
+   *   3. overridable surfaces stack the overridable `var(--sn-popover-*,
+   *      var(--sn-mp-*))` line ON TOP of the plain token line, so a broken
+   *      chain loses only the top line, never the paint.
+   * The colour / radius tokens are therefore NOT defined here at all — an
+   * undefined variable is exactly what makes the fallback line work. Consumers
+   * override them with concrete values through `custom-style`.
+   *
+   * The two remaining definitions are literals (px / unitless) and are read
+   * by the placement math's inline styles, so they stay as defaults. */
+  --sn-popover-arrow-size: 9px;
+  --sn-popover-z-index: 500;
 }
 
-.sn-popover__trigger {
+/* ── Bubble box (shared by the shown bubble and the hidden copy) ──────── */
+
+/*
+ * The positioning layer — a node THIS component owns, so this scoped
+ * stylesheet provably reaches it (the transition's internal nodes are in
+ * another custom component, whose styles this sheet can never touch on
+ * mini-programs). It wraps the fade transition and is permanently mounted:
+ * while closed it has no visible content (the transition renders none), so
+ * it paints nothing and takes no tap.
+ */
+.sn-popover__pos {
+  position: absolute;
+  z-index: var(--sn-popover-z-index);
+  box-sizing: border-box;
+  overflow: visible;
+  /* max-content BEFORE the measured inline width lands: the layer's
+   * containing block is the trigger-sized inline-block root, so an
+   * auto-width absolute layer shrink-to-fit CLAMPS to the trigger width —
+   * and a slotted bubble measured in that state locks the clamp in
+   * (user-reported H5: the slot bubble measured exactly the trigger's 89px).
+   * max-content ignores the available width; solve() always overrides it
+   * with the measured inline width right after. */
+  width: max-content;
+}
+
+/*
+ * The hidden measurement copy. It is `fixed`, not `absolute`: it must not
+ * depend on an ancestor being a positioning context. On mini-programs the
+ * component root is not one (the host wrapper is a plain flex column), so an
+ * `absolute; left: -100vw` copy lost its origin and leaked into the viewport
+ * as a stray card. `fixed` pins it to the viewport edge on every host;
+ * `visibility: hidden` keeps it laid out (so it can be measured) and
+ * `pointer-events: none` keeps it from ever taking a tap.
+ */
+.sn-popover__pos--hidden {
+  position: fixed;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+
+.sn-popover__container {
+  position: relative;
+  z-index: var(--sn-popover-z-index);
+  /* Zoom-expand entry (user request): scale 0.9 → 1 with a fade, driven by a
+   * CSS TRANSITION on the shown gate — CSS transitions degrade gracefully on
+   * mini-programs (unsupported transform = appear without scaling), unlike
+   * the keyframes+fill-mode combo which left the bubble stuck invisible. */
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 200ms ease, transform 200ms ease;
+  box-sizing: border-box;
+  overflow: visible;
+  /* Two-line palette (see the MP contract on `.sn-popover`). The `color`
+   * lives HERE, not only on the text: menu glyphs are siblings of the text
+   * and inherit their colour — without a declaration on the bubble the icons
+   * fell back to the page default while the text stayed on the token
+   * (user-reported wrong icon colour). */
+  border-radius: var(--sn-mp-radius-md);
+  border-radius: var(--sn-popover-radius, var(--sn-mp-radius-md));
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
+  /* #ifndef MP */
+  /* Softer than the md token on H5 / App; mini-programs render box-shadow
+   * as hard grey corner patches (no radius) — no shadow there at all. */
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  /* #endif */
+}
+.sn-popover__container--shown {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.sn-popover__inner {
+  position: relative;
+  /* Roomier than the reference's loose padding: the body reads better with
+   * clear breathing room around the text (user-reported crowding). */
+  padding: var(--sn-mp-spacing-5);
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
+  white-space: nowrap;
+}
+
+/*
+ * Reserve space for the absolutely-positioned close button. The close box is
+ * icon 28rpx + 2 × 16rpx padding = 60rpx wide and takes no layout space, so
+ * without this the nowrap body ran underneath the × (user-reported overlap).
+ * 72rpx leaves a 12rpx breathing gap; literal rpx keeps it MP-safe.
+ */
+.sn-popover__inner--with-close {
+  padding-right: 72rpx;
+}
+
+.sn-popover__menu--with-close {
+  padding-right: 72rpx;
+}
+
+/*
+ * `white-space: nowrap` is declared HERE, not inherited from `__inner`: on H5
+ * the `uni-text` element carries its own `white-space: pre-line`, which
+ * overrides inheritance — the body then broke between every CJK character and
+ * the bubble collapsed to a one-character-wide strip (the "frame with no
+ * content" bug). A class rule beats uni-app's element default.
+ */
+.sn-popover__text {
+  font-size: var(--sn-mp-font-size-md);
+  line-height: var(--sn-mp-font-line-height-normal);
+  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
+  white-space: nowrap;
+}
+
+/* ── Menu mode ────────────────────────────────────────────────────────── */
+
+.sn-popover__menu {
+  position: relative;
+  padding-top: var(--sn-mp-spacing-0);
+  padding-right: var(--sn-mp-spacing-4);
+  padding-bottom: var(--sn-mp-spacing-0);
+  padding-left: var(--sn-mp-spacing-4);
+  white-space: nowrap;
+}
+
+.sn-popover__menu-inner {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-top: var(--sn-mp-spacing-4);
+  padding-right: var(--sn-mp-spacing-0);
+  padding-bottom: var(--sn-mp-spacing-4);
+  padding-left: var(--sn-mp-spacing-0);
+}
+
+/* Row divider: a real element (no `::after` on App). */
+.sn-popover__menu-divider {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background-color: var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-popover-border, var(--sn-mp-color-border-subtle));
+}
+
+.sn-popover__menu-icon {
+  font-size: var(--sn-mp-icon-size-medium);
+  margin-right: var(--sn-mp-spacing-2);
+}
+
+.sn-popover__icon {
+  font-size: var(--sn-mp-icon-size-medium);
+  margin-right: var(--sn-mp-spacing-2);
+}
+
+/* ── Arrow: a border triangle, the apex pointing at the trigger ───────── */
+
+/* The arrow layer: ONE group that owns the fade. Both triangles inside stay
+ * fully opaque at all times — the group owns the fade, so the entry
+ * animation never shifts the tip's colour. The group lives OUTSIDE the fade
+ * transition (so no ancestor clip can eat it), which means it must gate its
+ * own visibility, or a closed popover leaves a stray triangle floating over
+ * the page. */
+.sn-popover__arrow-group {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 501;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.sn-popover__arrow-group--shown {
+  opacity: 1;
+}
+
+.sn-popover__arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+/* The bordered sharp tip: a 12px SQUARE (radius 0) sharing the rounded
+ * tip's straddle geometry, rotated 45° inline — its white interior is the
+ * arrow's background, and the consumer border rides only the two faces that
+ * become the outer slant edges (inline, per family), so the blue converges
+ * at the tip: border only, no blue cap, crisp at any DPR. */
+.sn-popover__arrow.sn-popover__arrow--bordered {
+  width: 12px;
+  height: 12px;
+  /* Border-box: the 1px outer faces live INSIDE the 12px straddle box, so
+   * the rotated diamond's protrusion and mouth stay exactly as designed
+   * (content-box would grow the box by the border and skew the centre). */
+  box-sizing: border-box;
+  border-width: 0;
+  border-radius: 0;
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+}
+
+/* Bubble above → arrow on the bottom edge → apex DOWN → coloured TOP border. */
+.sn-popover__arrow-down {
+  border-top-width: var(--sn-popover-arrow-size);
+  border-right-width: var(--sn-popover-arrow-size);
+  border-bottom-width: 0;
+  border-left-width: var(--sn-popover-arrow-size);
+  border-top-color: var(--sn-mp-color-background-elevated);
+  border-top-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  transform: translateX(-50%);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  bottom: -8px;
+}
+/* Bubble below → arrow on the top edge → apex UP → coloured BOTTOM border. */
+.sn-popover__arrow-up {
+  border-top-width: 0;
+  border-right-width: var(--sn-popover-arrow-size);
+  border-bottom-width: var(--sn-popover-arrow-size);
+  border-left-width: var(--sn-popover-arrow-size);
+  border-bottom-color: var(--sn-mp-color-background-elevated);
+  border-bottom-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  transform: translateX(-50%);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  top: -8px;
+}
+/* Bubble left → apex RIGHT → coloured LEFT border. */
+.sn-popover__arrow-right {
+  border-top-width: var(--sn-popover-arrow-size);
+  border-right-width: 0;
+  border-bottom-width: var(--sn-popover-arrow-size);
+  border-left-width: var(--sn-popover-arrow-size);
+  border-left-color: var(--sn-mp-color-background-elevated);
+  border-left-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  transform: translateY(-50%);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  right: -8px;
+}
+/* Bubble right → apex LEFT → coloured RIGHT border. */
+.sn-popover__arrow-left {
+  border-top-width: var(--sn-popover-arrow-size);
+  border-right-width: var(--sn-popover-arrow-size);
+  border-bottom-width: var(--sn-popover-arrow-size);
+  border-left-width: 0;
+  border-right-color: var(--sn-mp-color-background-elevated);
+  border-right-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+  transform: translateY(-50%);
+  /* 9px leg − 1px seam overlap, precomputed: WeChat MP does not apply
+   * the +1px term inside a calc with var() — the arrow detached from the
+   * bubble by its whole protrusion (user-reported). Literal keeps the
+   * geometry MP-safe (same rule as the two-line palette). */
+  left: -8px;
+}
+
+/* The outline triangle's geometry lives INLINE on the element
+ * (`arrowOutlineStyle`) — see the computed's comment for why no stylesheet
+ * rule can carry it. Its z sits below the fill triangle by DOM order inside
+ * the group, so the fill paints over it and only the slant band shows. */
+
+/* Zoom origin per placement family: the edge the arrow anchors on stays
+ * pinned while the body scales in. */
+.sn-popover--origin-top .sn-popover__container {
+  transform-origin: bottom center;
+}
+.sn-popover--origin-bottom .sn-popover__container {
+  transform-origin: top center;
+}
+.sn-popover--origin-left .sn-popover__container {
+  transform-origin: right center;
+}
+.sn-popover--origin-right .sn-popover__container {
+  transform-origin: left center;
+}
+
+/* Rounded arrow tip (arrowShape="rounded"): a filled rounded square
+ * rotated 45° inline — the compound selector outranks the per-family border
+ * rules above, swapping the border triangle for a soft-cornered square that
+ * straddles the bubble edge (inline offsets centre it on the edge). */
+.sn-popover__arrow.sn-popover__arrow--rounded {
+  width: 12px;
+  height: 12px;
+  border-width: 0;
+  border-radius: 3px;
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
+}
+
+/* ── Close button ─────────────────────────────────────────────────────── */
+
+.sn-popover__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* Clear of the corner and of the text: the 4rpx hug glued the × to the
+   * rounded edge (user-reported crowding). */
+  padding: var(--sn-mp-spacing-3);
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-popover__close-icon {
+  font-size: var(--sn-mp-icon-size-small);
+}
+
+/* ── Trigger ──────────────────────────────────────────────────────────── */
+
+.sn-popover__target {
   position: relative;
   display: block;
+  overflow: visible;
 }
 
 /* #ifdef APP */
-/* App trigger catcher (see the template note): a transparent shield over the
- * trigger box. `position: relative` on the wrapper above is its containing
- * block. The pressed leg restores the touch feedback the covered slot content
- * can no longer receive on App. */
+/* App trigger catcher: a transparent shield over the trigger box. The
+ * pressed leg restores the touch feedback the covered slot content can no
+ * longer receive on App. */
 .sn-popover__trigger-catcher {
   position: absolute;
   top: 0;
@@ -613,305 +1129,4 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   background-color: var(--sn-mp-color-background-soft);
 }
 /* #endif */
-
-/* ── Bubble ────────────────────────────────────────────────────────────── */
-
-.sn-popover__pop {
-  position: absolute;
-  z-index: 500;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sn-mp-spacing-2);
-  /* Shrink-to-fit would clamp to min-content: the abspos containing block is
-   * the trigger-sized root and `left: 50%` leaves only half of it available.
-   * `max-content` grows past that cap; `max-width` still bounds long text. */
-  width: max-content;
-  /* Auto height (AUI-OPT-07): the bubble grows with its content and never
-   * clips it — labels wrap and glyph boxes follow their tokens (no fixed
-   * square disagrees with the icon scale). */
-  height: auto;
-  min-width: 160rpx;
-  /* Never wider than the viewport: the bubble is centered on the trigger,
-   * so an unclamped width overflows the screen near either edge. */
-  max-width: min(480rpx, calc(100vw - 32rpx));
-  box-sizing: border-box;
-  border: 2rpx solid var(--sn-popover-border);
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-popover-bg);
-  color: var(--sn-popover-color);
-  font-size: var(--sn-mp-font-size-sm);
-  line-height: var(--sn-mp-font-line-height-normal);
-  box-shadow: var(--sn-mp-shadow-md);
-  opacity: 0;
-  transition: opacity 150ms ease;
-  pointer-events: none;
-}
-
-.sn-popover--shown .sn-popover__pop {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.sn-popover__body {
-  display: block;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
-}
-
-.sn-popover__text {
-  display: block;
-}
-
-.sn-popover__close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: var(--sn-popover-close-icon-size);
-  height: var(--sn-popover-close-icon-size);
-  margin: var(--sn-mp-spacing-2);
-  color: var(--sn-mp-color-text-secondary);
-}
-
-/* ── Menu mode ─────────────────────────────────────────────────────────── */
-
-.sn-popover--menu .sn-popover__pop {
-  flex-direction: column;
-  gap: 0;
-  padding: var(--sn-mp-spacing-2) 0;
-}
-
-.sn-popover__menu {
-  display: flex;
-  flex-direction: column;
-}
-
-.sn-popover__menu-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--sn-mp-spacing-2);
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
-  color: var(--sn-mp-color-text-primary);
-}
-
-.sn-popover__menu-item--disabled {
-  color: var(--sn-mp-color-text-disabled);
-}
-
-/* Glyph boxes follow `--sn-popover-menu-icon-size` instead of a fixed square,
- * so a bigger glyph or a longer label grows the bubble instead of overflowing
- * it (auto height, AUI-OPT-07). */
-.sn-popover__menu-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: var(--sn-popover-menu-icon-size);
-  height: var(--sn-popover-menu-icon-size);
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-popover__menu-text {
-  display: block;
-  /* Long labels wrap inside the bubble's max-width instead of forcing one
-   * line and spilling out of the pop: flex + min-width let the text shrink
-   * below its max-content width. */
-  flex: 1;
-  min-width: 0;
-}
-
-/* ── Arrow ─────────────────────────────────────────────────────────────── */
-
-.sn-popover__arrow {
-  position: absolute;
-  width: 16rpx;
-  height: 16rpx;
-  background-color: var(--sn-popover-bg);
-  /* Outline the diamond so the outside half reads against the page — a bare
-   * white diamond vanishes on an elevated (white) host surface, and the half
-   * inside the pop merges with the bubble fill either way. The border shares
-   * the pop's border token, so the arrow line continues the bubble edge. */
-  border: 2rpx solid var(--sn-popover-border);
-  border-bottom-color: transparent;
-  border-right-color: transparent;
-  transform: rotate(45deg);
-  pointer-events: none;
-}
-
-/* ── Placement: top family ─────────────────────────────────────────────── */
-
-.sn-popover--top .sn-popover__pop {
-  bottom: 100%;
-  left: 50%;
-  margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-  /* True center: the pop center is pinned to the root center at any width
-   * (stretch + auto margins collapse to 0 once max-content outgrows the
-   * trigger, walking the pop — and the arrow's 50% — off the trigger).
-   * max-content is bounded by the viewport clamp, so a centered pop never
-   * crosses the screen edge by itself; offset-x rides the same transform. */
-  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
-}
-.sn-popover--top-start .sn-popover__pop {
-  bottom: 100%;
-  left: 0;
-  margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-  margin-left: var(--sn-popover-offset-x);
-}
-.sn-popover--top-end .sn-popover__pop {
-  right: 0;
-  bottom: 100%;
-  margin-right: var(--sn-popover-offset-x);
-  margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-}
-
-/* ── Placement: bottom family ──────────────────────────────────────────── */
-
-.sn-popover--bottom .sn-popover__pop {
-  top: 100%;
-  left: 50%;
-  margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translate(calc(-50% + var(--sn-popover-offset-x)), var(--sn-popover-offset-y));
-}
-.sn-popover--bottom-start .sn-popover__pop {
-  top: 100%;
-  left: 0;
-  margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  margin-left: var(--sn-popover-offset-x);
-}
-.sn-popover--bottom-end .sn-popover__pop {
-  top: 100%;
-  right: 0;
-  margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  margin-right: var(--sn-popover-offset-x);
-}
-
-/* ── Placement: left family ────────────────────────────────────────────── */
-
-.sn-popover--left .sn-popover__pop {
-  top: 50%;
-  right: 100%;
-  margin-right: calc(12rpx + var(--sn-popover-offset-x));
-  transform: translateY(calc(-50% + var(--sn-popover-offset-y)));
-}
-.sn-popover--left-start .sn-popover__pop {
-  top: 0;
-  right: 100%;
-  margin-right: calc(12rpx + var(--sn-popover-offset-x));
-  margin-top: var(--sn-popover-offset-y);
-}
-.sn-popover--left-end .sn-popover__pop {
-  right: 100%;
-  bottom: 0;
-  margin-right: calc(12rpx + var(--sn-popover-offset-x));
-  margin-bottom: var(--sn-popover-offset-y);
-}
-
-/* ── Placement: right family ───────────────────────────────────────────── */
-
-.sn-popover--right .sn-popover__pop {
-  top: 50%;
-  left: 100%;
-  margin-left: calc(12rpx + var(--sn-popover-offset-x));
-  transform: translateY(calc(-50% + var(--sn-popover-offset-y)));
-}
-.sn-popover--right-start .sn-popover__pop {
-  top: 0;
-  left: 100%;
-  margin-left: calc(12rpx + var(--sn-popover-offset-x));
-  margin-top: var(--sn-popover-offset-y);
-}
-.sn-popover--right-end .sn-popover__pop {
-  bottom: 0;
-  left: 100%;
-  margin-left: calc(12rpx + var(--sn-popover-offset-x));
-  margin-bottom: var(--sn-popover-offset-y);
-}
-
-/* ── Arrow geometry per placement ──────────────────────────────────────── */
-
-.sn-popover--top .sn-popover__arrow,
-.sn-popover--top-start .sn-popover__arrow,
-.sn-popover--top-end .sn-popover__arrow {
-  bottom: -6rpx;
-  /* Points up: the outside half is the bottom-right of the rotated square. */
-  border-top-color: transparent;
-  border-left-color: transparent;
-  border-bottom-color: var(--sn-popover-border);
-  border-right-color: var(--sn-popover-border);
-}
-.sn-popover--top .sn-popover__arrow {
-  left: calc(50% - 8rpx);
-}
-.sn-popover--top-start .sn-popover__arrow {
-  left: 24rpx;
-}
-.sn-popover--top-end .sn-popover__arrow {
-  right: 24rpx;
-}
-
-.sn-popover--bottom .sn-popover__arrow,
-.sn-popover--bottom-start .sn-popover__arrow,
-.sn-popover--bottom-end .sn-popover__arrow {
-  top: -6rpx;
-  /* Points down: the outside half is the top-left of the rotated square. */
-  border-top-color: var(--sn-popover-border);
-  border-left-color: var(--sn-popover-border);
-}
-.sn-popover--bottom .sn-popover__arrow {
-  left: calc(50% - 8rpx);
-}
-.sn-popover--bottom-start .sn-popover__arrow {
-  left: 24rpx;
-}
-.sn-popover--bottom-end .sn-popover__arrow {
-  right: 24rpx;
-}
-
-.sn-popover--left .sn-popover__arrow,
-.sn-popover--left-start .sn-popover__arrow,
-.sn-popover--left-end .sn-popover__arrow {
-  right: -6rpx;
-  /* Points left: the outside half is the right edge of the rotated square. */
-  border-top-color: var(--sn-popover-border);
-  border-left-color: transparent;
-  border-right-color: var(--sn-popover-border);
-}
-.sn-popover--left .sn-popover__arrow {
-  top: calc(50% - 8rpx);
-}
-.sn-popover--left-start .sn-popover__arrow {
-  top: 16rpx;
-}
-.sn-popover--left-end .sn-popover__arrow {
-  bottom: 16rpx;
-}
-
-.sn-popover--right .sn-popover__arrow,
-.sn-popover--right-start .sn-popover__arrow,
-.sn-popover--right-end .sn-popover__arrow {
-  left: -6rpx;
-  /* Points right: the outside half is the left edge of the rotated square. */
-  border-top-color: var(--sn-popover-border);
-  border-right-color: transparent;
-  border-left-color: var(--sn-popover-border);
-}
-.sn-popover--right .sn-popover__arrow {
-  top: calc(50% - 8rpx);
-}
-.sn-popover--right-start .sn-popover__arrow {
-  top: 16rpx;
-}
-.sn-popover--right-end .sn-popover__arrow {
-  bottom: 16rpx;
-}
-
-.sn-popover--disabled .sn-popover__trigger {
-  opacity: 0.5;
-}
-
-/* Doodle skin — hand-drawn bubble outline. */
-.snui-skin-doodle .sn-popover__pop {
-  border-width: 4rpx;
-  border-radius: var(--sn-mp-radius-xs);
-}
 </style>

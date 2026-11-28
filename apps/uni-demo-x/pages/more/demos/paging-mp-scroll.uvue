@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/paging-mp-scroll.vue sha256:ff72711217628ab0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-paging (uni-end) — 纯滑动容器 + 手势开关控制。

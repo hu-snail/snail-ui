@@ -30,6 +30,16 @@
  *     slot the default `title` text renders exactly as before, so the change
  *     is purely additive.
  *
+ * ## Additive: footer buttons (AGENTS.md §112.3a — wd-calendar has no
+ * button-theme props)
+ *
+ *   - The footer actions render as real `sn-button` instances that split the
+ *     footer row evenly (`flex: 1`), replacing the hand-rolled cancel /
+ *     confirm views.
+ *   - `cancelType` / `cancelVariant` / `confirmType` / `confirmVariant` map
+ *     straight onto the `sn-button` `type` / `variant` props; defaults keep
+ *     the conventional sheet look (neutral cancel, primary confirm).
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -38,6 +48,7 @@
  */
 
 import { computed, ref, watch } from 'vue';
+import SnButton from '../sn-button/sn-button.vue';
 import SnPopup from '../sn-popup/sn-popup.vue';
 import SnCalendarView from '../sn-calendar-view/sn-calendar-view.vue';
 import type {
@@ -93,8 +104,25 @@ const props = withDefaults(
     zIndex?: number;
     /** Render the confirm button. */
     showConfirm?: boolean;
+    /**
+     * 渲染取消按钮。`false` 时底栏只剩确认按钮，由 `flex: 1` 独占整行，
+     * 成为一个块级按钮（additive，AGENTS.md §112.3a）。
+     */
+    showCancel?: boolean;
     /** Confirm button label. */
     confirmText?: string;
+    /**
+     * 渲染底栏（取消 / 确认按钮区）。`false` 时整条底栏连同顶部分割线一起
+     * 不渲染——配合 `confirmOnSelect` 得到「点选即完成」的轻量选择器
+     * （additive，AGENTS.md §112.3a）。
+     */
+    showFooter?: boolean;
+    /**
+     * 选中即确认：单日 / 月份类型点选后立刻写回 `v-model` 并关闭弹层，不需要
+     * 底栏确认（additive）。区间 / 多选类型要等选区完成才触发，见
+     * `isSelectionComplete`。
+     */
+    confirmOnSelect?: boolean;
     /** Preset chips shown above the grid. */
     shortcuts?: CalendarShortcut[];
     /** Pad the sheet for the device safe area. */
@@ -142,6 +170,14 @@ const props = withDefaults(
      * 格子下方显示农历日名，初一显示月名。`formatter` 可覆盖。
      */
     showLunar?: boolean;
+    /** 取消按钮主题（additive）：`sn-button` 的 `type`。 */
+    cancelType?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info';
+    /** 取消按钮变体（additive）：`sn-button` 的 `variant`。 */
+    cancelVariant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
+    /** 确认按钮主题（additive）：`sn-button` 的 `type`。 */
+    confirmType?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info';
+    /** 确认按钮变体（additive）：`sn-button` 的 `variant`。 */
+    confirmVariant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
   }>(),
   {
     modelValue: null,
@@ -159,6 +195,9 @@ const props = withDefaults(
     closeOnClickModal: true,
     zIndex: 15,
     showConfirm: true,
+    showCancel: true,
+    showFooter: true,
+    confirmOnSelect: false,
     confirmText: '确定',
     shortcuts: () => [],
     safeAreaInsetBottom: true,
@@ -179,6 +218,10 @@ const props = withDefaults(
     onShortcutsClick: undefined,
     rootPortal: false,
     showLunar: false,
+    cancelType: 'default',
+    cancelVariant: 'base',
+    confirmType: 'primary',
+    confirmVariant: 'base',
   },
 );
 
@@ -229,6 +272,33 @@ function onViewChange(payload: { value: CalendarValue }): void {
   if (props.immediateChange) emit('update:modelValue', payload.value);
   else draft.value = payload.value;
   emit('change', payload);
+  if (commitsOnSelect.value && isSelectionComplete(payload.value)) void onConfirm();
+}
+
+/**
+ * Whether a pick commits and closes on its own.
+ *
+ * Two ways to get there: `confirmOnSelect` explicitly, or no footer at all —
+ * without a confirm button there is nothing left to press, so a completed
+ * selection must write `v-model` itself. With a footer the sheet stays a
+ * draft-until-confirm flow: rolling only updates the draft.
+ */
+const commitsOnSelect = computed(() => props.confirmOnSelect || !props.showFooter);
+
+/**
+ * Whether a selection is finished, for `confirmOnSelect`.
+ *
+ * Single-value types complete on one tap; `dates` and the range types need a
+ * second interaction (a second day / a pending start needs its end), so they
+ * wait for the shape the mode promises instead of closing on the first tap.
+ */
+function isSelectionComplete(value: CalendarValue): boolean {
+  if (Array.isArray(value)) {
+    // A range is complete with both ends; a multi-select set is complete as
+    // soon as it holds anything (each further tap is a separate intent).
+    return props.type === 'dates' ? value.length > 0 : value.length === 2;
+  }
+  return typeof value === 'number';
 }
 
 function requestClose(): void {
@@ -285,12 +355,28 @@ function onShortcutTap(shortcut: CalendarShortcut): void {
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
+/**
+ * `sn-calendar-popup` carries the chrome overrides for this sheet. The panel
+ * itself must not scroll: the grid already lives in its own `scroll-view`, and
+ * a second scroll container on the panel let a stray touch shift the whole
+ * sheet (title, weeks row and footer scrolled out of place). `overflow: hidden`
+ * hands every scroll gesture to the grid.
+ */
 const popupClass = computed(() =>
   ['sn-calendar-popup', props.customClass].filter(Boolean).join(' '),
 );
 
-/** Forwarded to sn-popup — a string, so `exactOptionalPropertyTypes` stays happy. */
-const rootStyle = computed(() => props.customStyle);
+/**
+ * Inline style for the popup panel (sn-popup's `custom-style`).
+ *
+ * `overflow: hidden` is load-bearing: the grid owns the only scroll area, and
+ * the panel's default `overflow: auto` let a drag shift the whole sheet —
+ * title, weeks row and footer slid out of the panel's frame. Host `customStyle`
+ * is appended last so it can still override.
+ */
+const rootStyle = computed(() =>
+  ['overflow: hidden', props.customStyle].filter(Boolean).join('; '),
+);
 
 const viewClass = computed(() => props.customViewClass);
 </script>
@@ -348,24 +434,48 @@ const viewClass = computed(() => props.customViewClass);
         @change="onViewChange"
       />
 
-      <view class="sn-calendar__footer">
-        <view class="sn-calendar__footer-left">
+      <view
+        v-if="
+          props.showFooter &&
+          (props.showCancel || props.showConfirm || $slots['confirm-left'] || $slots['confirm-right'])
+        "
+        class="sn-calendar__footer"
+      >
+        <!-- Empty slot containers stay out of the tree: a rendered-but-empty
+             flex child still eats one `gap` on its side, pushing the action
+             buttons off the calendar grid's gutters. -->
+        <view v-if="$slots['confirm-left']" class="sn-calendar__footer-left">
           <slot name="confirm-left" />
         </view>
-        <view class="sn-calendar__actions">
-          <view class="sn-calendar__cancel" role="button" aria-label="cancel" @tap="onCancel"
-            ><text>取消</text></view
-          >
-          <view
-            v-if="props.showConfirm"
-            class="sn-calendar__confirm"
-            role="button"
-            :aria-label="props.confirmText"
-            @tap="onConfirm"
-            ><text>{{ props.confirmText }}</text></view
+        <!-- Each action gets a flex cell of its own. The cell (not the
+             sn-button root) carries `flex: 1 1 0`: on mp-weixin a child
+             component's root node does NOT receive the parent's scope id, so
+             `.sn-calendar__cancel { flex: 1 }` never matched there — the
+             buttons stayed content-width. The button inside is `block`, so it
+             fills its cell. -->
+        <view v-if="props.showCancel" class="sn-calendar__action">
+          <SnButton
+            custom-class="sn-calendar__cancel"
+            :type="props.cancelType"
+            :variant="props.cancelVariant"
+            block
+            aria-label="cancel"
+            @click="onCancel"
+            >取消</SnButton
           >
         </view>
-        <view class="sn-calendar__footer-right">
+        <view v-if="props.showConfirm" class="sn-calendar__action">
+          <SnButton
+            custom-class="sn-calendar__confirm"
+            :type="props.confirmType"
+            :variant="props.confirmVariant"
+            block
+            :aria-label="props.confirmText"
+            @click="onConfirm"
+            >{{ props.confirmText }}</SnButton
+          >
+        </view>
+        <view v-if="$slots['confirm-right']" class="sn-calendar__footer-right">
           <slot name="confirm-right" />
         </view>
       </view>
@@ -415,9 +525,11 @@ const viewClass = computed(() => props.customViewClass);
 .sn-calendar__footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--sn-mp-spacing-3);
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  /* No horizontal padding: the top rule is the footer's own border, which
+   * spans the sheet's content width — the action buttons must end exactly on
+   * that rule's two ends. */
+  padding: var(--sn-mp-spacing-3) 0;
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
@@ -428,25 +540,25 @@ const viewClass = computed(() => props.customViewClass);
   flex: 0 0 auto;
 }
 
+/* The action buttons split the remaining footer width evenly (AGENTS.md
+ * §112.3a additive: sn-button footer). With both slots empty that is the
+ * full row — 取消 / 确认 各占一半。 */
 .sn-calendar__actions {
   display: flex;
-  align-items: center;
+  align-items: stretch;
+  flex: 1 1 0;
   gap: var(--sn-mp-spacing-2);
-  margin-left: auto;
+  min-width: 0;
 }
 
-.sn-calendar__cancel,
-.sn-calendar__confirm {
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4);
-  border-radius: var(--sn-mp-radius-md);
-  font-size: var(--sn-mp-font-size-md);
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-calendar__confirm {
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-weight: var(--sn-mp-font-weight-semibold);
+/* One flex cell per action. The cell owns the sizing (a child component's
+ * root does not inherit the parent's scope id on mp-weixin, so styling the
+ * sn-button root from here silently fails there); the `block` button inside
+ * fills it. */
+.sn-calendar__action {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
 }
 
 /* Doodle skin — hand-drawn header rule. */

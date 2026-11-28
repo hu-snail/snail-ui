@@ -15,6 +15,7 @@ import { mount } from '@vue/test-utils';
 import SnToast from './sn-toast.vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import SnLoading from '../sn-loading/sn-loading.vue';
+import { closeOutside } from '../../utils/outside-close';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -124,6 +125,21 @@ describe('sn-toast', () => {
     const wrapper = mount(SnToast, { props: { modelValue: true, msg: 'x' } });
     await wrapper.find('.sn-toast__box').trigger('tap');
     expect(wrapper.emitted('click')).toHaveLength(1);
+  });
+
+  it('stays open when the page dispatches closeOutside', async () => {
+    // Regression: the toast used to register in the outside-close queue, so on
+    // MP — where the uni-x transform drops `pointer-events: none` and the
+    // fullscreen root swallows every tap — any tap (including on the toast
+    // itself) bubbled to the page-root `closeOutside` and killed a freshly
+    // opened toast instantly. A toast is transient: only `duration` / `v-model`
+    // close it (wot-ui parity).
+    const wrapper = mount(SnToast, { props: { modelValue: false, msg: 'x', duration: 0 } });
+    await wrapper.setProps({ modelValue: true });
+    closeOutside();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    expect(wrapper.find('.sn-toast').exists()).toBe(true);
   });
 
   it('renders the default slot instead of msg', () => {

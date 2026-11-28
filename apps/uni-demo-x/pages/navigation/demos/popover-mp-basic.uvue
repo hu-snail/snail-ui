@@ -1,7 +1,8 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-basic.vue sha256:84a8c66ba4c05e99 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — normal mode with plain text content.
- * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
@@ -9,24 +10,16 @@ const open = ref(false);
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="open"
-      mode="normal"
-      content="今天还有 3 个待办，先处理逾期的两项。"
-      placement="bottom"
-      :show-close="true"
-      custom-class="sn-demo-contained"
-    >
-      <SnButton type="primary" block><text>点击查看气泡</text></SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover v-model="open" content="文字提示" custom-class="sn-demo-contained">
+        <SnButton type="primary"><text>显示气泡</text></SnButton>
+      </SnPopover>
+    </view>
 
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">状态：{{ open ? '已展开' : '已收起' }}</text>
-    <text class="sn-demo__hint"
-      >点击气泡外部任意位置即可关闭（页面根 closeOutside
-      通道，不挡页面点击）；再点一次触发器也可收起。</text
-    >
+    <text class="sn-demo__hint">点击触发器展开气泡，再点一次收起；点击气泡以外的位置也会关闭。</text>
   </view>
 </template>
 <style scoped>
@@ -43,7 +36,24 @@ const open = ref(false);
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
 .sn-popover-demo__space {
-  height: 180rpx;
+  height: 220rpx;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
+.sn-popover-demo__space {
+  overflow: visible;
 }
 </style>

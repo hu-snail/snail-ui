@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/rich-text-mp-media.vue sha256:ae4c2df13dd29a3f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rich-text (uni-end) — 音视频与媒体控制方法。 */
 import SnRichText from '@snui/uni-x/components/sn-rich-text/sn-rich-text.uvue';
@@ -5,7 +6,7 @@ import type { RichTextInstance } from '@snui/uni-x/components/sn-rich-text/sn-ri
 
 const media = `
   <h3>视频片段</h3>
-  <video id="trip" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/2minute-demo.mp4" poster="https://picsum.photos/id/1016/640/360"></video>
+  <video id="trip" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/2minute-demo.mp4" poster="https://cdn.uviewui.com/uview/album/6.jpg"></video>
   <h3>音频片段</h3>
   <audio id="music" title="阅读时光" src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/ForElise.mp3"></audio>
   <p>通过组件方法播放 / 暂停 / 跳转，<code>true</code> 表示指令已下发。</p>
@@ -34,14 +35,11 @@ function onTimeUpdate(payload: { currentTime: number; duration: number }): void 
   <view class="sn-demo">
     <view class="sn-demo__actions">
       <view class="sn-demo__button" @click="play"
-        ><text class="sn-demo__button-text">播放视频</text></view
-      >
+        ><text class="sn-demo__button-text">播放视频</text></view>
       <view class="sn-demo__button" @click="pause"
-        ><text class="sn-demo__button-text">全部暂停</text></view
-      >
+        ><text class="sn-demo__button-text">全部暂停</text></view>
       <view class="sn-demo__button" @click="seek"
-        ><text class="sn-demo__button-text">跳到 5 秒</text></view
-      >
+        ><text class="sn-demo__button-text">跳到 5 秒</text></view>
     </view>
     <text v-if="progress !== ''" class="sn-demo__progress">进度：{{ progress }}</text>
     <SnRichText ref="richText" :content="media" enable-anchor @media-timeupdate="onTimeUpdate" />

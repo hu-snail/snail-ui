@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/gap-mp-safe-area.vue sha256:df59eb713ffb99f5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-gap (uni-end) — 底部安全区适配。 */
 import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
@@ -7,8 +8,7 @@ import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';
     <view class="sn-demo-block"><text>列表最后一行</text></view>
     <SnGap :height="12" safe-area-bottom />
     <text class="sn-demo-note"
-      >开启 safeAreaBottom 后，间隔在自身高度之外再叠加 env(safe-area-inset-bottom)。</text
-    >
+      >开启 safeAreaBottom 后，间隔在自身高度之外再叠加 env(safe-area-inset-bottom)。</text>
   </view>
 </template>
 <style scoped>

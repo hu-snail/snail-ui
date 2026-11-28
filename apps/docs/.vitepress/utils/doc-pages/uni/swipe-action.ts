@@ -27,7 +27,9 @@ export const swipeActionDocPage: SnDocPageData = {
     { t: 'code', s: 'v-model' },
     { t: 'text', s: ' 回报 ' },
     { t: 'code', s: "'left' | 'close' | 'right'" },
-    { t: 'text', s: '。' },
+    { t: 'text', s: '。操作钮的图标 / 名称可经 ' },
+    { t: 'code', s: '--sn-swipe-action-reveal-*' },
+    { t: 'text', s: ' CSS var 随遮挡距离渐显渐隐。' },
   ],
   quickActions: [
     {
@@ -66,12 +68,22 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-basic',
       title: '基础用法',
-      blurb: '向左滑动露出删除按钮，状态实时显示。',
+      blurb: '浮卡行 + 删除胶囊钮：向左滑动露出删除，状态实时显示。',
+    },
+    {
+      name: 'swipe-action-mp-card',
+      title: '浮卡行（消息列表）',
+      blurb: 'iOS 邮件式浮卡消息列表：滑开露出归档胶囊钮，点钮收起该行。',
+    },
+    {
+      name: 'swipe-action-mp-cell-group',
+      title: '列表组（cell 风格）',
+      blurb: 'sn-cell-group + sn-cell 通栏列表组，滑开露出静音 / 删除钮；图标与名称随遮挡距离渐显。',
     },
     {
       name: 'swipe-action-mp-both-sides',
       title: '两侧操作区',
-      blurb: '#left / #right 插槽同时渲染两侧操作区。',
+      blurb: '#left / #right 插槽同时渲染两侧操作钮；行拖到中线可翻到另一侧。',
     },
     {
       name: 'swipe-action-mp-before-close',
@@ -86,7 +98,7 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-custom-style',
       title: '根节点样式',
-      blurb: 'custom-class / custom-style 落在根节点上。',
+      blurb: 'custom-class / custom-style 落在根节点上（组件默认不画背景）。',
     },
   ],
   props: {

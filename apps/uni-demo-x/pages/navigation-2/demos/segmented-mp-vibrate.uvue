@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/segmented-mp-vibrate.vue sha256:a4c353879a7b6281 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-segmented — 切换振动（vibrate-short）。
@@ -16,8 +17,7 @@ const sizeOptions = [
   <view class="sn-demo sn-demo--stack">
     <SnSegmented v-model="size" :options="sizeOptions" vibrate-short />
     <text class="sn-demo__meta"
-      >vibrate-short：切换选项时触发短振动；无振动马达的宿主静默跳过。</text
-    >
+      >vibrate-short：切换选项时触发短振动；无振动马达的宿主静默跳过。</text>
   </view>
 </template>
 <style scoped>

@@ -1,0 +1,22 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-radius.en.vue sha256:2ef5691599907101 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — radius presets (AUI additive, tiers map to --sn-mp-radius-*). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput model-value="default (12rpx, default)" radius="default" readonly />
+    <SnInput model-value="sm (8rpx)" radius="sm" readonly />
+    <SnInput model-value="lg (16rpx)" radius="lg" readonly />
+    <SnInput model-value="xl (24rpx)" radius="xl" readonly />
+    <SnInput model-value="pill (search-bar style)" radius="pill" readonly />
+    <SnInput model-value="square (right-angled)" radius="square" readonly />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

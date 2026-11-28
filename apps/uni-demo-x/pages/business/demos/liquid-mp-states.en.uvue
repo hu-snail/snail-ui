@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/liquid-mp-states.en.vue sha256:818de3b84036dcd7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-liquid (uni-end) — States and edges: 0 / 100 / out-of-range
@@ -51,8 +52,7 @@ function jumpTo(next: number): void {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Buttons drive the three balls below; transitioning current: {{ Math.round(current) }}</text
-    >
+      >Buttons drive the three balls below; transitioning current: {{ Math.round(current) }}</text>
   </view>
 </template>
 <style scoped>

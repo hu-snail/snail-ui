@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/date-strip-mp-nav.vue sha256:f60a27194a2bcfd2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-date-strip — 导航按钮（show-nav）：两侧翻页 + #prev / #next 自定义插槽 + pagechange。 */
 import SnDateStrip from '@snui/uni-x/components/sn-date-strip/sn-date-strip.uvue';

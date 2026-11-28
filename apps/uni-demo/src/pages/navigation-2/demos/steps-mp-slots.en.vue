@@ -31,7 +31,11 @@ import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+/* MP / App drop flex gap: spacing rides on margins (§116). */
+.sn-demo__title {
+  margin-bottom: var(--sn-mp-spacing-1);
 }
 .sn-demo__slot-icon {
   color: var(--sn-mp-color-action-primary);

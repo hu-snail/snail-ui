@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-custom-style.en.vue sha256:aa8003a16b0cf123 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-code-input — customClass / customStyle.
@@ -20,18 +21,15 @@ const framed = ref('4567');
       custom-style="padding: 16rpx; border-radius: var(--sn-mp-radius-md); background-color: var(--sn-mp-color-background-soft);"
     />
     <text class="sn-demo__meta"
-      >customClass + customStyle: an extra border and soft surface on the root</text
-    >
+      >customClass + customStyle: an extra border and soft surface on the root</text>
 
     <SnCodeInput v-model="framed" :length="4" :gutter="12" custom-class="sn-demo__pin" />
     <text class="sn-demo__meta"
-      >customClass only: coexists with the component's own gutter variable</text
-    >
+      >customClass only: coexists with the component's own gutter variable</text>
 
     <SnCodeInput v-model="framed" :length="4" custom-class="sn-demo__pin sn-demo__pin--tall" />
     <text class="sn-demo__meta"
-      >custom-class re-points the geometry hooks: taller cells, larger radius</text
-    >
+      >custom-class re-points the geometry hooks: taller cells, larger radius</text>
   </view>
 </template>
 <style scoped>

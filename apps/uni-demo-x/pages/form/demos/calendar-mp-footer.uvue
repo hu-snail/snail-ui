@@ -1,0 +1,101 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-footer.vue sha256:5f1a823601abfbf5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-calendar — 底栏形态（取消按钮开关 / 整条底栏开关）。
+ *
+ * 三行入口各演示一种底栏配置：
+ * - 默认：取消 + 确认两个按钮均分底栏；
+ * - `show-cancel=false`：取消隐藏，确认按钮独占整行，成为块级按钮；
+ * - `show-footer=false`：整条底栏（含分割线）不渲染，点选即写回并关闭。
+ */
+import { Calendar, Check, X } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
+import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
+const min = new Date(2024, 0, 1).getTime();
+const max = new Date(2024, 11, 31).getTime();
+
+const both = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
+const openBoth = ref(false);
+
+const blockConfirm = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
+const openBlock = ref(false);
+
+const noFooter = ref<number | number[] | null>(null);
+const openNoFooter = ref(false);
+
+function fmtStamp(value: number | number[] | null): string {
+  if (typeof value !== 'number') return '';
+  const d = new Date(value);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+const bothText = computed(() => fmtStamp(both.value));
+const blockText = computed(() => fmtStamp(blockConfirm.value));
+const noFooterText = computed(() => fmtStamp(noFooter.value));
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnCell
+      title="取消 + 确认"
+      :value="bothText"
+      placeholder="未选择"
+      :prefix-icon-data="Calendar"
+      is-link
+      @click="openBoth = true"
+    />
+    <SnCell
+      title="仅确认（块级按钮）"
+      :value="blockText"
+      placeholder="未选择"
+      :prefix-icon-data="Check"
+      is-link
+      @click="openBlock = true"
+    />
+    <SnCell
+      title="无底栏（点选即回显）"
+      :value="noFooterText"
+      placeholder="未选择"
+      :prefix-icon-data="X"
+      is-link
+      @click="openNoFooter = true"
+    />
+
+    <SnCalendar
+      v-model="both"
+      v-model:visible="openBoth"
+      type="date"
+      title="取消 + 确认"
+      :min-date="min"
+      :max-date="max"
+    />
+
+    <SnCalendar
+      v-model="blockConfirm"
+      v-model:visible="openBlock"
+      type="date"
+      title="仅确认"
+      :min-date="min"
+      :max-date="max"
+      :show-cancel="false"
+      confirm-text="选好了"
+    />
+
+    <SnCalendar
+      v-model="noFooter"
+      v-model:visible="openNoFooter"
+      type="date"
+      title="无底栏"
+      :min-date="min"
+      :max-date="max"
+      :show-footer="false"
+    />
+  </view>
+</template>
+<style scoped>
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+</style>

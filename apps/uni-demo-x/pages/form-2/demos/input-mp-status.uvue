@@ -1,0 +1,20 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-status.vue sha256:c5d6c63a814be741 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — status 校验状态：default / error / warning。 */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const form = reactive({ def: '默认状态', error: '校验失败', warning: '需要注意' });
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="form.def" status="default" placeholder="default" />
+    <SnInput v-model="form.error" status="error" placeholder="error" />
+    <SnInput v-model="form.warning" status="warning" placeholder="warning" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

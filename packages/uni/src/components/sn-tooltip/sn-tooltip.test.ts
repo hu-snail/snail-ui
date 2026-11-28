@@ -1,10 +1,12 @@
 /**
- * sn-tooltip unit tests — uni-end tap-triggered hint bubble (wd-tooltip parity).
+ * sn-tooltip unit tests — uni-end tap-triggered TEXT-ONLY hint bubble.
  *
  * Behaviour only (AGENTS.md §46):
  *   - the trigger toggles the bubble, `open` / `close` / `change` fire in order
  *   - `disabled` blocks both the trigger and the imperative API
- *   - `content` renders as text lines; the `content` slot wins over it
+ *   - `content` renders as plain-text lines (string | string[] only — the
+ *     text-only split from sn-popover); the old `content` slot is gone
+ *   - the bubble rides the dark transient plate (toast token pair)
  *   - `placement` becomes a class, `offset` becomes a CSS variable pair
  *   - closeOutside() (page-root queue) closes the bubble; mounting registers it
  *   - `showClose` renders a close button that hides the bubble
@@ -36,19 +38,21 @@ describe('sn-tooltip', () => {
 
     it('renders one line per entry for an array content', () => {
       const w = mount(SnTooltip, {
-        props: { modelValue: true, content: ['第一行', { label: '第二行' }] },
+        props: { modelValue: true, content: ['第一行', '第二行'] },
       });
       const lines = w.findAll('.sn-tooltip__line');
       expect(lines).toHaveLength(2);
       expect(lines[1]!.text()).toBe('第二行');
     });
 
-    it('renders object rows through the alternate text keys and skips label-less rows', () => {
+    it('drops non-string entries deterministically instead of stringifying them', () => {
+      // Text hints only (split from sn-popover): a JS caller passing the old
+      // object rows must never see "[object Object]" — entries are dropped.
       const w = mount(SnTooltip, {
-        props: { modelValue: true, content: [{ text: '甲' }, { name: '乙' }, { other: 1 }, '丙'] },
+        props: { modelValue: true, content: ['甲', { text: '乙' } as unknown as string] },
       });
-      const lines = w.findAll('.sn-tooltip__line');
-      expect(lines.map((line) => line.text())).toEqual(['甲', '乙', '丙']);
+      expect(w.findAll('.sn-tooltip__line')).toHaveLength(1);
+      expect(w.find('.sn-tooltip__line').text()).toBe('甲');
     });
 
     it('renders no lines for empty string content', () => {
@@ -56,18 +60,53 @@ describe('sn-tooltip', () => {
       expect(w.findAll('.sn-tooltip__line')).toHaveLength(0);
     });
 
-    it('lets the content slot replace the content prop', () => {
+    it('declares no content slot — rich bodies belong to sn-popover', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      expect(source).not.toContain('<slot name="content"');
+      // The custom body a caller still passes renders nowhere.
       const w = mount(SnTooltip, {
         props: { modelValue: true, content: 'prop 文案' },
         slots: { content: '<text class="custom-body">slot 文案</text>' },
       });
-      expect(w.find('.custom-body').exists()).toBe(true);
-      expect(w.find('.sn-tooltip__line').exists()).toBe(false);
+      expect(w.find('.custom-body').exists()).toBe(false);
+      expect(w.find('.sn-tooltip__line').text()).toBe('prop 文案');
+    });
+
+    it('rides the dark transient plate (toast token pair, split from sn-popover)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      expect(source).toContain('--sn-tooltip-bg: var(--sn-mp-color-background-inverse)');
+      expect(source).toContain('--sn-tooltip-color: var(--sn-mp-color-text-on-primary)');
+    });
+
+    it('sizes the bubble through the fixed-width token (no max-content / vw on App)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const popRule = source.indexOf('.sn-tooltip__pop {');
+      const block = source.slice(popRule, source.indexOf('}', popRule));
+      expect(block).toContain('width: var(--sn-tooltip-width)');
+      expect(block).not.toContain('max-content');
+      expect(block).not.toContain('100vw');
+      expect(source).toContain('--sn-tooltip-width: 320rpx');
     });
 
     it('applies the placement class', () => {
       const w = mount(SnTooltip, { props: { placement: 'top-start' } });
       expect(w.classes()).toContain('sn-tooltip--top-start');
+    });
+
+    it('defaults to the dark plate (no light class)', () => {
+      const w = mount(SnTooltip, {});
+      expect(w.classes()).not.toContain('sn-tooltip--light');
+    });
+
+    it('applies the light-theme class for theme="light"', () => {
+      const w = mount(SnTooltip, { props: { theme: 'light' } });
+      expect(w.classes()).toContain('sn-tooltip--light');
+      // the arrow shares the plate fill, so the light override must live on
+      // the root (it cascades to both nodes through --sn-tooltip-bg)
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      expect(source).toMatch(
+        /\.sn-tooltip--light\s*\{[^}]*--sn-tooltip-bg: var\(--sn-mp-color-background-surface\)/,
+      );
     });
 
     it('forwards customClass to the root and customPop to the bubble', () => {
@@ -119,6 +158,19 @@ describe('sn-tooltip', () => {
       expect(style).toContain('--sn-tooltip-offset-x: 3px');
       expect(style).toContain('--sn-tooltip-offset-y: 7px');
     });
+
+    it('keeps the pop gap in the stylesheet and leaves the pop node unstyled at offset 0', () => {
+      const w = mount(SnTooltip, { props: { modelValue: true } });
+      expect(w.find('.sn-tooltip__pop').attributes('style')).toBeUndefined();
+    });
+
+    it('re-adds the gap inline on the pop node when offset-y is nonzero (bottom family)', () => {
+      const w = mount(SnTooltip, {
+        props: { modelValue: true, offset: { x: 0, y: 8 }, placement: 'bottom' },
+      });
+      const style = w.find('.sn-tooltip__pop').attributes('style') ?? '';
+      expect(style).toContain('margin-top: calc(14rpx + 8px)');
+    });
   });
 
   describe('arrow', () => {
@@ -135,6 +187,90 @@ describe('sn-tooltip', () => {
     it('forwards customArrow onto the arrow node', () => {
       const w = mount(SnTooltip, { props: { modelValue: true, customArrow: 'my-arrow' } });
       expect(w.find('.sn-tooltip__arrow').classes()).toContain('my-arrow');
+    });
+
+    // §103 regression: the arrow used to be a 16rpx rotated SQUARE sharing the
+    // plate's translucent fill — the inner half double-composited over the
+    // bubble body (a darker diamond over the content) and the exposed triangle
+    // read too small. The border triangle paints the fill exactly once and
+    // rides fully outside the plate, so neither can regress silently.
+    it('draws the arrow as a border triangle, not a translucent rotated square', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const arrowBase = source.slice(
+        source.indexOf('.sn-tooltip__arrow {'),
+        source.indexOf('}', source.indexOf('.sn-tooltip__arrow {')),
+      );
+      // A rotated square (transform: rotate) would double-composite alpha.
+      expect(arrowBase).not.toContain('transform');
+      expect(arrowBase).not.toContain('background-color');
+      expect(arrowBase).toContain('border-style: solid');
+    });
+
+    it('keeps the arrow outside the content plate for every placement family', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      for (const edge of ['bottom: -14rpx', 'top: -14rpx', 'right: -14rpx', 'left: -14rpx']) {
+        expect(source).toContain(edge);
+      }
+    });
+
+    it('sizes the arrow to the trigger gap so the apex lands flush (贴边)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      // 14rpx triangle in a 14rpx gap: the apex exactly kisses the trigger
+      // edge instead of poking into it or stopping short of it.
+      const allSides = ['border-top-width: 14rpx', 'border-right-width: 14rpx', 'border-bottom-width: 14rpx', 'border-left-width: 14rpx'];
+      for (const side of allSides) expect(source).toContain(side);
+    });
+
+    // §103 regression: uni-app x views clip children by default, so without
+    // explicit `overflow: visible` the absolutely-positioned bubble (outside
+    // the root box) and the protruding arrow never painted on App / uni-app x
+    // web — the tap opened the bubble (shown state + DOM present) while
+    // nothing appeared on screen.
+    it('declares overflow visible where children ride outside the box', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const rootBlock = source.slice(
+        source.indexOf('.sn-tooltip {'),
+        source.indexOf('}', source.indexOf('.sn-tooltip {')),
+      );
+      expect(rootBlock).toContain('overflow: visible');
+      const popBlock = source.slice(
+        source.indexOf('.sn-tooltip__pop {'),
+        source.indexOf('}', source.indexOf('.sn-tooltip__pop {')),
+      );
+      expect(popBlock).toContain('overflow: visible');
+    });
+
+    // uni-app x views carry an explicit default font-size and do NOT inherit
+    // the pop's — body text rendered at the 16px runtime default and
+    // over-wrapped inside the fixed plate.
+    it('sets the plate font explicitly on the body and line views', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      for (const cls of ['.sn-tooltip__body {', '.sn-tooltip__line {']) {
+        const block = source.slice(source.indexOf(cls), source.indexOf('}', source.indexOf(cls)));
+        expect(block).toContain('font-size: var(--sn-mp-font-size-xs)');
+        expect(block).toContain('line-height: var(--sn-mp-font-line-height-normal)');
+      }
+    });
+
+    // §103 regression: the vertical families used to color the WRONG border —
+    // a colored top border renders apex-down, so `top` (bubble above, apex
+    // must point down at the trigger) colors the TOP border, and `bottom`
+    // colors the BOTTOM border. Inverted, the apex merged into the plate and
+    // every vertical arrow read upside-down.
+    it('points the apex at the trigger (top colors top, bottom colors bottom)', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-tooltip.vue'), 'utf8');
+      const topRule = source.slice(
+        source.indexOf('.sn-tooltip--top .sn-tooltip__arrow,'),
+        source.indexOf('}', source.indexOf('border-top-color: var(--sn-tooltip-bg)')),
+      );
+      expect(topRule).toContain('border-top-color: var(--sn-tooltip-bg)');
+      expect(topRule).toContain('border-bottom-width: 0');
+      const bottomRule = source.slice(
+        source.indexOf('.sn-tooltip--bottom .sn-tooltip__arrow,'),
+        source.indexOf('}', source.indexOf('border-bottom-color: var(--sn-tooltip-bg)')),
+      );
+      expect(bottomRule).toContain('border-bottom-color: var(--sn-tooltip-bg)');
+      expect(bottomRule).toContain('border-top-width: 0');
     });
   });
 

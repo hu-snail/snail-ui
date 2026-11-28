@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/toast-mp-basic.en.vue sha256:24bfaff7273a1d45 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-toast (uni-end) — component-form toast.
@@ -11,36 +12,41 @@ const successOpen = ref(false);
 const verticalOpen = ref(false);
 </script>
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @click="plainOpen = true"><text>Plain text (middle)</text></SnButton>
-    <SnButton type="success" block @click="successOpen = true"><text>Success icon (top)</text></SnButton>
-    <SnButton block @click="verticalOpen = true"><text>Vertical layout (bottom)</text></SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <SnButton type="primary" block @click="plainOpen = true"><text>Plain text (middle)</text></SnButton>
+      <SnButton type="success" block @click="successOpen = true"><text>Success icon (top)</text></SnButton>
+      <SnButton block @click="verticalOpen = true"><text>Vertical layout (bottom)</text></SnButton>
 
-    <SnToast
-      v-model="plainOpen"
-      msg="Copied to clipboard"
-      :duration="1500"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="plainOpen"
+        msg="Copied to clipboard"
+        :duration="1500"
+        custom-class="sn-demo-contained"
+      />
 
-    <SnToast
-      v-model="successOpen"
-      msg="Saved"
-      icon-name="success"
-      position="top"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="successOpen"
+        msg="Saved"
+        icon-name="success"
+        position="top"
+        custom-class="sn-demo-contained"
+      />
 
-    <SnToast
-      v-model="verticalOpen"
-      msg="Submitting, please wait"
-      icon-name="loading"
-      direction="vertical"
-      position="bottom"
-      :duration="0"
-      custom-class="sn-demo-contained"
-      @click="verticalOpen = false"
-    />
+      <SnToast
+        v-model="verticalOpen"
+        msg="Submitting, please wait"
+        icon-name="loading"
+        direction="vertical"
+        position="bottom"
+        :duration="2500"
+        custom-class="sn-demo-contained"
+        @click="verticalOpen = false"
+      />
+    </view>
   </view>
 </template>
 <style scoped>

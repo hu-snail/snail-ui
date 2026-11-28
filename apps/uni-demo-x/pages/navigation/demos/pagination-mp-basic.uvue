@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/pagination-mp-basic.vue sha256:d89a8ea3d2c4e005 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-pagination — 基础翻页（含翻页图标与计数）。
@@ -16,8 +17,7 @@ const page = ref(3);
       <SnPagination v-model="page" :total-page="8" show-icon show-message />
     </view>
     <text class="sn-demo__meta"
-      >当前第 {{ page }} 页 / 共 8 页；箭头图标随文字一起继承按钮颜色。</text
-    >
+      >当前第 {{ page }} 页 / 共 8 页；箭头图标随文字一起继承按钮颜色。</text>
   </view>
 </template>
 <style scoped>

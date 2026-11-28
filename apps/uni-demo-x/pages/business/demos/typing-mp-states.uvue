@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/typing-mp-states.vue sha256:fd9d382ed696fbc7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-typing (uni-end) — 状态与事件：会话模拟 —— 发送后 peer 进入

@@ -16,6 +16,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'水波进度球'"
     :title-en="'Liquid'"
     :desc="'水波动画的进度展示'"
@@ -23,42 +24,51 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('水波配色（waveColor / innerColor）', 'Wave colors')"
           badge="colors"
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('外圈（outline）', 'Outline ring')" badge="outline" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('外圈（outline）', 'Outline ring')"
+          badge="outline"
+        />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('容器圆角（radius）', 'Container radius')" badge="radius" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('容器圆角（radius）', 'Container radius')"
+          badge="radius"
+        />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('尺寸（size）', 'Size')" badge="size" />
+        <DemoModuleHead class="demo-host" :title="t('尺寸（size）', 'Size')" badge="size" />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead class="demo-host" :title="t('状态', 'State')" badge="states" />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
     </view>
@@ -86,4 +96,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

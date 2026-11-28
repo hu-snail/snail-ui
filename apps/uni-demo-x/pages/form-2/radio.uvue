@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/radio.vue sha256:9aed3e5b94d53516 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— radio 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/radio-mp-basic.uvue';
@@ -18,22 +19,33 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'单选框'" :title-en="'Radio'" :desc="'单选控件'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'单选框'"
+    :title-en="'Radio'"
+    :desc="'单选控件'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('卡片模式（variant=card）', 'Card variant')" badge="card" />
-        <view class="module__body">
-          <Demo1 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('卡片模式（variant=card）', 'Card variant')"
+          badge="card"
+        />
+        <view class="module__body">
+          <Demo1 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '选中色（`checkedColor` / `uncheckedColor`）',
@@ -43,20 +55,22 @@ const { t } = useDemoUi();
           badge="colors"
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('自定义类名与样式', 'Custom class names & styles')"
           badge="custom-style"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '禁用与只读（`disabled` / `readonly`）',
@@ -66,46 +80,53 @@ const { t } = useDemoUi();
           badge="disabled-readonly"
         />
         <view class="module__body">
-          <Demo4 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('图标模式（variant=icon）', 'Icon variant')" badge="icon" />
-        <view class="module__body">
-          <Demo5 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('图标模式（variant=icon）', 'Icon variant')"
+          badge="icon"
+        />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('指示器位置与选中态', 'Indicator placement & checked paint')"
           badge="indicator"
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('标记位置（`placement`）', 'Marker placement (`placement`)')"
           badge="placement"
         />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('类型', 'Type')" badge="type" />
+        <DemoModuleHead class="demo-host" :title="t('类型', 'Type')" badge="type" />
         <view class="module__body">
-          <Demo8 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('可反选（`allowUncheck`）', 'Uncheck on re-tap (`allowUncheck`)')"
           badge="uncheck"
         />
         <view class="module__body">
-          <Demo9 />
+          <Demo9 class="demo-host" />
         </view>
       </view>
     </view>
@@ -132,4 +153,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

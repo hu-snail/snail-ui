@@ -1,0 +1,75 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.en.vue sha256:46dcd18fda843bd4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-wheel-picker — band customization: the `#band` slot paints a dotted texture pill (soft blue + dot grid + border). */
+import SnWheelPicker from '@snui/uni-x/components/sn-wheel-picker/sn-wheel-picker.uvue';
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
+const minutes = [15, 20, 25, 30, 45];
+const value = ref<Array<string | number>>([25]);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <!-- #ifndef MP-WEIXIN -->
+    <SnWheelPicker
+      v-model="value"
+      :columns="[minutes]"
+      :visible-item-count="5"
+      :item-height="56"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 56rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+    >
+      <template #band>
+        <view class="dotted-band">
+          <view v-for="dot in 150" :key="dot" class="dotted-band__dot" />
+        </view>
+      </template>
+    </SnWheelPicker>
+    <!-- #endif -->
+    <!-- #ifdef MP-WEIXIN -->
+    <SnPickerView
+      v-model="value"
+      :columns="[minutes]"
+      :visible-item-count="5"
+      :item-height="56"
+      custom-style="--sn-picker-view-wheel-inset: 185rpx; --sn-picker-view-wheel-radius: 28rpx; --sn-picker-view-wheel-band: var(--sn-mp-color-lightblue-soft)"
+    
+      wheel
+      vibrate-short>
+      <template #band>
+        <view class="dotted-band">
+          <view v-for="dot in 96" :key="dot" class="dotted-band__dot" />
+        </view>
+      </template>
+    </SnPickerView>
+    <!-- #endif -->
+    <text class="sn-demo__meta">Selected: {{ value[0] }} min (#band slot: dotted texture pill)</text>
+  </view>
+</template>
+<style scoped>
+.dotted-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 6rpx;
+  box-sizing: border-box;
+  background-color: var(--sn-mp-color-lightblue-soft);
+  border: 2rpx solid var(--sn-mp-color-lightblue);
+  border-radius: 28rpx;
+  flex-direction: row;
+}
+
+.dotted-band__dot {
+  width: 3rpx;
+  height: 3rpx;
+  margin: 6rpx;
+  border-radius: 1.5rpx;
+  background-color: var(--sn-mp-color-lightblue);
+  opacity: 0.4;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

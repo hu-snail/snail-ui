@@ -6,10 +6,10 @@
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  'https://picsum.photos/seed/snui-sw-m1/750/400',
-  'https://picsum.photos/seed/snui-sw-m2/750/400',
-  'https://picsum.photos/seed/snui-sw-m3/750/400',
-  'https://picsum.photos/seed/snui-sw-m4/750/400',
+  'https://cdn.uviewui.com/uview/album/3.jpg',
+  'https://cdn.uviewui.com/uview/album/4.jpg',
+  'https://cdn.uviewui.com/uview/album/5.jpg',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
 ];
 </script>
 

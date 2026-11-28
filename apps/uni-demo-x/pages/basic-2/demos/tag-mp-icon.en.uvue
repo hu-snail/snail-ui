@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-icon.en.vue sha256:1b42a9880eec4d4e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tag (uni-end) — three icon tracks: built-in catalog names /
@@ -13,8 +14,8 @@ import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 import { Gift, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** Bitmap icons share the same size tiers as vector icons. */
-const brandLogo = 'https://picsum.photos/seed/snui-tag-brand/48/48';
-const badgeShot = 'https://picsum.photos/seed/snui-tag-shot/48/48';
+const brandLogo = 'https://cdn.uviewui.com/uview/album/3.jpg';
+const badgeShot = 'https://cdn.uviewui.com/uview/album/4.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

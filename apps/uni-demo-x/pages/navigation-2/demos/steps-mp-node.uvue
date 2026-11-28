@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-node.vue sha256:08b77d35f9a2a673 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-steps — 自定义节点与节点内容插槽。
@@ -17,7 +18,7 @@ import { Check, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label">node 插槽完全替换默认节点</text>
-    <SnSteps :active="1">
+    <SnSteps :active="1" align-center>
       <SnStep title="提交订单" description="09:00">
         <template #node>
           <view class="sn-demo__node">
@@ -59,11 +60,12 @@ import { Check, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-4);
   width: 100%;
 }
 
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__label {
+  margin: var(--sn-mp-spacing-4) 0 var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
@@ -103,8 +105,10 @@ import { Check, User } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 .sn-demo__content {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-1);
   padding: var(--sn-mp-spacing-2) 0;
+}
+.sn-demo__title {
+  margin-bottom: var(--sn-mp-spacing-1);
 }
 
 .sn-demo__title {

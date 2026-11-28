@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-disabled.vue sha256:7b49b2888e709de7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — 禁用选项：行级 `disabled` 降低透明度、不响应点击，也不参与选择。
@@ -30,8 +31,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >「江苏」整枝与「舟山」叶子被禁用：行呈弱化态，点了既不展开也不确认。</text
-    >
+      >「江苏」整枝与「舟山」叶子被禁用：行呈弱化态，点了既不展开也不确认。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

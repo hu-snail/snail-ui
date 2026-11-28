@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-mp-rows.en.vue sha256:000dea8cfe84be75 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker — roller geometry: itemHeight row height / visibleItemCount visible rows, customViewClass tweaks the roller. */
 import SnPicker from '@snui/uni-x/components/sn-picker/sn-picker.uvue';

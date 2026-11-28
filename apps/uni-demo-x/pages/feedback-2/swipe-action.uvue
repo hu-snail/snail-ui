@@ -1,10 +1,13 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/swipe-action.vue sha256:7ee15b2d2da93d55 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— swipe-action 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/swipe-action-mp-basic.uvue';
-import Demo1 from './demos/swipe-action-mp-before-close.uvue';
-import Demo2 from './demos/swipe-action-mp-both-sides.uvue';
-import Demo3 from './demos/swipe-action-mp-custom-style.uvue';
-import Demo4 from './demos/swipe-action-mp-disabled.uvue';
+import Demo1 from './demos/swipe-action-mp-card.uvue';
+import Demo2 from './demos/swipe-action-mp-cell-group.uvue';
+import Demo3 from './demos/swipe-action-mp-both-sides.uvue';
+import Demo4 from './demos/swipe-action-mp-before-close.uvue';
+import Demo5 from './demos/swipe-action-mp-disabled.uvue';
+import Demo6 from './demos/swipe-action-mp-custom-style.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -13,39 +16,89 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'滑动操作'" :title-en="'Swipe Action'" :desc="'侧滑菜单'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'滑动操作'"
+    :title-en="'Swipe Action'"
+    :desc="'侧滑菜单'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('基础用法', 'Basic usage')"
+          badge="basic"
+          inset
+        />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
-          :title="t('关闭拦截（before-close）', 'Close guard (`before-close`)')"
-          badge="before-close"
+          class="demo-host"
+          :title="t('浮卡行（消息列表）', 'Card rows (message list)')"
+          badge="card"
+          inset
         />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('两侧操作区', 'Both sides')" badge="both-sides" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('列表组（cell 风格）', 'List group (cell style)')"
+          badge="cell-group"
+          inset
+        />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('根节点样式', 'Root styling')" badge="custom-style" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('两侧操作区', 'Both sides')"
+          badge="both-sides"
+          inset
+        />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('禁用（disabled）', 'Disabled (`disabled`)')" badge="disabled" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('关闭拦截（before-close）', 'Close guard (`before-close`)')"
+          badge="before-close"
+          inset
+        />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('禁用（disabled）', 'Disabled (`disabled`)')"
+          badge="disabled"
+          inset
+        />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('根节点样式', 'Root styling')"
+          badge="custom-style"
+          inset
+        />
+        <view class="module__body">
+          <Demo6 class="demo-host" />
         </view>
       </view>
     </view>
@@ -53,7 +106,7 @@ const { t } = useDemoUi();
 </template>
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -69,7 +122,33 @@ const { t } = useDemoUi();
   box-shadow: var(--demo-card-shadow);
 }
 
+/* swipe-action：场景模块透明变体——滑动行是浮卡形态（组件不画背景，卡片与操作钮的表面由
+ * 行内容自绘）：白卡底会与行卡片双重叠加，且滑开露出的操作钮之间需要
+ * 露出页面画布。去掉卡底与描边，行卡片直接浮在页面画布上，标题行也
+ * 落在画布上。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

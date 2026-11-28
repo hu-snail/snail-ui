@@ -11,19 +11,24 @@ const covered = ref(false);
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <SnButton type="warning" block @tap="covered = true"> cover（透明全屏遮罩阻挡点击） </SnButton>
+  <!-- stack 由内层 view 承载：MP-WEIXIN 页面级 `.demo-host[class] { display: block }`
+       编译后特异性高于 demo 根的 scoped 规则，根上声明的 flex + gap 会被拍平
+       成块流（按钮间距全失）。内层 view 带不上 demo-host，页面规则碰不到它。 -->
+  <view class="sn-demo">
+    <view class="sn-demo--stack">
+      <SnButton type="warning" block @tap="covered = true"> cover（透明全屏遮罩阻挡点击） </SnButton>
 
-    <text class="sn-demo__meta">toast 展示期间页面无法点击，duration 结束后自动恢复。</text>
+      <text class="sn-demo__meta">toast 展示期间页面无法点击，duration 结束后自动恢复。</text>
 
-    <SnToast
-      v-model="covered"
-      msg="cover：透明遮罩挡住页面点击"
-      icon-name="warning"
-      cover
-      :duration="2500"
-      custom-class="sn-demo-contained"
-    />
+      <SnToast
+        v-model="covered"
+        msg="cover：透明遮罩挡住页面点击"
+        icon-name="warning"
+        cover
+        :duration="2500"
+        custom-class="sn-demo-contained"
+      />
+    </view>
   </view>
 </template>
 

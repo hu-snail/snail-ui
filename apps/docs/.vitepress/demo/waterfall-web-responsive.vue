@@ -6,7 +6,7 @@
  * 宽度**自动变化（进入视口、拿到宽度后按 containerWidth 计算列数）。
  * 下面的按钮只切换外层容器宽度，用来观察列数重排。
  *
- * 图片使用真实网络图片（picsum.photos），`seed` 固定则同一张图稳定复现。
+ * 图片使用真实网络图库（uview CDN，国内稳定图源）：`seed` 中的数字映射到固定的 10 张图。
  */
 import { ref } from 'vue';
 import { SnWaterfall } from '@snui/vue-web';
@@ -31,7 +31,7 @@ const tiles: Tile[] = [
 /** 按卡片的目标比例取图（占位宽 300px），`object-fit: cover` 再兜底裁切。 */
 function photo(seed: string, height: number, width = 300): string {
   const w = 600;
-  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 
 const stageWidths = [

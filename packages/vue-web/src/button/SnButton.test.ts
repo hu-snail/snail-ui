@@ -246,6 +246,17 @@ describe('SnButton', () => {
     expect(wrapper.classes()).toContain('sn-button--ghost');
   });
 
+  it('pairs the `ghost` variant with every semantic type', () => {
+    // Regression: ghost paint rules used to cover only primary and error, so
+    // ghost + success silently kept the filled look. Every hue must keep its
+    // ghost pairing (paint lives in CSS).
+    for (const type of ['primary', 'info', 'success', 'warning', 'error'] as const) {
+      const wrapper = mount(SnButton, { props: { ghost: true, type }, slots: { default: 'G' } });
+      expect(wrapper.classes()).toContain('sn-button--ghost');
+      expect(wrapper.classes()).toContain(`sn-button--${type}`);
+    }
+  });
+
   it('honors `dashed` variant', () => {
     const wrapper = mount(SnButton, {
       props: { dashed: true },

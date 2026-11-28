@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/segmented-mp-disabled.vue sha256:d24b6544e4760761 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-segmented — 禁用（disabled）：整控 + item 级。 */
 import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';
@@ -12,8 +13,7 @@ const options = [
     <SnSegmented v-model="picked" :options="options" />
     <SnSegmented :options="options" disabled />
     <text class="sn-demo__meta"
-      >第一组：item 级 disabled 禁用单个选项；第二组：整控 disabled。</text
-    >
+      >第一组：item 级 disabled 禁用单个选项；第二组：整控 disabled。</text>
   </view>
 </template>
 <style scoped>

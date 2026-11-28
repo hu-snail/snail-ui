@@ -61,7 +61,7 @@ const colored = ref([]);
       <SnCollapseItem
         name="a"
         title="Brand avatar"
-        title-icon-url="https://picsum.photos/seed/snui-collapse/96"
+        title-icon-url="https://cdn.uviewui.com/uview/album/1.jpg"
       >
         <text class="sn-demo__body">Image icons share the same size box as the SVG ones.</text>
       </SnCollapseItem>

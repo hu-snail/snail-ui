@@ -1,0 +1,48 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/slider-bar-mp-look-column.vue sha256:1457f56e00bba0eb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-slider-bar — 参考风格：竖排三列，白色圆角把手描主题色环。
+ * 对应参考图「三根竖条」——variant="column" 让轨道变成窄竖条，
+ * 沿轨道从底部填充主题色；size="large" 取参考图的条宽比例。
+ */
+import SnSliderBar from '@snui/uni-x/components/sn-slider-bar/sn-slider-bar.uvue';
+const low = ref(28);
+const mid = ref(56);
+const high = ref(82);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <view class="look-cols">
+      <view class="look-col">
+        <SnSliderBar v-model="low" variant="column" size="large" aria-label="Level 1" />
+      </view>
+      <view class="look-col">
+        <SnSliderBar v-model="mid" variant="column" size="large" aria-label="Level 2" />
+      </view>
+      <view class="look-col">
+        <SnSliderBar v-model="high" variant="column" size="large" aria-label="Level 3" />
+      </view>
+    </view>
+    <text class="sn-demo__meta">{{ low }} · {{ mid }} · {{ high }}</text>
+  </view>
+</template>
+<style scoped>
+.look-cols {
+  display: flex;
+  flex-direction: row;
+  gap: 40rpx;
+  height: 440rpx;
+  padding-top: 12rpx;
+}
+.look-col {
+  display: flex;
+  flex: 1;
+  height: 440rpx;
+  flex-direction: row;
+}
+.sn-demo__meta {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

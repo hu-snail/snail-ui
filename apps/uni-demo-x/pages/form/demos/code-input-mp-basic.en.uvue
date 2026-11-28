@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-basic.en.vue sha256:ef62911c36f3dfdf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — Boxed PIN field: `length` sets the box count, `mask` toggles the dots and `focused` drives the caret (pair it with the keyboard visibility). */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';

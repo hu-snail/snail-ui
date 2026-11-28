@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/waterfall-mp-responsive.vue sha256:95dc1671a005bb83 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-waterfall (uni-end) — 响应式列数（min-column-width）。
@@ -30,7 +31,7 @@ const photos: Photo[] = [
     <SnWaterfall :min-column-width="160" :columns="2" :column-gap="12" :row-gap="12">
       <view v-for="photo in photos" :key="photo.id" class="resp-card">
         <SnImg
-          :src="`https://picsum.photos/seed/snui-waterfall-resp-${photo.id}/${photo.width}/${photo.height}`"
+          :src="`https://cdn.uviewui.com/uview/album/${([...String(photo.id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`"
           mode="widthFix"
           width="100%"
           :radius="12"
@@ -38,8 +39,7 @@ const photos: Photo[] = [
       </view>
     </SnWaterfall>
     <text class="sn-demo__caption"
-      >min-column-width=160 → 列数跟随实测容器宽度，横竖屏 / 平板自动增删列</text
-    >
+      >min-column-width=160 → 列数跟随实测容器宽度，横竖屏 / 平板自动增删列</text>
   </view>
 </template>
 <style scoped>

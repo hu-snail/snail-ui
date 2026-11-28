@@ -254,7 +254,7 @@ export const buttonDocPage: SnDocPageData = {
     {
       name: 'button-web-variant',
       title: '变体',
-      blurb: 'text 文字按钮 / ghost 透明边框 / dashed 虚线边框。',
+      blurb: 'text 文字按钮 / ghost 透明描边 / dashed 朴素虚线（透明底 + 语义描边）。',
     },
     {
       name: 'button-web-emphasis',

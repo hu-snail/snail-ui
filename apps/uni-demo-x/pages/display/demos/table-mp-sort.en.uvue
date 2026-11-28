@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/table-mp-sort.en.vue sha256:43814ffd9629a152 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-table (uni-end) — sorting (`sortable` + `@sort-method`).
@@ -38,8 +39,7 @@ function onSort(payload: { prop: string; order: 'none' | 'asc' | 'desc' }) {
     </SnTable>
     <text class="sn-demo__meta"
       >Tap the Amount header to cycle ascending / descending / unsorted; the data is driven by
-      @sort-method.</text
-    >
+      @sort-method.</text>
   </view>
 </template>
 <style scoped>

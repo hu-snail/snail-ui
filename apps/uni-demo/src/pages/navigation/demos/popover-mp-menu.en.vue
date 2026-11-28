@@ -1,59 +1,43 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — menu mode with the row-icon configuration.
- * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
- *
- * Row glyphs resolve from the three documented sources, highest precedence
- * first:
- *   - `iconData` — an inline IconData object, no registration step
- *   - `iconUrl`  — an image address, rendered as `<image>`
- *   - `icon`     — a name resolved through SnIcon (built-in catalog here)
- * The legacy `iconClass` field keeps working (name or image address).
+ * Demo: sn-popover (uni-end). Per AUI-DOCS-016: imports the real @snui/uni
+ * sn-popover.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
-import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const open = ref(false);
 const picked = ref('—');
-
-/** Image-typed row glyph as an inline SVG data URL — offline-safe for docs. */
-const tagImage =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E";
-
 const menu = [
-  { content: 'Star', iconData: Star },
-  { content: 'Share', icon: 'share' },
-  { content: 'Add tag', iconUrl: tagImage },
-  { content: 'Bookmark', iconClass: 'bookmark' },
-  { content: 'Delete', icon: 'trash-2', disabled: true },
+  { content: 'Share with friends', iconClass: 'share' },
+  { content: 'Save to bookmarks', iconClass: 'bookmark' },
+  { content: 'Delete', iconClass: 'trash-2' },
 ];
 
-function onMenuClick(payload: { item: { content?: string } }): void {
-  picked.value = payload.item.content ?? '—';
-  open.value = false;
+function onMenuClick(payload: { item: { content: string }; index: number }): void {
+  picked.value = `${payload.item.content} (item ${payload.index + 1})`;
 }
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="open"
-      mode="menu"
-      :content="menu"
-      placement="bottom-end"
-      custom-class="sn-demo-contained"
-      @menuclick="onMenuClick"
-    >
-      <SnButton type="primary" block>More actions</SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__center">
+      <SnPopover
+        v-model="open"
+        mode="menu"
+        :content="menu"
+        custom-class="sn-demo-contained"
+        @menuclick="onMenuClick"
+      >
+        <SnButton type="primary">More actions</SnButton>
+      </SnPopover>
+    </view>
+
+    <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">Picked: {{ picked }}</text>
-    <text class="sn-demo__hint">
-      Glyph sources: iconData (inline, no registration) · icon (name) · iconUrl (image) · iconClass
-      (legacy field)
-    </text>
+    <text class="sn-demo__hint">Menu mode renders content as an action list; iconClass names the row icon; tapping a row emits menuclick and closes the bubble.</text>
   </view>
 </template>
 
@@ -71,8 +55,28 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   font-size: 22rpx;
   color: var(--sn-mp-color-text-secondary);
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
-.sn-popover.sn-demo-contained {
-  position: absolute;
+.sn-popover-demo__center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
+}
+/* Docs-preview only — the bubble stays anchored to the component root; the
+ * spacer leaves room for the bubble instead of covering the copy below. */
+.sn-demo :deep(.sn-popover.sn-demo-contained) {
+  position: relative;
+  display: block;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
+.sn-popover-demo__space {
+  overflow: visible;
 }
 </style>

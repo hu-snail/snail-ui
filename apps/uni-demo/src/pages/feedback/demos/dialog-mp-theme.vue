@@ -12,7 +12,7 @@ const textThemeOpen = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton block @tap="textThemeOpen = true">文本按钮（theme=&quot;text&quot;）</SnButton>
+    <SnButton block @tap="textThemeOpen = true">朴素按钮（theme=&quot;text&quot;）</SnButton>
 
     <SnDialog
       v-model="textThemeOpen"

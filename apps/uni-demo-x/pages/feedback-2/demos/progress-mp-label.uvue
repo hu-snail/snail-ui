@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/progress-mp-label.vue sha256:7d9a97f7e3d6ead9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-progress (uni-end) — percentPosition inner / outer + align + duration.

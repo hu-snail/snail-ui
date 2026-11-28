@@ -40,6 +40,24 @@
  * per notch. The root carries `data-snui-mouse-gesture` so the docs-preview
  * mouse→touch bridge can leave these gestures to the component.
  *
+ * ## Wheel style + slide haptics (additive, AGENTS.md §112.3a)
+ *
+ * `wheel` swaps the hairline indicator for a rounded pill selection band with
+ * an action-primary active row and a distance fade two rows out. The band
+ * color/paint is `var(--sn-picker-view-wheel-band, …)` on the indicator, so a
+ * caller can inject any color or gradient through `customStyle`. `vibrateShort`
+ * fires `uni.vibrateShort({ type: 'light' })` on every detent the drag engine
+ * crosses (see `sn-picker-view-drag` `onDetent`) — App / mini-program only,
+ * tap selection and programmatic commits stay silent. `sn-wheel-picker` is
+ * this component preset to `wheel` + `vibrateShort: true`.
+ *
+ * ## `#option` slot (additive)
+ *
+ * Rows render their label by default; the scoped `option` slot replaces the
+ * content per row (icons, rich text, per-row boxes) with the scope
+ * `{ option, active, distance, columnIndex, index }`. Slot styling stays with
+ * the caller — the component only lays the row out and keeps the tap target.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -56,8 +74,37 @@ import type {
   PickerViewChangePayload,
 } from './sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from './sn-picker-view-drag';
+import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
 
 defineOptions({ name: 'SnPickerView' });
+
+defineSlots<{
+  /**
+   * Custom row content — icons, rich text, per-row boxes (additive).
+   * Scope: `option` (normalized), `active`, `distance` (rows from the
+   * selection), `columnIndex`, `index`. Falls back to the option label.
+   */
+  option?(scope: {
+    option: NormalizedPickerOption;
+    active: boolean;
+    distance: number;
+    columnIndex: number;
+    index: number;
+  }): unknown;
+  /**
+   * Custom wheel band (additive) — replaces the pill's painted fill so a
+   * caller can draw a texture, border, dotted pattern, gradient or any other
+   * look CSS vars cannot express. The band box (size / position / radius)
+   * stays with the component; the slot only owns the inner paint. Rendered
+   * for `wheel` in both `shared` and `perColumn` modes.
+   */
+  band?(scope: {
+    /** `shared` (one pill across columns) or `perColumn`. */
+    mode: 'shared' | 'perColumn';
+    /** Column index in perColumn mode; `-1` for the shared band. */
+    columnIndex: number;
+  }): unknown;
+}>();
 
 const props = withDefaults(
   defineProps<{
@@ -87,6 +134,31 @@ const props = withDefaults(
     cascade?: boolean;
     /** Disables the whole roller. */
     disabled?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：选中行渲染圆角胶囊高亮带、
+     * 文字转主题色，两行外文字淡出（对齐 iOS 滚轮观感）。默认 false 保持
+     * hairline 指示线。
+     */
+    wheel?: boolean;
+    /**
+     * 高亮带形态（additive，`wheel` 开启时生效）：`shared`（默认）横跨全部
+     * 列渲染一整条带（对齐 iOS 多列滚轮）；`perColumn` 每列一条独立带。
+     * 带漆 / 圆角 / 水平内边距经 `--sn-picker-view-wheel-band` /
+     * `-wheel-radius` / `-wheel-inset` 变量自定义。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
+     * 隐藏列内指示线（additive）：hairline 模式下插槽自带盒子描边（如时间
+     * 槽）时，隐藏默认 hairline 避免上下分割线；wheel 模式不渲染列内指示
+     * 器，无此需求。
+     */
+    hideIndicator?: boolean;
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：滑动经过每一行档位时触发
+     * `uni.vibrateShort({ type: 'light' })`。App / 小程序生效，H5 无电机
+     * 静默跳过；点选与程序赋值不震动。
+     */
+    vibrateShort?: boolean;
     /** Class on the root node. */
     customClass?: string;
     /** Inline style on the root node. */
@@ -103,6 +175,10 @@ const props = withDefaults(
     immediateChange: false,
     cascade: false,
     disabled: false,
+    wheel: false,
+    wheelBand: 'shared',
+    hideIndicator: false,
+    vibrateShort: false,
     customClass: '',
     customStyle: '',
   },
@@ -133,6 +209,9 @@ function normalizeOption(raw: PickerValue | PickerOption): NormalizedPickerOptio
       raw,
     };
   }
+  // Primitive options keep their original value: String()-mangling breaks
+  // strict-equality against a numeric modelValue and every initial selection
+  // snapped back to row 0 (visible on mp-weixin: 1995 demo opened on 1991).
   return { value: raw, label: String(raw), disabled: false, raw };
 }
 
@@ -159,7 +238,7 @@ function resolveColumns(values: PickerValue[]): NormalizedPickerOption[][] {
   for (let i = 0; i < values.length; i += 1) {
     const current = result[i];
     if (!current) break;
-    const selected = current.find((option) => option.value === values[i]);
+    const selected = current.find((option) => sameValue(option.value, values[i]));
     if (!selected) break;
     const children = readChildren(selected.raw);
     if (!children || children.length === 0) break;
@@ -175,7 +254,7 @@ const resolvedColumns = computed<NormalizedPickerOption[][]>(() =>
 /** Index of the selected row per column (0 when the value is not present). */
 const selectedIndexes = computed<number[]>(() =>
   resolvedColumns.value.map((column, ci) => {
-    const index = column.findIndex((option) => option.value === props.modelValue[ci]);
+    const index = column.findIndex((option) => sameValue(option.value, props.modelValue[ci]));
     return index < 0 ? 0 : index;
   }),
 );
@@ -188,6 +267,17 @@ const effectiveValues = computed<PickerValue[]>(() =>
     return option ? option.value : (props.modelValue[ci] ?? '');
   }),
 );
+
+/**
+ * Value equality across the mp-weixin prop channel: the mini-program runtime
+ * may hand back numeric modelValue entries as strings ("1995" !== 1995), so
+ * selection identity uses the string form as a fallback. Numeric/string
+ * option ids are never mixed in real columns, so this cannot mis-select.
+ */
+function sameValue(a: PickerValue, b: PickerValue | undefined): boolean {
+  if (a === undefined || b === undefined) return false;
+  return a === b || String(a) === String(b);
+}
 
 /* ── Geometry (all rpx — 1px design = 2rpx) ────────────────────────────── */
 
@@ -216,6 +306,9 @@ const drag = createRollerDrag({
   commit,
   onStart: () => emit('pickstart'),
   onEnd: () => emit('pickend'),
+  onDetent: () => {
+    if (props.vibrateShort) fireHaptic('light');
+  },
 });
 
 const {
@@ -282,7 +375,7 @@ function buildPayload(
   const selectedIndexes: number[] = [];
   columns.forEach((column, ci) => {
     const index = Math.max(
-      column.findIndex((option) => option.value === values[ci]),
+      column.findIndex((option) => sameValue(option.value, values[ci])),
       0,
     );
     const option = column[index];
@@ -365,9 +458,68 @@ const rootClass = computed(() => [
   {
     'sn-picker-view--disabled': props.disabled,
     'sn-picker-view--cascade': props.cascade,
+    'sn-picker-view--wheel': props.wheel,
+    'sn-picker-view--wheel-band-shared': showSharedBand.value,
+    'sn-picker-view--dragging': isDragging.value,
   },
   props.customClass,
 ]);
+
+/**
+ * Shared-band mode: one pill spans every column from the root. The per-column
+ * indicators are not rendered at all — two bands would double-paint.
+ */
+const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared');
+
+/* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
+
+/**
+ * Native picker-view selection: an index array per column, fed back through
+ * bindchange. Rebuilt whenever columns or values change (cascade rebuilds
+ * columns in place).
+ */
+const nativeIndexes = computed<number[]>(() =>
+  resolvedColumns.value.map((column, ci) => {
+    const index = column.findIndex((option) => sameValue(option.value, props.modelValue[ci]));
+    return index < 0 ? 0 : index;
+  }),
+);
+
+/** Band top in rpx: the indicator row position as a literal — no 50% /
+    negative-margin / calc chain, which mp-weixin + iOS renders offset. */
+const bandTopRpx = computed(() => ((visibleCount.value - 1) / 2) * Math.max(props.itemHeight, 1) * RATIO);
+
+/** Indicator row height stays aligned with itemHeight for the band overlay. */
+const nativeIndicatorStyle = computed(
+  () => `height: ${itemHeightRpx.value}; border-top-width: 0; border-bottom-width: 0;`,
+);
+
+/** Map an option value back to its row index inside the rendered column. */
+function resolveNativeRowIndex(columnIndex: number, value: PickerValue): number {
+  const column = resolvedColumns.value[columnIndex];
+  if (!column) return 0;
+  const index = column.findIndex((option) => sameValue(option.value, value));
+  return index < 0 ? 0 : index;
+}
+
+/**
+ * bindchange payload: the full index array. Diff against the previous
+ * selection to find the changed column, then route through the same commit
+ * the hand-rolled roller uses (v-model / change / haptics stay identical).
+ */
+function onNativeChange(event: unknown): void {
+  const detail = (event as { detail?: { value?: unknown } })?.detail;
+  const next = (detail?.value ?? []) as PickerValue[];
+  for (let ci = 0; ci < resolvedColumns.value.length; ci += 1) {
+    const rowIndex = resolveNativeRowIndex(ci, next[ci] as PickerValue);
+    if (rowIndex !== (selectedIndexes.value[ci] ?? 0)) {
+      commit(ci, rowIndex);
+    }
+  }
+}
+
+/** Half the visible window — the selection row anchors the absolute stack. */
+const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
 /** Half the leftover space — the top / bottom fade covers exactly that. */
 const maskHeightRpx = computed(() => {
@@ -380,12 +532,58 @@ const rootStyle = computed(() => {
     `--sn-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-picker-view-settle-duration: ${snapDurationMs.value}ms`,
-  ].join('; ');
-  return props.customStyle ? `${vars}; ${props.customStyle}` : vars;
+  ];
+  const joined = vars.join('; ');
+  return props.customStyle ? `${joined}; ${props.customStyle}` : joined;
 });
 
 function isActive(columnIndex: number, rowIndex: number): boolean {
   return (selectedIndexes.value[columnIndex] ?? 0) === rowIndex;
+}
+
+/** Rows between the item and the selection — drives the wheel-mode fade. */
+function distanceOf(columnIndex: number, rowIndex: number): number {
+  return Math.abs(rowIndex - (selectedIndexes.value[columnIndex] ?? 0));
+}
+
+/**
+ * Row-window rendering (AUI-MP overflow hardening): mp-weixin fails to clip
+ * `transform`ed roller rows inside `overflow: hidden` columns — the whole
+ * column leaks across the page during and after slides. Instead of trusting
+ * the clip, only render the rows that can ever be on screen: the live center
+ * row (drag position, or the selection at rest) ± half a window plus one
+ * guard row. mp-weixin then has no off-screen rows to leak at all, and every
+ * other end renders strictly fewer nodes.
+ */
+function centerIndexOf(columnIndex: number): number {
+  const offset = columnOffsetRpx(columnIndex);
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  return (visibleCount.value - 1) / 2 - offset / item;
+}
+
+function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
+  const center = Math.round(centerIndexOf(columnIndex));
+  // Exactly the visible window (no guard rows): mp-weixin does not clip
+  // transformed rows, so any row rendered outside the column box leaks
+  // visibly. Rows are absolutely positioned at (row - selection + half)
+  // row-heights plus the live drag shift, so a window row can never sit
+  // outside the column box.
+  const half = Math.floor(visibleCount.value / 2);
+  return Math.abs(rowIndex - center) <= half;
+}
+
+/**
+ * Per-row absolute top in rpx — computed **in script, no CSS vars / calc**:
+ * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
+ * value is identical on every end. Geometry: half window above the selected
+ * row, plus the live drag shift of the column (engine offset - rest base).
+ */
+function itemStyle(columnIndex: number, rowIndex: number): string {
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  const selected = selectedIndexes.value[columnIndex] ?? 0;
+  const half = Math.floor(visibleCount.value / 2) * item;
+  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
+  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
 }
 
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
@@ -403,6 +601,53 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
     role="group"
     :aria-disabled="disabled ? 'true' : undefined"
   >
+    <!-- Shared wheel band (additive): one pill spanning every column, painted
+         behind the roller text (z0). The #band slot replaces the paint. -->
+    <view
+      v-if="showSharedBand"
+      class="sn-picker-view__wheel-band"
+      :style="{ top: bandTopRpx + 'rpx' }"
+      aria-hidden="true"
+      ><view class="sn-picker-view__fill"
+        ><slot name="band" :mode="'shared'" :column-index="-1"
+      /></view>
+    </view>
+    <!--
+      mp-weixin renders through the NATIVE picker-view: the hand-rolled
+      transform roller cannot be reliably clipped / centered on real devices
+      (selection rows floated above the band, columns drifting). The native
+      component owns clipping, centering and inertia; the wheel band stays an
+      overlay aligned to the indicator row, and every prop / contract above
+      is unchanged. All other platforms keep the hand-rolled roller.
+    -->
+    <!-- #ifdef MP-WEIXIN -->
+    <picker-view
+      class="sn-picker-view__native"
+      :value="nativeIndexes"
+      :indicator-style="nativeIndicatorStyle"
+      :mask-style="'background-color: rgba(0, 0, 0, 0)'"
+      :style="{ height: columnHeightRpx }"
+      @change="onNativeChange"
+    >
+      <picker-view-column
+        v-for="(column, columnIndex) in resolvedColumns"
+        :key="columnIndex"
+      >
+        <view
+          v-for="option in column"
+          :key="option.value"
+          class="sn-picker-view__item"
+          :style="{ height: itemHeightRpx }"
+          @tap="onItemTap(columnIndex, resolveNativeRowIndex(columnIndex, option.value))"
+        >
+          <!-- 原生 picker-view-column 内的 slot 出口不渲染（微信限制）——
+               mp 端强制 fallback label；#option 行内容为 H5/App 能力。 -->
+          <text class="sn-picker-view__label">{{ option.label }}</text>
+        </view>
+      </picker-view-column>
+    </picker-view>
+    <!-- #endif -->
+    <!-- #ifndef MP-WEIXIN -->
     <view
       v-for="(column, columnIndex) in resolvedColumns"
       :key="columnIndex"
@@ -414,33 +659,50 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       @touchend="onTouchEnd($event, columnIndex)"
       @touchcancel="onTouchCancel(columnIndex)"
     >
-      <view
-        class="sn-picker-view__roller"
-        :class="{ 'sn-picker-view__roller--dragging': isDragging }"
-        :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
-      >
-        <view
-          v-for="(option, rowIndex) in column"
-          :key="option.value"
-          :class="[
-            'sn-picker-view__item',
-            {
-              'sn-picker-view__item--active': isActive(columnIndex, rowIndex),
-              'sn-picker-view__item--disabled': option.disabled,
-            },
-          ]"
-          :style="{ height: itemHeightRpx }"
+      <view class="sn-picker-view__roller">
+        <template v-for="(option, rowIndex) in column" :key="option.value">
+          <view
+            v-if="isRowRenderable(columnIndex, rowIndex)"
+            :class="[
+              'sn-picker-view__item',
+              {
+                'sn-picker-view__item--active': isActive(columnIndex, rowIndex),
+                'sn-picker-view__item--far': props.wheel && distanceOf(columnIndex, rowIndex) >= 2,
+                'sn-picker-view__item--disabled': option.disabled,
+              },
+            ]"
+            :style="itemStyle(columnIndex, rowIndex)"
           role="button"
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
           @tap="onItemTap(columnIndex, rowIndex)"
-          ><text>{{ option.label }}</text></view
+          ><view class="sn-picker-view__fill"
+            ><slot
+              name="option"
+              :option="option"
+              :active="isActive(columnIndex, rowIndex)"
+              :distance="distanceOf(columnIndex, rowIndex)"
+              :column-index="columnIndex"
+              :index="rowIndex"
+              ><text class="sn-picker-view__label">{{ option.label }}</text></slot
+          ></view></view
         >
+        </template>
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />
       <view class="sn-picker-view__mask sn-picker-view__mask--bottom" aria-hidden="true" />
-      <view class="sn-picker-view__indicator" aria-hidden="true" />
+      <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
+           Hidden entirely in shared-band mode (the root band takes over). -->
+      <view
+        v-if="!showSharedBand && !props.hideIndicator"
+        class="sn-picker-view__indicator"
+        aria-hidden="true"
+      ><view v-if="props.wheel" class="sn-picker-view__fill"
+          ><slot name="band" :mode="'perColumn'" :column-index="columnIndex"
+        /></view>
+      </view>
     </view>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -452,7 +714,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   align-items: stretch;
   justify-content: center;
   width: 100%;
-  padding: var(--sn-mp-spacing-3) 0;
+  /* No vertical padding: the column is exactly visibleItemCount rows, and
+     mp-weixin stretches the flex column past the padding box, leaking a
+     sixth row outside the clip. Callers own any outer spacing. */
+  padding: 0;
   box-sizing: border-box;
   background-color: var(--sn-mp-color-background-elevated);
   color: var(--sn-mp-color-text-primary);
@@ -462,7 +727,9 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 
 .sn-picker-view__column {
   position: relative;
-  flex: 1 1 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
   min-width: 0;
   overflow: hidden;
   /* H5 / App webview: a roller drag must never become a page scroll.
@@ -473,15 +740,25 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 }
 
 .sn-picker-view__roller {
-  /* Settle only — the length scales with the distance to the snapped row. */
-  transition: transform var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  /* Pure container: rows position themselves (selection-anchored absolute
+     top + live drag shift) — no roller-level transform, so a broken
+     overflow clip can never leak translated rows across the page. */
+  position: relative;
+  z-index: 1;
+  height: 100%;
 }
 
-/* While a finger is down the roller tracks it 1:1: any transition here makes
-   the wheel lag behind and read as "the wheel will not move". */
-.sn-picker-view__roller--dragging {
-  transition: none;
+.sn-picker-view__item {
+  /* Absolute stack anchored on the selection row: top moves with the drag
+     shift variable and settles onto the new selection row after release.
+     Explicit height: a height-less absolute parent resolves its box from the
+     first child on uni-app x App, so slot rows taller than the label row
+     (icon-row / rich-row) shift the fill's centering off the band. */
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--sn-picker-view-item-height);
+  transition: top var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sn-picker-view__item {
@@ -508,15 +785,62 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 
 .sn-picker-view__indicator {
   position: absolute;
-  left: var(--sn-mp-spacing-2);
-  right: var(--sn-mp-spacing-2);
+  /* Same inset variable as the shared band — one knob controls both. */
+  left: var(--sn-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  right: var(--sn-picker-view-wheel-inset, var(--sn-mp-spacing-2));
   top: 50%;
   height: var(--sn-picker-view-item-height);
   margin-top: calc(var(--sn-picker-view-item-height) / -2);
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   pointer-events: none;
-  z-index: 2;
+  /* Behind the roller text: the wheel band is an opaque fill and would
+     otherwise hide the selected label. */
+  z-index: 0;
+}
+
+/* Slot fill — mp-weixin wraps injected slot content in a compiler view
+   (.uni__inherit_flex_box_style) that inherits the row direction of this
+   flex item and therefore shrinks to content size, breaking every
+   width/height:100% inside the slot. A column-direction stretch wrapper
+   forces that layer to span the full row box on every end. */
+.sn-picker-view__fill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Label fallback — the fill stretches it full-width (column cross axis), so
+   the text itself must center or it hugs the left edge on mp-weixin. The
+   explicit line-height pins the text box to the row height: iOS WKWebView
+   floats CJK <text> upward with the inherited default line-height, which is
+   exactly the "selection sits above the band" device bug. */
+.sn-picker-view__label {
+  width: 100%;
+  height: var(--sn-picker-view-item-height);
+  line-height: var(--sn-picker-view-item-height);
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Shared wheel band — one pill spanning every column (additive). */
+.sn-picker-view__wheel-band {
+  position: absolute;
+  left: var(--sn-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  right: var(--sn-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  /* top comes from the inline literal (bandTopRpx) — see above. */
+  height: var(--sn-picker-view-item-height);
+  background: var(--sn-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
+  border-radius: var(--sn-picker-view-wheel-radius, 16rpx);
+  pointer-events: none;
+  z-index: 0;
+  /* #band slot content fills the pill and is clipped by its radius. */
+  overflow: hidden;
 }
 
 .sn-picker-view__mask {
@@ -525,7 +849,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   right: 0;
   height: var(--sn-picker-view-mask-height);
   pointer-events: none;
-  z-index: 1;
+  /* Over the text — these gradients are what fade the far rows out. */
+  z-index: 2;
 }
 
 .sn-picker-view__mask--top {
@@ -538,6 +863,10 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   background: linear-gradient(to top, var(--sn-mp-color-background-elevated), transparent);
 }
 
+.sn-picker-view--dragging .sn-picker-view__item {
+  transition: none;
+}
+
 .sn-picker-view--disabled {
   opacity: 0.6;
 }
@@ -546,6 +875,32 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 .snui-skin-doodle .sn-picker-view__indicator {
   border-top-width: 4rpx;
   border-bottom-width: 4rpx;
+  border-top-color: var(--sn-mp-color-text-primary);
+  border-bottom-color: var(--sn-mp-color-text-primary);
+}
+
+/* Wheel 风格（additive）— hairline 指示线换成圆角胶囊高亮带，选中行文字转
+   主题色，两行外淡出。带色走 --sn-picker-view-wheel-band（background 简写，
+   调用方可注入纯色或渐变覆盖）。规则放在 doodle 之后以赢下同特异性优先级。 */
+.sn-picker-view--wheel .sn-picker-view__indicator {
+  border-top-width: 0;
+  border-bottom-width: 0;
+  background: var(--sn-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
+  border-radius: var(--sn-picker-view-wheel-radius, 16rpx);
+}
+
+.sn-picker-view--wheel .sn-picker-view__item--active {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-picker-view--wheel .sn-picker-view__item--far {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+/* Doodle skin 下胶囊带保留手绘描边。 */
+.snui-skin-doodle .sn-picker-view--wheel .sn-picker-view__indicator {
+  border-top-width: 2rpx;
+  border-bottom-width: 2rpx;
   border-top-color: var(--sn-mp-color-text-primary);
   border-bottom-color: var(--sn-mp-color-text-primary);
 }

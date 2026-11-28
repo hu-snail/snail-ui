@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-title-slot.vue sha256:bd7b144054ffb456 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — `title` 插槽、`custom-body-class` 与 item 级 `border`。
@@ -24,8 +25,7 @@ const open = ref(['a']);
               size="var(--sn-mp-icon-size-medium)"
             />
             <text class="sn-demo__title-text"
-              >配送方式（title 插槽 · {{ expanded ? '已展开' : '已收起' }}）</text
-            >
+              >配送方式（title 插槽 · {{ expanded ? '已展开' : '已收起' }}）</text>
           </view>
         </template>
         <text class="sn-demo__body">顺丰速运，预计 2 天送达。</text>

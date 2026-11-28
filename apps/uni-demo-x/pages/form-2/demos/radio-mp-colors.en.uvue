@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-colors.en.vue sha256:93589441803bfe20 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-radio — checked colors: `checkedColor` / `uncheckedColor` flow down
@@ -24,8 +25,7 @@ const overridden = ref<string | number | boolean | undefined>('a');
     <SnRadioGroup v-model="overridden">
       <SnRadio value="a"><text>Inherits the group color</text></SnRadio>
       <SnRadio value="b" checked-color="var(--sn-mp-color-feedback-danger)"
-        ><text>Overridden to the danger color</text></SnRadio
-      >
+        ><text>Overridden to the danger color</text></SnRadio>
     </SnRadioGroup>
     <text class="sn-demo__meta">Current: {{ overridden ?? '(none)' }}</text>
   </view>

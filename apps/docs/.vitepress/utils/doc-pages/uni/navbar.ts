@@ -56,7 +56,8 @@ import { Navbar } from '@snui/uni';
     {
       name: 'navbar-mp-basic',
       title: '基础用法',
-      blurb: 'title 标题；left-text / right-text 左右文案；left-arrow 返回箭头；bordered 下边框。',
+      blurb:
+        'title 标题；left-text / right-text 左右文案；left-arrow 返回箭头（默认接管跨端返回）；bordered 下边框。',
     },
     {
       name: 'navbar-mp-slots',
@@ -82,6 +83,18 @@ import { Navbar } from '@snui/uni';
       name: 'navbar-mp-capsule-slot',
       title: '胶囊插槽',
       blurb: '#capsule 占据左侧区；#title 自定义标题；custom-class / custom-style 落在根节点。',
+    },
+    {
+      name: 'navbar-mp-capsule',
+      title: '胶囊样式 / 带搜索栏',
+      blurb:
+        '#capsule 放微信小程序风格「返回 + 首页」胶囊；#title 换成胶囊形搜索框，左右保留文案按钮。',
+    },
+    {
+      name: 'navbar-mp-mp-capsule',
+      title: '微信小程序胶囊适配',
+      blurb:
+        '自定义导航右上角固定是系统胶囊；左侧胶囊 + 居中标题 + 右侧留白避让，safe-area-inset-top 按实测值留白。真机宿主可省去手画：mp-capsule 开启时组件在小程序环境自动渲染内置胶囊。',
     },
   ],
   props: {
@@ -110,6 +123,24 @@ import { Navbar } from '@snui/uni';
       { name: 'rightDisabled', type: 'boolean', default: 'false', desc: '是否禁用右侧按钮' },
       { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
       { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
+      {
+        name: 'autoBack',
+        type: 'boolean',
+        default: 'true',
+        desc: '点击返回箭头时由组件完成跨端返回（AUI 追加；自行接管返回时传 `false`）。',
+      },
+      {
+        name: 'backFallback',
+        type: 'string',
+        default: "''",
+        desc: '页面栈没有上一页时的兜底页面（`uni.reLaunch`；AUI 追加）。',
+      },
+      {
+        name: 'mpCapsule',
+        type: 'boolean',
+        default: 'true',
+        desc: '小程序环境（实测到系统胶囊）且未提供 `#capsule` 插槽、左侧为空时，自动渲染内置「返回 + 首页」胶囊：淡描边 + 次级图标色，返回键复用 `auto-back` 返回逻辑，首页键发 `back-home`（AUI 追加；传 `false` 关闭）。',
+      },
     ],
   },
   ai: {

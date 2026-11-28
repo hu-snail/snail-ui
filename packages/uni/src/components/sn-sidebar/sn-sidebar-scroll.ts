@@ -26,6 +26,7 @@
  */
 
 import type { SnSidebarValue } from './sn-sidebar-types';
+import { resolveUniHost } from '../../utils/uni-host';
 
 /** One content section paired with the side entry that owns it. */
 export interface SnSidebarAnchorRef {
@@ -162,7 +163,7 @@ export function measureSectionOffsets(
 ): void {
   if (selector === '' || refs.length === 0) return;
 
-  const host = (globalThis as { uni?: SidebarUniHost }).uni;
+  const host = resolveUniHost<SidebarUniHost>();
   if (typeof host?.createSelectorQuery !== 'function') return;
 
   try {

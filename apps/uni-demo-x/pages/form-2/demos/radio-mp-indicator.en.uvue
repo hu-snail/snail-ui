@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-indicator.en.vue sha256:eeec6a09b7e2d46b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio — 指示器位置与选中态（indicatorPlacement / checkedStyle / markerShape）。 */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
@@ -12,8 +13,7 @@ const check = ref<string | number | boolean | undefined>('a');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__title"
-      >markerShape="check"(checked = solid theme fill + white check)</text
-    >
+      >markerShape="check"(checked = solid theme fill + white check)</text>
     <SnRadioGroup v-model="check" marker-shape="check">
       <SnRadio value="a"><text>Plan A</text></SnRadio>
       <SnRadio value="b"><text>Plan B</text></SnRadio>

@@ -1,0 +1,86 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/icon-mp-font.vue sha256:a51bfd910411d194 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/**
+ * Demo: sn-icon — 字体图标（registerFontIcon 注册制，ADR-0011 阶段一）。
+ *
+ * 参考：lime-icon registerFontIcon / uni-icons loadFontFace（§112.3a additive）。
+ * 注册映射（name→unicode 码点）后，`name` 命中即走 `<text>` unicode 字形渲染：
+ * 三端一致，颜色由 CSS `color` 继承，不经过 data-URL 光栅化链。
+ *
+ * demo 字体：RemixIcon（cdnjs 公开字体，仅演示用）。MP 真机需把字体域名加入
+ * 下载合法域名（或替换为宿主自有 https 字体 / base64）；fontUrl 缺省 = 字体由
+ * 宿主样式表提供。
+ */
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import { registerFontIcon } from '@snui/uni-x/components/sn-icon/sn-icon-font';
+
+// 字体注册在 app 启动早期只做一次；demo 里随场景注册（幂等）。
+registerFontIcon({
+  prefix: 'ri',
+  fontFamily: 'remixicon-demo',
+  icons: {
+    // RemixIcon 码点（fonts/remixicon.css 的类 content 映射）。
+    home: 'EE2B',
+    'arrow-right': 'EA6C',
+    heart: 'EE0F',
+    search: 'F0D1',
+  },
+  fontUrl: 'https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.ttf',
+});
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__label">前缀形式（ri:home）</text>
+    <view class="sn-demo__row">
+      <SnIcon name="ri:home" :size="40" />
+      <SnIcon name="ri:search" :size="40" />
+      <SnIcon name="ri:heart" :size="40" />
+    </view>
+
+    <text class="sn-demo__label">裸 name（按注册顺序查表）</text>
+    <view class="sn-demo__row">
+      <SnIcon name="home" :size="40" />
+      <SnIcon name="arrow-right" :size="40" />
+    </view>
+
+    <text class="sn-demo__label">颜色继承（父级 color，无需烘焙）</text>
+    <view class="sn-demo__row sn-demo__row--tinted">
+      <SnIcon name="ri:heart" :size="40" />
+      <SnIcon name="ri:arrow-right" :size="40" />
+    </view>
+
+    <text class="sn-demo__meta">
+      字体经 registerFontIcon 注册（name→unicode + fontUrl）：web/MP 注入 @font-face，App 端
+      uni.loadFontFace。命中映射的 name 渲染为 &lt;text&gt; 字形，颜色继承宿主 color；未命中的 name
+      回落内置 SVG 目录 / Provider。
+    </text>
+  </view>
+</template>
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: stretch;
+  width: 100%;
+}
+.sn-demo__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  align-items: center;
+  flex-direction: row;
+}
+.sn-demo__row--tinted {
+  color: var(--sn-mp-color-feedback-danger);
+}
+.sn-demo__label {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
+}
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: 1.6;
+}
+</style>

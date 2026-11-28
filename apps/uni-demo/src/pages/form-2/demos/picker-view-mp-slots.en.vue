@@ -1,0 +1,72 @@
+<script setup lang="ts">
+/** Demo: sn-picker-view — `#option` slot draws dashed time-slot boxes per row: solid theme border on the active row, distance fade. */
+import { ref } from 'vue';
+import SnPickerView from '@snui/uni-src/components/sn-picker-view/sn-picker-view.vue';
+
+const slots = ['12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm'];
+const value = ref<Array<string | number>>(['1:30pm']);
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnPickerView
+      v-model="value"
+      :columns="[slots]"
+      :visible-item-count="5"
+      :item-height="56"
+      hide-indicator
+    >
+      <template #option="{ option, active, distance }">
+        <view
+          class="slot-box"
+          :class="[`slot-box--d${Math.min(distance, 2)}`, { 'slot-box--active': active }]"
+        >
+          <text class="slot-box__label">{{ option.label }}</text>
+        </view>
+      </template>
+    </SnPickerView>
+    <text class="sn-demo__meta">Selected: {{ value[0] }} (dashed boxes + solid active border, distance fade)</text>
+  </view>
+</template>
+
+<style scoped>
+.slot-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75%;
+  height: 100rpx;
+  border: 2rpx dashed var(--sn-mp-color-border-default);
+  border-radius: 32rpx;
+  flex-direction: row;
+}
+
+.slot-box__label {
+  font-size: 28rpx;
+  font-weight: var(--sn-mp-font-weight-semibold);
+  color: var(--sn-mp-color-text-primary);
+}
+
+.slot-box--active {
+  border-style: solid;
+  border-width: 4rpx;
+  border-color: var(--sn-mp-color-action-primary);
+}
+
+.slot-box--active .slot-box__label {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.slot-box--d1 {
+  opacity: 0.7;
+}
+
+.slot-box--d2 {
+  opacity: 0.45;
+}
+
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

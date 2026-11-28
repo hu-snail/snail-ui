@@ -50,7 +50,8 @@ import { Button } from '@snui/uni';
     {
       name: 'button-mp-size',
       title: 'Sizes',
-      blurb: 'Three height tiers, mobile usually only needs these three.',
+      blurb:
+        'Three height tiers across form scenes: filled / plain / soft / hairline / circular icon buttons.',
     },
     {
       name: 'button-mp-block',
@@ -59,25 +60,20 @@ import { Button } from '@snui/uni';
     },
     {
       name: 'button-mp-round',
-      title: 'Round button (`round`)',
-      blurb: 'round applies pill-shaped corners.',
+      title: 'Round capsules × variants (`round`)',
+      blurb: 'round stacked over semantic types and common variants: filled / plain / dashed / soft.',
     },
     {
       name: 'button-mp-state',
       title: 'States',
       blurb:
-        'disabled fully disables; loading shows spinner and is unclickable; can manually toggle loading state.',
+        'disabled in every semantic hue + every variant form (plain / soft / dashed / hairline); loading states live in the dedicated loading module.',
     },
     {
       name: 'button-mp-variant',
-      title: 'Variant: base / plain / dashed / soft / subtle / text',
+      title: 'Variant: plain / dashed / soft / subtle / text',
       blurb:
-        '6 variant tiers: base (filled), plain (transparent + colored border), dashed (dashed border), soft (soft bg + colored text), subtle (very light bg), text (text-only).',
-    },
-    {
-      name: 'button-mp-cell',
-      title: 'Cell: hover / fill / menu',
-      blurb: 'Cell list: hover (active bg), fill (always gray bg), menu (transparent + no radius).',
+        'Every variant in every semantic hue: plain (transparent + colored border), dashed (plain-style dashed), soft (soft bg + colored text), subtle (gray plate + semantic text), text (text-only). base is the default filled look shown in Basic usage.',
     },
     {
       name: 'button-mp-color-override',
@@ -86,49 +82,21 @@ import { Button } from '@snui/uni';
         'bgColor / color override the semantic colours inline (they win over the type token); plus customClass / customStyle root styling.',
     },
     {
-      name: 'button-mp-loading-color',
-      title: 'Spinner customization (`loadingColor` / `loadingSize`)',
-      blurb: 'loadingColor recolours the spinner; loadingSize sets the rpx size.',
-    },
-    {
       name: 'button-mp-icon-button',
       title: 'Iconfont icons (`icon` / `class-prefix` / `css-icon`)',
       blurb:
         'icon + class-prefix build {prefix}-{icon}; a string css-icon renders verbatim; the boolean form applies both class names.',
     },
     {
-      name: 'button-mp-loading-props',
-      title: 'The `loading-props` object',
-      blurb: 'loading-props color / size; the flat props win.',
+      name: 'button-mp-loading',
+      title: 'Loading (all scenes in one module)',
+      blurb:
+        'Semantic-color loading + click-to-trigger; the `loading-props` object form (color / size, flat loading-color / loading-size win); direct loadingColor / loadingSize customization.',
     },
     {
       name: 'button-mp-hairline',
       title: 'Hairline border (`hairline`)',
-      blurb: 'hairline only applies to the default type; stacked with the loading state.',
-    },
-    {
-      name: 'button-mp-open-type',
-      title: 'Open-type (MP-only)',
-      blurb:
-        'open-type: share / feedback / launchApp / contact / getUserInfo / openSetting / favorite / chooseAvatar.',
-    },
-    {
-      name: 'button-mp-mp-open-type',
-      title:
-        'Extension attributes (`session-from` / `send-message-*` / `app-parameter` / `scope` …)',
-      blurb:
-        'open-type extension attributes: contact session config, three lang values, app-parameter, scope, hover-stop-propagation.',
-    },
-    {
-      name: 'button-mp-hover',
-      title: 'hover-class / hover-start-time / hover-stay-time',
-      blurb:
-        'Custom press-feedback class; hover-start-time how long before triggering; hover-stay-time how long after release before removing.',
-    },
-    {
-      name: 'button-mp-form-type',
-      title: 'formType (MP-only)',
-      blurb: "form-type='submit' submits form; form-type='reset' resets form.",
+      blurb: 'hairline toggles the stroke on every type; `false` strips all borders.',
     },
   ],
   props: {
@@ -159,7 +127,7 @@ import { Button } from '@snui/uni';
         name: 'hairline',
         type: 'boolean',
         default: '—',
-        desc: 'Show hairline border (default type only).',
+        desc: 'Border toggle (false strips the stroke on every type).',
       },
       {
         name: 'feedback',
@@ -237,6 +205,12 @@ import { Button } from '@snui/uni';
         type: 'string',
         default: '—',
         desc: 'Icon name resolved via the sn-icon registry (populated by `registerSnIcons()` at app bootstrap).',
+      },
+      {
+        name: 'iconPlacement',
+        type: "'left' | 'right'",
+        default: "'left'",
+        desc: "Icon position relative to the label — `right` moves the glyph (and the loading spinner) after the text.",
       },
       {
         name: 'iconSize',

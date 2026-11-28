@@ -124,12 +124,18 @@ function copyName(name: string): void {
 
 .chips {
   width: 100%;
-  white-space: nowrap;
+  /* uni-app x：scroll-view 内容包装层跟随组件 flex-direction，必须显式 row，
+   * 否则内层钳在视口宽（官方示例同款）；uni-app H5 无副作用。 */
+  flex-direction: row;
 }
 
 .chips__track {
-  display: inline-flex;
+  /* inline-flex 在 uni-app x 不支持（落回 flex 后宽度恒等视口，横滚失效）——
+   * 与 sn-tabs 同款 flex + min-width: 100% 让内容撑开滚动宽度。 */
+  display: flex;
   flex-direction: row;
+  min-width: 100%;
+  box-sizing: border-box;
   gap: var(--sn-mp-spacing-3);
   padding: var(--sn-mp-spacing-1) 0;
 }

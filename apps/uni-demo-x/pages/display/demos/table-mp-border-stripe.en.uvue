@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/table-mp-border-stripe.en.vue sha256:f36f1f9a863057eb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-table (uni-end) — borders & stripes (`border` / `stripe`) + root styling
@@ -43,8 +44,7 @@ const rows: Row[] = [
       <SnTableColumn prop="status" label="Status" :width="120" align="center" />
     </SnTable>
     <text class="sn-demo__meta"
-      >border=false + stripe=false: a light list without borders or zebra rows.</text
-    >
+      >border=false + stripe=false: a light list without borders or zebra rows.</text>
   </view>
 </template>
 <style scoped>

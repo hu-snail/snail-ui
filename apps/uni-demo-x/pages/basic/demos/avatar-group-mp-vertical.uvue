@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/avatar-group-mp-vertical.vue sha256:aca1d5c616035d53 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-avatar-group (uni-end) — 竖向排列：vertical 忽略 cascading，

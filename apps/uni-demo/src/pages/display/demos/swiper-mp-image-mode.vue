@@ -7,9 +7,9 @@ import { ref } from 'vue';
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-d1/750/400', text: 'aspectFit 1' },
-  { value: 'https://picsum.photos/seed/snui-sw-d2/750/400', text: 'aspectFit 2' },
-  { value: 'https://picsum.photos/seed/snui-sw-d3/750/400', text: 'aspectFit 3' },
+  { value: 'https://cdn.uviewui.com/uview/album/9.jpg', text: 'aspectFit 1' },
+  { value: 'https://cdn.uviewui.com/uview/album/10.jpg', text: 'aspectFit 2' },
+  { value: 'https://cdn.uviewui.com/uview/album/1.jpg', text: 'aspectFit 3' },
 ];
 
 const current = ref(0);

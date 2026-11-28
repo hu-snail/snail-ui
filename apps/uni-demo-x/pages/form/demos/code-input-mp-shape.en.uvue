@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/code-input-mp-shape.en.vue sha256:3ed68db5c02c1b4a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-code-input — `shape='box'` (default) vs `shape='underline'` cell shapes. */
 import SnCodeInput from '@snui/uni-x/components/sn-code-input/sn-code-input.uvue';
@@ -9,8 +10,7 @@ const line = ref('34');
     <SnCodeInput v-model="box" :length="4" shape="box" info="Box (default)" />
     <SnCodeInput v-model="line" :length="4" shape="underline" info="Underline" />
     <text class="sn-demo__meta"
-      >shape='box' | 'underline' — focus / error borders follow automatically</text
-    >
+      >shape='box' | 'underline' — focus / error borders follow automatically</text>
   </view>
 </template>
 <style scoped>

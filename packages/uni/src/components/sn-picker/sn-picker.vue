@@ -38,6 +38,7 @@ import { computed, ref, watch } from 'vue';
 import SnPopup from '../sn-popup/sn-popup.vue';
 import SnPickerView from '../sn-picker-view/sn-picker-view.vue';
 import type {
+  NormalizedPickerOption,
   PickerColumn,
   PickerOption,
   PickerValue,
@@ -91,6 +92,21 @@ const props = withDefaults(
     safeAreaInsetBottom?: boolean;
     /** Write `v-model` on every roll instead of only on confirm. */
     immediateChange?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：转发给 `sn-picker-view`，
+     * 选中行渲染圆角胶囊高亮带 + 远行淡出。
+     */
+    wheel?: boolean;
+    /**
+     * 高亮带形态（additive）：`shared`（默认）横跨全部列一整条带；
+     * `perColumn` 每列一条。转发给 `sn-picker-view`。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：转发给 `sn-picker-view`，
+     * 滑动经过每一行档位时触发 `uni.vibrateShort({ type: 'light' })`。
+     */
+    vibrateShort?: boolean;
     /** Class on the root node. */
     customClass?: string;
     /** Inline style on the sheet. */
@@ -121,12 +137,34 @@ const props = withDefaults(
     zIndex: 15,
     safeAreaInsetBottom: true,
     immediateChange: false,
+    wheel: false,
+    wheelBand: 'shared',
+    vibrateShort: false,
     customClass: '',
     customStyle: '',
     rootPortal: false,
     customViewClass: '',
   },
 );
+
+defineSlots<{
+  /**
+   * Custom row content (additive) — forwarded to `sn-picker-view`.
+   * Scope: `{ option, active, distance, columnIndex, index }`.
+   */
+  option?(scope: {
+    option: NormalizedPickerOption;
+    active: boolean;
+    distance: number;
+    columnIndex: number;
+    index: number;
+  }): unknown;
+  /**
+   * Custom wheel band paint (additive) — forwarded to `sn-picker-view`.
+   * Scope: `{ mode, columnIndex }`.
+   */
+  band?(scope: { mode: 'shared' | 'perColumn'; columnIndex: number }): unknown;
+}>();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: PickerValue[]): void;
@@ -257,8 +295,30 @@ const viewClass = computed(() => props.customViewClass);
         :item-height="props.itemHeight"
         :visible-item-count="props.visibleItemCount"
         :immediate-change="props.immediateChange"
+        :wheel="props.wheel"
+        :wheel-band="props.wheelBand"
+        :vibrate-short="props.vibrateShort"
         @change="onViewChange"
-      />
+      >
+        <!-- uvue: 无参 v-bind="obj" 不支持 → 逐字段显式绑定；$slots.xxx 守卫
+             仅约束 H5/App——mp 端 uni 运行时对 u-s 声明的插槽恒提供真值，
+             二级作用域插槽转发在 mp-weixin 错位（uni-app x mp alpha 缺陷），
+             条件编译跳过，mp 端回落 label fallback（显式退化，§85）。 -->
+        <!-- #ifndef MP-WEIXIN -->
+        <template v-if="$slots.option" #option="scope"
+          ><slot
+            name="option"
+            :option="scope.option"
+            :active="scope.active"
+            :distance="scope.distance"
+            :column-index="scope.columnIndex"
+            :index="scope.index"
+        /></template>
+        <template v-if="$slots.band" #band="scope"
+          ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
+        /></template>
+        <!-- #endif -->
+      </SnPickerView>
     </view>
   </SnPopup>
 </template>

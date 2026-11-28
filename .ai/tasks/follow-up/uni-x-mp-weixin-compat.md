@@ -40,6 +40,61 @@
   MP 走 page 继承链，App 继续走 class 钩子；文件体积两份选择器共享同一规则体。
 - 回归：`transform-css.test.ts` tokens 模式断言 `page, .sn-theme-root`。
 
+## 根因 4 — 组件宿主节点是 flex item，`flex: 1` 永远轮不到根节点（sn-steps 横向）
+
+- 现场：步骤条横向排列时每步收缩到内容宽（fit-content），连接线只画到本步盒子的
+  右缘就断，与下一个圆点之间露出空隙；`align-center` 组仍居中但整体不再均分。
+- 根因：微信小程序把每个组件包在自定义组件宿主节点里，`.sn-steps--horizontal` 的
+  flex item 是 `<sn-step>` **宿主**（默认 `flex: 0 1 auto` → fit-content），根视图上的
+  `flex: 1 1 0` 只在宿主内部生效，跨步均分从未发生。uni-app x MP 产物印证：宿主节点
+  存在、组件 json 无 `virtualHost`，编译器只往宿主镜像 `display:flex; flex-direction`
+  （`:host` 规则），不镜像 `flex`。
+- 修复：`defineOptions({ options: { virtualHost: true } })`（`#ifdef MP-WEIXIN` 圈住，
+  App 端 UTS 不可见）。运行时 `parseComponent` 会把 `vueOptions.options` 并进组件
+  `options`，`initVirtualHostProps` 据此启用虚拟宿主 —— 与参考库 wot-ui `wd-step` 的
+  `options.virtualHost: true` 同一开关。类型面新增 `vue-component-options.d.ts`
+  （`ComponentCustomOptions.options` 增广；必须放独立 module 文件，写进全局脚本的
+  `declare module 'vue'` 会 ambient-shadow 掉 vue 的真类型）。
+- 回归：`sn-steps.test.ts` "declares a virtual host so the MP wrapper node stops
+  being the flex item"（源文本锚定，happy-dom 看不见 options）。
+
+## 根因 5 — uni-x 后代选择器扁平化把多值 padding 简写拆成非法长手（sn-steps 间距）
+
+- 现场：垂直步骤条内容区丢失左缩进（标题贴着连接线）与底部间距，横向内容区上下
+  padding 归零。
+- 根因：`.sn-step--vertical .sn-step__content { padding: 0 0 var(--sn-mp-spacing-5)
+  var(--sn-mp-spacing-3) }` 被 uni-x 管线降级为"CSS 变量上下文注入"时按属性拆分：
+  `padding-bottom` 拿到两个值 `var(--sn-mp-spacing-5) var(--sn-mp-spacing-3)`、
+  `padding-left` 拿到 0；基础规则 `padding: var(--sn-mp-spacing-2) 0` 的回退值
+  `var(--sn-mp-spacing-2) 0` 对每个单值长手同样非法 → 计算值 unset → 0。多值简写
+  （2 值 / 4 值）过扁平化必坏，边框早有同样结论（源码里 border 全部写成长手）。
+- 修复：源码 padding 全部长手化（`padding-top/right/bottom/left`）；与 border 同一
+  结论，非管线改动。
+- 回归：`sn-steps.test.ts` "writes content padding in longhands the uni-x flattener
+  keeps intact"（源文本锚定：禁止多值 `padding:` 简写 + 三个关键长手存在）。
+
+## 根因 6 — 垂直连接线依赖 stretch+flex-grow 链、横向中线连接线依赖 scaleX(2) 越界绘制
+
+- 现场：垂直步骤条连接线停在 `min-height: 48rpx`，与下一个圆点之间露出整段内容
+  高度的空隙；横向 align-center 连接线只画到本步盒缘，缩放越界段（`scaleX(2)` 画进
+  邻步的透明引导段）在 MP 上不渲染，留下等宽空隙。
+- 根因：垂直线的绘制长度 = 头部（auto 高）被 `align-self: stretch` 拉满后 flex-grow
+  的富余空间 —— 这条链在 MP 真机/模拟器上不稳定；横向中线段靠 transform 越过自身
+  盒子边界，越界段同样不落地（transform 从 var() 解析 + 越界绘制两处皆不可靠）。
+- 修复（几何与"机制"解耦）：
+  - 垂直：连接线改为对步骤根盒子 `position: absolute`（`top: 50rpx` 压着 48rpx
+    指示器下缘、`bottom: 0` 即下一步圆点顶缘、`left: 23rpx` 圆心对齐），单 class
+    规则 `.sn-step__line--vertical`（扁平化会 var 注入两段式后代选择器，具体几何
+    不能骑在 var() 替换上）；根视图补 `position: relative`。对任意内容高度都正确，
+    与 stretch 无关（同 sn-badge 角钉策略）。
+  - 横向中线：连接线改为两段相邻的流内段 —— 引导段涂**上一步**状态色（根上早就有
+    却没被 CSS 使用的 `--prev-finished` / `--prev-error` class），尾段涂本步状态色；
+    flex 相邻盒相触，两段天然连续，无 transform、无越界。首/尾步的外侧段保留
+    `--hidden` class 并内联 `visibility: hidden`（不依赖 var() 注入的 class 规则）。
+- 回归：`sn-steps.test.ts` "anchors the vertical connector on the step root via the
+  vertical modifier" / "paints centered connectors as adjacent segments without a
+  scaled overhang"（源文本锚定禁 scaleX）+ devtools 真机模拟截图前后对比。
+
 ## 遗留 / Follow-up
 
 - MP 深色模式：dark 覆盖仍挂在 `.dark` / `.sn-theme-dark` 类上（同样在组件内部），

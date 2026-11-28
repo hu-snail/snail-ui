@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/loadmore-mp-text.vue sha256:da5177e3c56c11f3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-loadmore (uni-end) — custom texts and slots.

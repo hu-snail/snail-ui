@@ -18,6 +18,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'验证码输入框'"
     :title-en="'Code Input'"
     :desc="'验证码 / 密码方框输入'"
@@ -25,54 +26,71 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('形状', 'Shape')" badge="shape" />
+        <DemoModuleHead class="demo-host" :title="t('形状', 'Shape')" badge="shape" />
         <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('格子背景', 'Cell background')" badge="background" />
-        <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" />
-        <view class="module__body">
-          <Demo3 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('自定义样式', 'Custom style')" badge="custom-style" />
-        <view class="module__body">
-          <Demo4 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('格子背景', 'Cell background')"
+          badge="background"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('无边框', 'No border')" badge="no-border" />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('自定义样式', 'Custom style')"
+          badge="custom-style"
+        />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('错误态（errorInfo）', 'Error state (errorInfo)')"
           badge="error-info"
         />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('格子间距（gutter）', 'Cell gap (gutter)')" badge="gutter" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('格子间距（gutter）', 'Cell gap (gutter)')"
+          badge="gutter"
+        />
         <view class="module__body">
-          <Demo6 />
+          <Demo6 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('明文显示（mask）', 'Plain display (mask)')" badge="mask" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('明文显示（mask）', 'Plain display (mask)')"
+          badge="mask"
+        />
         <view class="module__body">
-          <Demo7 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
     </view>
@@ -100,4 +118,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

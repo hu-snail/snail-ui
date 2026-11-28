@@ -42,7 +42,8 @@
  *   - 时间滚筒 — 用 sn-datetime-picker-view
  */
 
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
+import { SN_POPUP_DRAG_KEY } from '../sn-popup/sn-popup-types';
 import type {
   CalendarDayItem,
   CalendarDayType,
@@ -122,7 +123,12 @@ const props = withDefaults(
     showPanelTitle?: boolean;
     /** Default clock time applied to date / datetime values. */
     defaultTime?: string | string[];
-    /** Scrollable panel height in px design units. */
+    /**
+     * Panel height in px design units. Only used in `switch-mode="none"`, where
+     * every month is rendered flat and the panel needs a fixed scroll window.
+     * Switch modes render one month at a time and size to its content instead
+     * (a fixed height left a large empty band under short months).
+     */
     panelHeight?: number;
     /** Emit `change` as soon as a cell is tapped. */
     immediateChange?: boolean;
@@ -395,12 +401,52 @@ function onCellTap(cell: Cell): void {
 
 /* ── Navigation (month / year-month switch modes) ──────────────────────── */
 
-const activeMonthIndex = ref(0);
+/**
+ * Index of the month the sheet opens on: the selected value's month, else
+ * today's month, clamped to the nearest exposed month when either falls
+ * outside the bounds. Without this the sheet always opened on the first month
+ * of the range, so a value months in the future sat off-screen.
+ */
+function initialMonthIndex(): number {
+  const blocks = monthBlocks.value;
+  if (blocks.length === 0) return 0;
+  const selected = selection.value[0];
+  const parts = toParts(typeof selected === 'number' ? selected : now);
+  const exact = blocks.findIndex(
+    (block) => block.year === parts.year && block.month === parts.month,
+  );
+  if (exact >= 0) return exact;
+  // Out of range: clamp to the nearest end (target before the range → first,
+  // after it → last).
+  const first = blocks[0];
+  if (first === undefined) return 0;
+  const before = parts.year < first.year || (parts.year === first.year && parts.month < first.month);
+  return before ? 0 : blocks.length - 1;
+}
+
+const activeMonthIndex = ref(initialMonthIndex());
+
+/**
+ * Stand down while a host sheet's grabber is being dragged.
+ *
+ * When this grid lives inside `sn-popup` with `draggable`, the pull handle and
+ * the grid compete for the same vertical gesture — the grid's `scroll-view`
+ * wins and the sheet never follows the finger. The popup provides its drag
+ * state; a standalone `sn-calendar-view` (no popup above it) gets `undefined`
+ * and scrolls as usual.
+ */
+const popupDrag = inject(SN_POPUP_DRAG_KEY, undefined);
+const scrollEnabled = computed(() => !(popupDrag?.isDragging.value ?? false));
 
 /** `scroll-into-view` target for the active month. */
 const scrollIntoViewId = computed(() => {
-  if (props.switchMode === 'none') return '';
-  const block = monthBlocks.value[activeMonthIndex.value];
+  const blocks = monthBlocks.value;
+  const block =
+    props.switchMode === 'none'
+      ? // Flat mode renders every month in one scroller — scroll to the same
+        // month the switch modes open on.
+        blocks[initialMonthIndex()]
+      : blocks[activeMonthIndex.value];
   return block ? `sn-calendar-view-month-${block.key}` : '';
 });
 
@@ -414,11 +460,24 @@ function shiftYear(delta: number): void {
   const current = monthBlocks.value[activeMonthIndex.value];
   if (!current) return;
   const targetYear = current.year + delta;
-  const index = monthBlocks.value.findIndex(
+  // Prefer the same month in the target year; when the bounds do not reach it
+  // (a year near either edge of the range) fall back to the nearest month the
+  // target year does expose, so a year step is never a dead click.
+  const sameMonth = monthBlocks.value.findIndex(
     (block) => block.year === targetYear && block.month === current.month,
   );
-  if (index < 0) return;
-  activeMonthIndex.value = index;
+  if (sameMonth >= 0) {
+    activeMonthIndex.value = sameMonth;
+    return;
+  }
+  const firstInYear = monthBlocks.value.findIndex((block) => block.year === targetYear);
+  if (firstInYear < 0) return;
+  let lastInYear = firstInYear;
+  for (let i = firstInYear; i < monthBlocks.value.length; i += 1) {
+    if (monthBlocks.value[i]?.year !== targetYear) break;
+    lastInYear = i;
+  }
+  activeMonthIndex.value = delta > 0 ? firstInYear : lastInYear;
 }
 
 function jumpToToday(): void {
@@ -435,8 +494,6 @@ defineExpose({ shiftMonth, shiftYear, jumpToToday });
 
 const RATIO = 2;
 
-const panelHeightRpx = computed(() => `${Math.max(props.panelHeight, 1) * RATIO}rpx`);
-
 /** Months actually rendered: every block in `none`, the active one otherwise. */
 const visibleBlocks = computed<MonthBlock[]>(() => {
   if (props.switchMode === 'none') return monthBlocks.value;
@@ -450,13 +507,38 @@ const rootClass = computed(() => [
   {
     'sn-calendar-view--switch': props.switchMode !== 'none',
     'sn-calendar-view--is-datetime': isDatetimeType.value,
+    'sn-calendar-view--scroll-locked': !scrollEnabled.value,
   },
   props.customClass,
 ]);
 
 const rootStyle = computed(() => props.customStyle || undefined);
 
-const panelStyle = computed(() => ({ height: panelHeightRpx.value }));
+/**
+ * Panel height.
+ *
+ * miniprogram `scroll-view` only scrolls when it has a definite height — with
+ * `height: auto` it silently loses its scroll behaviour and the gesture falls
+ * through to the page. Switch modes therefore keep a real height, but size it
+ * to the ACTIVE month's row count instead of the flat-mode window, so a short
+ * month does not leave an empty band; the CSS height transition animates the
+ * jump between four- and five-row months.
+ */
+const panelStyle = computed(() => {
+  if (props.switchMode === 'none') {
+    return { height: `${Math.max(props.panelHeight, 1) * RATIO}rpx` };
+  }
+  const block = monthBlocks.value[activeMonthIndex.value];
+  if (block === undefined) return { height: `${Math.max(props.panelHeight, 1) * RATIO}rpx` };
+  // 7 columns × 88rpx day cells; a month spans `cells.length / 7` rows.
+  const rows = Math.max(Math.ceil(block.cells.length / 7), 4);
+  // Chrome around the grid: the month block's top padding (spacing-3 = 16rpx)
+  // plus the panel's bottom padding (16rpx), and the month title row when it
+  // renders (spacing-2 × 2 + a ~36rpx line). Rounded up — a few rpx of slack
+  // keeps the last row fully reachable instead of clipping it.
+  const chrome = 32 + (props.showPanelTitle ? 56 : 0);
+  return { height: `${rows * 88 + chrome}rpx` };
+});
 
 function cellClass(cell: Cell): Record<string, boolean> {
   return {
@@ -499,6 +581,14 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
   >
     <view v-if="switchMode !== 'none'" class="sn-calendar-view__controls">
       <view
+        v-if="switchMode === 'year-month'"
+        class="sn-calendar-view__control sn-calendar-view__control--prev-year"
+        role="button"
+        aria-label="previous year"
+        @tap="shiftYear(-1)"
+        ><text>«</text></view
+      >
+      <view
         class="sn-calendar-view__control sn-calendar-view__control--prev"
         role="button"
         aria-label="previous"
@@ -534,7 +624,7 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
     <scroll-view
       class="sn-calendar-view__panel"
       :style="panelStyle"
-      scroll-y
+      :scroll-y="scrollEnabled"
       :scroll-into-view="scrollIntoViewId"
     >
       <view
@@ -631,6 +721,21 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
 .sn-calendar-view__panel {
   padding: 0 var(--sn-mp-spacing-3) var(--sn-mp-spacing-3);
   box-sizing: border-box;
+}
+
+/* The panel always carries an inline height (mp `scroll-view` needs a definite
+ * one to scroll at all). Switch modes size it to the active month, so the
+ * height transition below eases the jump between 4- and 5-row months. */
+.sn-calendar-view--switch .sn-calendar-view__panel {
+  transition: height 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* While a host sheet's grabber is dragging, the grid must not scroll — the
+ * `scroll-y` binding above is the real switch on miniprogram; this covers H5,
+ * where a native scroll can still start under the finger. */
+.sn-calendar-view--scroll-locked .sn-calendar-view__panel {
+  touch-action: none;
+  overflow: hidden;
 }
 
 .sn-calendar-view__month {

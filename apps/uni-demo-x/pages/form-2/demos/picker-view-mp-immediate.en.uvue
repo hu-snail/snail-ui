@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.en.vue sha256:e49c514d066fbcc4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-picker-view — live commit while dragging (`immediateChange`).
@@ -18,8 +19,7 @@ function onChange(): void {
   <view class="sn-demo sn-demo--stack">
     <SnPickerView v-model="value" :columns="[seconds]" immediate-change @change="onChange" />
     <text class="sn-demo__meta"
-      >immediateChange: change fires continuously while dragging ({{ changes }} so far)</text
-    >
+      >immediateChange: change fires continuously while dragging ({{ changes }} so far)</text>
   </view>
 </template>
 <style scoped>

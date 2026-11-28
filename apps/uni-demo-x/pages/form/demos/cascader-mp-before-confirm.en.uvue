@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-before-confirm.en.vue sha256:805e59e9013db1e0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — confirm veto (beforeConfirm).
@@ -34,8 +35,7 @@ const guard = (payload: { value: string | number | Array<string | number> }) => 
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >beforeConfirm vetoes the confirm, with its verdict reported by the guard card row.</text
-    >
+      >beforeConfirm vetoes the confirm, with its verdict reported by the guard card row.</text>
     <view class="sn-demo__cards">
       <SnCell card title="Alert region" placeholder="Please select" is-link @click="open = true" />
       <SnCell card title="Confirm guard" :value="lastGuard" />

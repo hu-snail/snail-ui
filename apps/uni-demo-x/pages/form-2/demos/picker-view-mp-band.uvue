@@ -1,0 +1,26 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-band.vue sha256:2dbe0159b443a866 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-picker-view — wheel 胶囊带主题：`--sn-picker-view-wheel-band` 变量把高亮带换成主题浅蓝。 */
+import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';
+const minutes = [15, 20, 25, 30, 45];
+const value = ref<Array<string | number>>([25]);
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <SnPickerView
+      v-model="value"
+      :columns="[minutes]"
+      wheel
+      vibrate-short
+      :visible-item-count="5"
+      custom-style="--sn-picker-view-wheel-band: var(--sn-mp-color-action-primary-soft); --sn-picker-view-wheel-radius: 24rpx"
+    />
+    <text class="sn-demo__meta">已选：{{ value[0] }} min（customStyle 覆盖胶囊带底色与圆角）</text>
+  </view>
+</template>
+<style scoped>
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

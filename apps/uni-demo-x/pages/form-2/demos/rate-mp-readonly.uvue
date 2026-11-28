@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-readonly.vue sha256:1a602d21f125edef —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — 只读：readonly 拦掉点击，仅展示评分。 */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

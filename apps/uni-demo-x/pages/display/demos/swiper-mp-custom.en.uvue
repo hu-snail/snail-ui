@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-custom.en.vue sha256:8c7e4d6e6ad35273 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — radius plus the custom* class / style hooks.
@@ -5,9 +6,9 @@
  */
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-c1/750/400', text: 'Slide 1 · custom classes' },
+  { value: 'https://cdn.uviewui.com/uview/album/4.jpg', text: 'Slide 1 · custom classes' },
   {
-    value: 'https://picsum.photos/seed/snui-sw-c2/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/5.jpg',
     text: 'Slide 2 · custom caption style',
   },
 ];

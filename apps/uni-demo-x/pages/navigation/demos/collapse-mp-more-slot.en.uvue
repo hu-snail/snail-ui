@@ -1,9 +1,10 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-more-slot.en.vue sha256:367cb956e2c0cc19 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — English shadow of collapse-mp-more-slot.
  *
  * - in viewmore mode the `more` slot replaces the bottom expand / collapse area; its
- *   scope is `{ expanded }`
+ *   scope is `{ expanded }` (opt in with `use-more-slot`)
  * - `custom-more-slot-class` appends a class to that area
  */
 import { ChevronDown } from '@snui/uni-x/components/sn-icon/sn-icon-set';
@@ -14,7 +15,13 @@ const viewmore = ref(false);
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnCollapse v-model="viewmore" viewmore :line-num="2" custom-more-slot-class="sn-demo__more">
+    <SnCollapse
+      v-model="viewmore"
+      viewmore
+      use-more-slot
+      :line-num="2"
+      custom-more-slot-class="sn-demo__more"
+    >
       <SnCollapseItem name="intro" title="About the framework">
         <text class="sn-demo__body">
           This block verifies the line-num clamp: two lines show before expanding, and only the

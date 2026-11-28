@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/fab-mp-disabled.en.vue sha256:5809cf7c27673419 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-fab (uni-end) — disabled.
@@ -23,7 +24,7 @@ import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
       position="left-bottom"
       disabled
       :gap="{ bottom: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     />
   </view>
 </template>
@@ -56,8 +57,4 @@ import SnFab from '@snui/uni-x/components/sn-fab/sn-fab.uvue';
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

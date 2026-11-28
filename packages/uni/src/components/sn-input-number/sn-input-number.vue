@@ -28,6 +28,12 @@
  * `buttonColor` (additive) overrides the action fill on any theme and flips
  * the glyph to the on-primary color.
  *
+ * `animation` (additive) rolls the field text vertically on every committed
+ * change — increase rolls up, decrease rolls down. The roll is a two-slot
+ * track stepped by the 56rpx field height under an `overflow: hidden`
+ * viewport; a fresh track node (remount key) makes the CSS animation replay
+ * on consecutive rolls.
+ *
  * Glyphs are `SnIcon` (not `::before` / `::after`): the uni-app x CSS
  * transform drops pseudo-elements, so drawing the +/- bars in CSS would leave
  * the uvue build with blank buttons.
@@ -39,6 +45,10 @@
  * `touchmove` — as soon as the held finger travels away from its start point
  * (touch events keep firing on the press-start element after the finger
  * leaves it, so without the move check the stepper would keep counting).
+ *
+ * `animation` runs one `setTimeout` per roll to unmount the roll layer when
+ * the CSS animation lands. It is cleared on unmount and before every new
+ * roll (a mid-roll change restarts the roll rather than stacking timers).
  *
  * ## Value model
  *
@@ -61,7 +71,7 @@
  *   - 金额格式化 / 千分位 — 由宿主格式化后传入
  */
 
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { Minus as MinusIcon, Plus as PlusIcon } from '../sn-icon/sn-icon-set';
 
@@ -135,6 +145,14 @@ const props = withDefaults(
      * `var(--sn-mp-color-action-primary)`).
      */
     buttonColor?: string | undefined;
+    /**
+     * Roll the field text vertically on every committed value change —
+     * increase rolls up, decrease rolls down (AUI additive; wd-input-number
+     * has no animation surface). Typing drafts never roll; the first value
+     * observed at mount (including the `updateOnInit` correction) does not
+     * roll either.
+     */
+    animation?: boolean;
   }>(),
   {
     modelValue: 0,
@@ -162,6 +180,7 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
     buttonColor: undefined,
+    animation: false,
   },
 );
 
@@ -401,7 +420,74 @@ function onPressEnd(): void {
   clearPressTimer();
 }
 
-onBeforeUnmount(clearPressTimer);
+/* ── Roll animation (additive `animation`, AGENTS.md §112.3a) ───────────── */
+
+/** One committed change visualised as a vertical odometer roll. */
+interface RollState {
+  /** Remount key — a fresh node makes the CSS animation replay on re-rolls. */
+  seq: number;
+  from: string;
+  to: string;
+  dir: 'up' | 'down';
+}
+
+/** Matches the CSS duration below; the layer unmounts when the roll lands. */
+const ROLL_DURATION_MS = 320;
+
+const roll = ref<RollState | null>(null);
+let rollTimer: ReturnType<typeof setTimeout> | null = null;
+let rollSeq = 0;
+/** Changes observed before mount are `updateOnInit` corrections — not steps. */
+let rollMounted = false;
+
+function clearRollTimer(): void {
+  if (rollTimer !== null) {
+    clearTimeout(rollTimer);
+    rollTimer = null;
+  }
+}
+
+function startRoll(from: string, to: string, dir: 'up' | 'down'): void {
+  clearRollTimer();
+  roll.value = { seq: ++rollSeq, from, to, dir };
+  rollTimer = setTimeout(() => {
+    roll.value = null;
+    rollTimer = null;
+  }, ROLL_DURATION_MS);
+}
+
+/** Track slot order: `from` on top for a roll-up, below for a roll-down. */
+const rollSlots = computed<string[]>(() => {
+  if (roll.value === null) return [];
+  return roll.value.dir === 'up'
+    ? [roll.value.from, roll.value.to]
+    : [roll.value.to, roll.value.from];
+});
+
+watch(
+  () => props.modelValue,
+  (next, prev) => {
+    if (!rollMounted || !props.animation || props.withoutInput || props.disabled) return;
+    // The user is typing — the field shows the draft and a roll would fight it.
+    if (draft.value !== null) return;
+    // `''` / `null` are the deliberate allowNull unset state (`Number('') === 0`
+    // would masquerade it as a real 0), same guard as `numericValue`.
+    if (prev === '' || prev === null || next === '' || next === null) return;
+    const from = Number(prev);
+    const to = Number(next);
+    if (!Number.isFinite(from) || !Number.isFinite(to) || from === to) return;
+    startRoll(String(prev), String(next), to > from ? 'up' : 'down');
+  },
+);
+
+onMounted(() => {
+  rollMounted = true;
+});
+
+onBeforeUnmount(() => {
+  clearPressTimer();
+  clearRollTimer();
+});
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
@@ -479,6 +565,7 @@ if (props.updateOnInit) {
 
     <view v-if="!withoutInput" class="sn-input-number__inner">
       <input
+        v-show="roll === null"
         class="sn-input-number__field"
         :style="fieldWidthStyle"
         :type="inputType"
@@ -491,6 +578,22 @@ if (props.updateOnInit) {
         @focus="onFieldFocus"
         @blur="onFieldBlur"
       />
+      <!-- Roll viewport (additive `animation`): covers the field while a roll
+           plays, then unmounts back to the plain input. Track slots render
+           [from, to] for a roll-up and [to, from] for a roll-down. -->
+      <view v-if="roll !== null" class="sn-input-number__roll" aria-hidden="true">
+        <view
+          :key="roll.seq"
+          class="sn-input-number__roll-track"
+          :class="`sn-input-number__roll-track--${roll.dir}`"
+        >
+          <text
+            v-for="(text, i) in rollSlots"
+            :key="i"
+            class="sn-input-number__roll-text"
+          >{{ text }}</text>
+        </view>
+      </view>
     </view>
 
     <view
@@ -626,6 +729,62 @@ if (props.updateOnInit) {
   font-weight: var(--sn-mp-font-weight-medium);
   text-align: center;
   line-height: 56rpx;
+}
+
+/* ── Roll animation (additive `animation`) ──────────────────────────────── */
+
+/* Viewport covers the field segment while a roll plays; the track is a
+ * two-slot column (one slot per value) stepped by exactly the field height. */
+.sn-input-number__roll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.sn-input-number__roll-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  animation: sn-input-number-roll-up 320ms ease forwards;
+}
+
+/* Roll-down starts from the second slot (translateY(-56rpx) shows `from`)
+ * and lands on the first slot; the up direction is the mirror. */
+.sn-input-number__roll-track--down {
+  animation-name: sn-input-number-roll-down;
+}
+
+@keyframes sn-input-number-roll-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-56rpx);
+  }
+}
+
+@keyframes sn-input-number-roll-down {
+  from {
+    transform: translateY(-56rpx);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Slot typography mirrors `__field` so the rolled digits sit exactly where
+ * the input text sat. */
+.sn-input-number__roll-text {
+  width: 100%;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-medium);
+  color: var(--sn-mp-color-text-primary);
 }
 
 /* ── Themes ─────────────────────────────────────────────────────────────── */

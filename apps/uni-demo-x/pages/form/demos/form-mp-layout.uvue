@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-layout.vue sha256:59f9ee7a3361dad4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — 排布（layout / center）：layout="vertical" 标签叠在控件上方；center 让控件列垂直居中。 */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

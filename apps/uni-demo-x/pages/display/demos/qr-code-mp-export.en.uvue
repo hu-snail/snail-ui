@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/qr-code-mp-export.en.vue sha256:ed9a245f2c266b47 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-qr-code (uni-end) — size / margin / export.
@@ -11,7 +12,11 @@ const exported = ref('—');
 async function onExport() {
   if (qrRef.value === null) return;
   try {
-    exported.value = await qrRef.value.exportImage();
+    const result = await qrRef.value.exportImage();
+    // uni-app x resolves with a full PNG data URL — keep the demo label short.
+    exported.value = result.startsWith('data:image/')
+      ? `${result.slice(0, 22)}… (${result.length} chars, usable as <image :src>)`
+      : result;
   } catch (error) {
     const code = (error as { code?: string }).code ?? 'EXPORT_FAILED';
     exported.value = `export unavailable (${code})`;
@@ -22,7 +27,7 @@ async function onExport() {
   <view class="sn-demo sn-demo--column">
     <SnQrCode ref="qrRef" text="https://snui.dev/export" :size="200" :margin="12" />
     <SnButton size="small" @click="onExport"><text>Export image</text></SnButton>
-    <text class="sn-demo__meta">exportImage resolves with the temp file path: {{ exported }}</text>
+    <text class="sn-demo__meta">exportImage resolves with a temp file path or data URL: {{ exported }}</text>
   </view>
 </template>
 <style scoped>

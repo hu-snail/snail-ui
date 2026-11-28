@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/action-sheet-mp-header.vue sha256:25b0060a3f303455 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-action-sheet (uni-end) — title + description + close button

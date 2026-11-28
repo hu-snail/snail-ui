@@ -5,7 +5,7 @@
  * 卡片由 `v-for` 数据驱动（组件会递归展开 slot 里的 Fragment），高度各不
  * 相同；按最短列优先放置，每一列各自打包，矮列不会在旁边留出空洞。
  *
- * 卡片图使用真实网络图片（picsum.photos）：`seed` 固定，同一张图稳定复现。
+ * 卡片图使用真实网络图库（uview CDN，国内稳定图源）：`seed` 中的数字映射到固定的 10 张图。
  */
 import { SnWaterfall } from '@snui/vue-web';
 
@@ -30,7 +30,7 @@ const tiles: Tile[] = [
 /** 按卡片的目标比例取图（占位宽 300px），`object-fit: cover` 再兜底裁切。 */
 function photo(seed: string, height: number, width = 300): string {
   const w = 600;
-  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 </script>
 

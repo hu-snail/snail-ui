@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/text-mp-custom.en.vue sha256:6b3ae11089899389 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-text (uni-end) — custom-class / custom-style and the three slots.
@@ -17,8 +18,7 @@ import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
     />
     <text class="sn-demo__meta"
       >The root carries both sn-text and sn-demo__highlight; the inline style overrides padding and
-      radius.</text
-    >
+      radius.</text>
 
     <SnText type="primary" bold>
       <template #prefix>

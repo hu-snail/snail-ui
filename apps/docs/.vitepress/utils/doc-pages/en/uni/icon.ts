@@ -12,11 +12,13 @@ export const iconDocPageEn: SnDocPageData = {
   description: [
     { t: 'text', s: 'Cross-end icon component for ' },
     { t: 'code', s: '@snui/uni' },
-    { t: 'text', s: '. Four rendering paths share one ' },
+    { t: 'text', s: '. Five rendering paths share one ' },
     { t: 'code', s: 'size' },
     { t: 'text', s: ' / ' },
     { t: 'code', s: 'color' },
-    { t: 'text', s: ' / stroke contract: **iconfont glyphs** (' },
+    { t: 'text', s: ' / stroke contract: **registered font icons** (' },
+    { t: 'code', s: 'registerFontIcon' },
+    { t: 'text', s: ' → <text> unicode with colour inheritance), **iconfont glyphs** (' },
     { t: 'code', s: 'name' },
     { t: 'text', s: ' + ' },
     { t: 'code', s: 'classPrefix' },
@@ -56,6 +58,12 @@ import { Icon } from '@snui/uni';
 </template>`,
   },
   demos: [
+    {
+      name: 'icon-mp-font',
+      title: 'Font icons (registerFontIcon)',
+      blurb:
+        'registerFontIcon maps names to unicode codepoints plus a fontUrl: registered names render as a <text> glyph on every end with plain CSS color inheritance; misses fall back to the built-in SVG catalog / providers. The demo uses the public RemixIcon font (real devices need the font domain whitelisted on MP).',
+    },
     {
       name: 'icon-mp-string',
       title: '1. String icon — built-in catalog (recommended)',

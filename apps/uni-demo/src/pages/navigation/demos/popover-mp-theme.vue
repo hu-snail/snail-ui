@@ -3,8 +3,8 @@
  * Demo: sn-popover — 暗黑主题气泡（sn-config-provider theme="dark"）。
  *
  * 两块对照 pane：暗黑 pane 内的气泡走 `.sn-theme-dark` 的 `--sn-mp-color-*`
- * 暗色别名（`--sn-popover-bg` = 深底、文字 = 浅字、描边 = 深色边框），
- * 箭头与气泡边框线自动跟随，无需单独配色；浅色 pane 保持页面级值。
+ * 暗色别名（`--sn-popover-bg` = 深底、文字 = 浅字），
+ * 箭头与气泡同色、自动跟随，无需单独配色；浅色 pane 保持页面级值。
  *
  * 预览专用：`custom-class="sn-popover-contained"` 用 relative 锚定气泡，
  * spacer 给 bottom 气泡留出展开空间。
@@ -25,7 +25,7 @@ const lightOpen = ref(false);
       <SnPopover
         v-model="darkOpen"
         mode="normal"
-        content="暗黑主题气泡：深底浅字，描边与箭头随主题翻转，无需单独配色。"
+        content="暗黑主题气泡：深底浅字"
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
@@ -40,7 +40,7 @@ const lightOpen = ref(false);
       <SnPopover
         v-model="lightOpen"
         mode="normal"
-        content="浅色主题气泡：白底深字，与暗黑 pane 直观对照。"
+        content="浅色主题气泡：白底深字"
         placement="bottom-start"
         :show-close="true"
         custom-class="sn-popover-contained"
@@ -84,5 +84,21 @@ const lightOpen = ref(false);
  * stays anchored to the component root. */
 .sn-popover.sn-popover-contained {
   position: relative;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   弹层伸出包装盒时不被裁（App.vue 全局规则只命中页面级元素与 demo 根
+   节点，够不到 demo 内部包装类，AGENTS.md §103）。 */
+.sn-popover-theme__label {
+  overflow: visible;
+}
+.sn-popover-theme__meta {
+  overflow: visible;
+}
+.sn-popover-theme__pane {
+  overflow: visible;
+}
+.sn-popover-theme__space {
+  overflow: visible;
 }
 </style>

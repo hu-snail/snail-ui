@@ -48,6 +48,8 @@ const SCENARIO_LABELS = {
   'custom-style': '自定义样式',
   variant: '变体',
   config: '配置',
+  rounded: '圆角箭头',
+  border: '自定义边框',
   slots: '插槽',
   type: '类型',
   types: '类型',
@@ -86,6 +88,16 @@ const SCENARIO_LABELS = {
   hover: '悬停',
   'image-tap': '点图片关闭',
   lunar: '农历',
+  wheel: 'wheel 风格',
+  vibrate: '滑动震动',
+  icons: '图标选项',
+  band: '胶囊带主题',
+  slots: '时间槽',
+  rich: '富内容行',
+  'band-mode': '分列与渐变带',
+  'band-dots': '点阵纹理带',
+  'band-soft': '整幅软色带',
+  reminder: '提醒弹层',
   card: '卡片',
   direction: '方向',
   theme: '主题',
@@ -169,6 +181,7 @@ const SCENARIO_LABEL_OVERRIDES = {
   'calendar-panel': '面板尺寸与切换（panelHeight / switchMode）',
   'calendar-immediate-change': '即时写回（immediateChange）',
   'calendar-sheet-chrome': '弹层外观与底栏插槽',
+  'calendar-footer': '底栏形态（取消开关 / 无底栏）',
   'calendar-view-first-day-of-week': '周起始日',
   'calendar-view-formatter': '单元格格式化',
   'calendar-view-panel-title': '面板标题（showPanelTitle）',
@@ -244,6 +257,7 @@ const SCENARIO_LABEL_OVERRIDES = {
   'input-number-theme': '主题（theme）',
   'input-number-round': '圆角（round）',
   'input-number-long-press': '长按连加（longPress）',
+  'input-number-animation': '数字滚动动画（animation）',
   'input-number-disabled': '禁用（disabled）',
   'keyboard-labels': '键位文案（deleteText / closeText）',
   'keyboard-delete-key': '删除键开关（showDeleteKey）',
@@ -310,9 +324,11 @@ const SCENARIO_LABEL_OVERRIDES = {
   'slide-verify-custom-style': '根节点样式',
   'slider-bar-basic': '基础用法',
   'slider-bar-range': '区间（`range`）',
-  'slider-bar-theme': '主题（`theme`）',
+  'slider-bar-theme': '主题预设（`theme`）',
   'slider-bar-size': '尺寸（`size`）',
   'slider-bar-variant': '竖排（`variant=column`）',
+  'slider-bar-shape': '把手形状与尺寸（`knobShape` / `knobSize`）',
+  'slider-bar-knob-icon': '把手图标 × 形状（`knobIcon`）',
   'slider-range': '区间与刻度（`range` / `marks`）',
   'slider-theme': '主题（`theme`）',
   'slider-disabled': '禁用（`disabled`）',
@@ -443,6 +459,8 @@ const SCENARIO_LABEL_OVERRIDES = {
   'swipe-action-before-close': '关闭拦截（before-close）',
   'swipe-action-disabled': '禁用（disabled）',
   'swipe-action-custom-style': '根节点样式',
+  'swipe-action-card': '浮卡行（消息列表）',
+  'swipe-action-cell-group': '列表组（cell 风格）',
   'backtop-threshold': '显示阈值（top）',
   'backtop-icon-style': '图标样式与层级',
   'collapse-accordion': '手风琴模式（accordion）',
@@ -463,11 +481,16 @@ const SCENARIO_LABEL_OVERRIDES = {
   'navbar-disabled': '禁用侧按钮（left-disabled）',
   'navbar-safe-area': '安全区与层级',
   'navbar-capsule-slot': '胶囊插槽',
+  'navbar-capsule': '胶囊样式 / 带搜索栏',
+  'navbar-mp-capsule': '微信小程序胶囊适配',
   'pagination-hide-on-one-page': '单页隐藏（hide-if-one-page）',
   'pagination-slots': '插槽自定义',
   'popover-icon-class': '兼容图标字段（iconClass）',
   'popover-content-slot': 'content 插槽',
   'popover-custom-style': '节点类名与偏移',
+  'popover-alignment': '对齐方式',
+  'popover-notification': '通知卡片',
+  'popover-sheet': '底部面板',
   'segmented-theme': '主题（theme）',
   'segmented-disabled': '禁用（disabled）',
   'segmented-value': 'value 别名（wot-ui 迁移）',
@@ -500,6 +523,10 @@ const SCENARIO_LABEL_OVERRIDES = {
   'radio-indicator': '指示器位置与选中态',
   'checkbox-card': '卡片模式（variant=card）',
   'checkbox-indicator': '指示器位置与选中态',
+  'slider-bar-look-basic': '参考风格：描边圆盘（Volume）',
+  'slider-bar-look-range': '参考风格：双柄区间',
+  'slider-bar-look-column': '参考风格：竖排胶囊',
+  'slider-bar-look-color': '参考风格：多彩变体',
 };
 
 /**
@@ -512,16 +539,65 @@ const PAGE_BG_OVERRIDES = {
 };
 
 /**
+ * 组件页顶部导航形态覆盖：navbar 演示页本身就在展示导航栏，页面壳若再渲染
+ * 一条 sn-navbar（blend 通栏 + 透明磨砂）会与场景重复、并把示例挤下去。
+ * 该页改用 uni 原生导航栏（仍有返回键与标题），页面内不再出现导航组件实例。
+ * 其它组件页保持 blend 通栏，产物不变。
+ */
+const NATIVE_NAV_PAGES = new Set(['navbar']);
+
+/**
+ * 组件页「完整展开」覆盖：navbar 演示页按参考稿通栏平铺——场景模块去掉
+ * 白底 / 圆角 / 描边 / 柔影 / 内边距，导航栏示例直接铺满整行；仅场景标题
+ * 行保留一条浅色底，便于区分分组。其它组件页仍用浮起分区卡。
+ */
+const MODULE_FLAT_PAGES = new Set(['navbar']);
+
+/**
  * 组件页场景模块样式覆盖：列出的组件页 `.module` 卡片转透明（无边框无影）。
  * - drop-menu / tabbar：组件的面板是自身坐标系内的 absolute 层、遮罩是
  *   fixed 全屏层——白底卡片会把白色面板吞进卡片里，去掉卡底让面板直接
  *   浮在页面画布上。
  * - cell：单元格分组自带 surface 背景，那就是组件的真实形态——白卡底与
  *   组件背景双重叠加，去底后分组按真实页面渲染直接浮在画布上。
+ * - calendar / datetime-picker：入口行已改为直接使用 sn-cell（无分组卡片，
+ *   模块标题由外层 DemoModuleHead 承担），同 cell 的理由——cell 自带
+ *   surface 背景，白卡底会双重叠加。这两页同时走 MODULE_FULL_BLEED_PAGES：
+ *   入口行通栏（cell 自己承担左右内边距），只有卡片形态的场景保留外间距。
+ * - swipe-action：滑动行是浮卡形态（参考 iOS 邮件滑动交互），行卡片与
+ *   操作钮的表面由 demo 内容自绘，组件本身不画背景——白卡底会与行卡片
+ *   双重叠加，滑开露出的钮缝也需要露出页面画布。同时走
+ *   MODULE_FULL_BLEED_PAGES：行卡片自带左右外间距，标题行由 DemoModuleHead
+ *   的 inset 补回留白。
  * 生成页的透明变体注释按页取 MODULE_BARE_COMMENTS，缺省沿用面板/遮罩理由
  * （保持 drop-menu / tabbar 既有产物不变）。
  */
-const MODULE_BARE_PAGES = new Set(['drop-menu', 'tabbar', 'cell']);
+const MODULE_BARE_PAGES = new Set([
+  'drop-menu',
+  'tabbar',
+  'cell',
+  'calendar',
+  'datetime-picker',
+  'swipe-action',
+  'popover',
+  'tooltip',
+]);
+
+/**
+ * 组件页通栏覆盖：列出的组件页去掉页面左右 padding，场景模块也不再留
+ * 左右内边距——cell 入口行按真实列表铺满整行（左右由 cell 自己的
+ * spacing 承担）。卡片形态的场景（`*-mp-card`）仍由 demo 内的 card 样式
+ * 自带外间距，因此「只有卡片有间距」。cell 的信息分组页同此：分组直接
+ * 铺满整行，标题行经 DemoModuleHead 的 `inset` 补回留白，卡片形态 demo
+ * 自带外间距。
+ */
+const MODULE_FULL_BLEED_PAGES = new Set(['calendar', 'datetime-picker', 'cell', 'swipe-action']);
+
+/** cell 入口扁平页（calendar / datetime-picker）的共 reason 文案。 */
+const SHEET_ENTRY_BARE_COMMENT = `入口行直接使用 sn-cell（无分组卡片，模块标题由
+ * 外层场景标题行承担），cell 自带 surface 背景，即组件的真实形态；白卡底
+ * 会与组件背景双重叠加。去掉卡底与描边，入口行直接浮在页面画布上，层级由
+ * cell 自身的圆角 / 描边 / 分隔线承担`;
 
 /** 透明变体在生成页里的按页注释主体（去掉卡底之后的 Why）。 */
 const MODULE_BARE_COMMENTS = {
@@ -531,14 +607,21 @@ const MODULE_BARE_COMMENTS = {
   cell: `单元格分组自带 surface 背景，即组件的真实形态；白卡底会与
  * 组件背景双重叠加。去掉卡底与描边，分组直接浮在页面画布上，层级由
  * 分组自身的圆角 / 描边 / 分隔线承担`,
+  calendar: SHEET_ENTRY_BARE_COMMENT,
+  'datetime-picker': SHEET_ENTRY_BARE_COMMENT,
+  'swipe-action': `滑动行是浮卡形态（组件不画背景，卡片与操作钮的表面由
+ * 行内容自绘）：白卡底会与行卡片双重叠加，且滑开露出的操作钮之间需要
+ * 露出页面画布。去掉卡底与描边，行卡片直接浮在页面画布上，标题行也
+ * 落在画布上`,
 };
 
 /**
  * 组件页场景模块头部覆盖：列出的组件页不渲染场景标题行（DemoModuleHead），
  * 整页就是 demo 本体。tabbar 的整页 playground（栏固定在屏幕底部、其余
- * 全部是设置项）不需要「完整演示」标题占一行。
+ * 全部是设置项）不需要「完整演示」标题占一行；collapse 只要折叠面板本身，
+ * 去掉场景卡片与标题行，让面板直接落在页面画布上。
  */
-const MODULE_HEADLESS_PAGES = new Set(['tabbar']);
+const MODULE_HEADLESS_PAGES = new Set(['tabbar', 'collapse']);
 
 /**
  * 场景标题 → 模板属性安全字面量：生成页把标题嵌入
@@ -559,6 +642,32 @@ function titleAttr(text) {
  * 值升序排（基础 → 变体 → 图标 → 状态 → 进阶属性），未列出的保持字母序。
  */
 const DEMO_ORDER = {
+  /* wheel-picker：基础 → 级联 → 内容自定义 → 块自定义 → 震动 → 弹层组装。 */
+  'wheel-picker-mp-basic': 1,
+  'wheel-picker-mp-cascade': 2,
+  'wheel-picker-mp-icons': 3,
+  'wheel-picker-mp-rich': 4,
+  'wheel-picker-mp-band-mode': 5,
+  'wheel-picker-mp-band-dots': 6,
+  'wheel-picker-mp-band-soft': 7,
+  'wheel-picker-mp-vibrate': 8,
+  'wheel-picker-mp-reminder': 9,
+  /* picker-view：基础 → 行为 → 内容槽 → 块槽 → 外观。 */
+  'picker-view-mp-basic': 1,
+  'picker-view-mp-wheel': 2,
+  'picker-view-mp-icons': 3,
+  'picker-view-mp-rich': 4,
+  'picker-view-mp-slots': 5,
+  'picker-view-mp-band-mode': 6,
+  'picker-view-mp-band-dots': 7,
+  'picker-view-mp-band-soft': 8,
+  'picker-view-mp-band': 9,
+  'picker-view-mp-cascade': 10,
+  'picker-view-mp-disabled': 11,
+  'picker-view-mp-immediate': 12,
+  'picker-view-mp-keys': 13,
+  'picker-view-mp-rows': 14,
+  'picker-view-mp-custom-style': 15,
   'keyboard-mp-basic': 1,
   'keyboard-mp-decimal': 2,
   'keyboard-mp-idcard': 3,
@@ -567,17 +676,14 @@ const DEMO_ORDER = {
   'keyboard-mp-scrim': 6,
   'button-mp-basic': 1,
   'button-mp-size': 2,
-  'button-mp-shape': 3,
-  'button-mp-variant': 4,
-  'button-mp-state': 5,
-  'button-mp-icon-button': 6,
-  'button-mp-cell': 7,
-  'button-mp-hover': 8,
-  'button-mp-loading-props': 9,
-  'button-mp-custom': 10,
-  'button-mp-form-type': 11,
-  'button-mp-open-type': 12,
-  'button-mp-mp-open-type': 13,
+  'button-mp-variant': 3,
+  'button-mp-state': 4,
+  'button-mp-icon-button': 5,
+  'button-mp-loading': 6,
+  'button-mp-block': 7,
+  'button-mp-color-override': 8,
+  'button-mp-hairline': 9,
+  'button-mp-round': 10,
   'input-mp-basic': 1,
   'input-mp-types': 2,
   'input-mp-sizes': 3,
@@ -613,6 +719,28 @@ const DEMO_ORDER = {
   'waterfall-mp-responsive': 3,
   'waterfall-mp-masonry-off': 4,
   'tabbar-mp-playground': 1,
+  // navbar：既有 6 个场景保持原字母序，新增的胶囊场景固定追加在末尾。
+  'navbar-mp-basic': 1,
+  'navbar-mp-capsule-slot': 2,
+  'navbar-mp-disabled': 3,
+  'navbar-mp-fixed': 4,
+  'navbar-mp-safe-area': 5,
+  'navbar-mp-slots': 6,
+  'navbar-mp-capsule': 7,
+  'navbar-mp-mp-capsule': 8,
+  'slider-bar-mp-look-basic': 6,
+  'slider-bar-mp-look-range': 7,
+  'slider-bar-mp-look-column': 8,
+  'slider-bar-mp-look-color': 9,
+  'slider-bar-mp-shape': 10,
+  'slider-bar-mp-knob-icon': 11,
+  'swipe-action-mp-basic': 1,
+  'swipe-action-mp-card': 2,
+  'swipe-action-mp-cell-group': 3,
+  'swipe-action-mp-both-sides': 4,
+  'swipe-action-mp-before-close': 5,
+  'swipe-action-mp-disabled': 6,
+  'swipe-action-mp-custom-style': 7,
 };
 
 const SCENARIO_LABELS_EN = {
@@ -663,6 +791,16 @@ const SCENARIO_LABELS_EN = {
   visibility: 'Visibility',
   hover: 'Hover',
   lunar: 'Lunar',
+  wheel: 'Wheel style',
+  vibrate: 'Slide haptic',
+  icons: 'Icon options',
+  band: 'Band theme',
+  slots: 'Time slots',
+  rich: 'Rich rows',
+  'band-mode': 'Split & gradient bands',
+  'band-dots': 'Dotted texture band',
+  'band-soft': 'Full soft band',
+  reminder: 'Reminder sheet',
   card: 'Card',
   direction: 'Direction',
   theme: 'Theme',
@@ -742,6 +880,7 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'calendar-panel': 'Panel size & switching (panelHeight / switchMode)',
   'calendar-immediate-change': 'Immediate write-back (immediateChange)',
   'calendar-sheet-chrome': 'Sheet chrome & footer slot',
+  'calendar-footer': 'Footer shapes (cancel toggle / no footer)',
   'calendar-view-first-day-of-week': 'First day of week',
   'calendar-view-formatter': 'Cell formatting',
   'calendar-view-panel-title': 'Panel title (showPanelTitle)',
@@ -817,6 +956,7 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'input-number-theme': 'Theme (theme)',
   'input-number-round': 'Rounded (round)',
   'input-number-long-press': 'Long-press repeat (longPress)',
+  'input-number-animation': 'Rolling number animation (animation)',
   'input-number-disabled': 'Disabled',
   'keyboard-labels': 'Key labels (deleteText / closeText)',
   'keyboard-delete-key': 'Delete key toggle (showDeleteKey)',
@@ -883,9 +1023,11 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'slide-verify-custom-style': 'Root styling',
   'slider-bar-basic': 'Basic usage',
   'slider-bar-range': 'Range (`range`)',
-  'slider-bar-theme': 'Theme (`theme`)',
+  'slider-bar-theme': 'Theme presets (`theme`)',
   'slider-bar-size': 'Size (`size`)',
   'slider-bar-variant': 'Vertical (`variant=column`)',
+  'slider-bar-shape': 'Knob shape & size (`knobShape` / `knobSize`)',
+  'slider-bar-knob-icon': 'Knob glyphs × shapes (`knobIcon`)',
   'slider-range': 'Range & marks (`range` / `marks`)',
   'slider-theme': 'Theme (`theme`)',
   'slider-disabled': 'Disabled (`disabled`)',
@@ -1016,6 +1158,8 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'swipe-action-before-close': 'Close guard (`before-close`)',
   'swipe-action-disabled': 'Disabled (`disabled`)',
   'swipe-action-custom-style': 'Root styling',
+  'swipe-action-card': 'Card rows (message list)',
+  'swipe-action-cell-group': 'List group (cell style)',
   'backtop-threshold': 'Visibility threshold (`top`)',
   'backtop-icon-style': 'Icon styling & stacking',
   'collapse-accordion': 'Accordion mode (`accordion`)',
@@ -1036,11 +1180,16 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'navbar-disabled': 'Disabled sides (`left-disabled`)',
   'navbar-safe-area': 'Safe area & stacking',
   'navbar-capsule-slot': 'Capsule slot',
+  'navbar-capsule': 'Capsule style / search bar',
+  'navbar-mp-capsule': 'WeChat mini-program capsule',
   'pagination-hide-on-one-page': 'Hide on single page (`hide-if-one-page`)',
   'pagination-slots': 'Slot customization',
   'popover-icon-class': 'Legacy icon field (`iconClass`)',
   'popover-content-slot': '`content` slot',
   'popover-custom-style': 'Node classes & offset',
+  'popover-alignment': 'Alignment',
+  'popover-notification': 'Notification card',
+  'popover-sheet': 'Bottom sheet',
   'segmented-theme': 'Theme (`theme`)',
   'segmented-disabled': 'Disabled (`disabled`)',
   'segmented-value': 'The `value` alias (wot-ui migration)',
@@ -1073,6 +1222,10 @@ const SCENARIO_LABEL_OVERRIDES_EN = {
   'radio-indicator': 'Indicator placement & checked paint',
   'checkbox-card': 'Card variant',
   'checkbox-indicator': 'Indicator placement & checked paint',
+  'slider-bar-look-basic': 'Reference look: ringed disc (Volume)',
+  'slider-bar-look-range': 'Reference look: dual-handle ranges',
+  'slider-bar-look-column': 'Reference look: vertical pills',
+  'slider-bar-look-color': 'Reference look: colour variants',
 };
 
 function scenarioLabel(comp, scenario) {
@@ -1126,12 +1279,10 @@ for (const { file } of demoFiles) {
   if (!byComp.has(comp)) byComp.set(comp, []);
   byComp.get(comp).push({ name, scenario, hasEn: enNames.has(name) });
 }
+/** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
+const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
 for (const list of byComp.values()) {
-  /** Demo 展示顺序：DEMO_ORDER 显式声明优先，未声明的回退字母序。 */
-  const demoRank = (name) => DEMO_ORDER[name] ?? Number.MAX_SAFE_INTEGER;
-  for (const list of byComp.values()) {
-    list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
-  }
+  list.sort((a, b) => demoRank(a.name) - demoRank(b.name) || a.name.localeCompare(b.name));
 }
 
 // ── 组件分组与元数据（分组/切分单源见 scripts/subpackages.mjs） ─────────────
@@ -1163,8 +1314,9 @@ const pagesJson = {
       style: {
         navigationBarTitleText: comp.title,
         // 通栏：原生导航栏退位，DemoPageShell 渲染毛玻璃悬浮头部（背景与
-        // 内容区渐变一致）；个别页面需要原生栏时在此覆盖为 default。
-        navigationStyle: 'custom',
+        // 内容区渐变一致）；NATIVE_NAV_PAGES 里的页面改用原生栏（页面内
+        // 不再渲染导航组件实例）。
+        navigationStyle: NATIVE_NAV_PAGES.has(comp.key) ? 'default' : 'custom',
         ...(PAGE_BG_OVERRIDES[comp.key] ? { backgroundColor: PAGE_BG_OVERRIDES[comp.key] } : {}),
       },
     })),
@@ -1228,6 +1380,9 @@ for (const sub of subpackages) {
   }
   for (const comp of sub.comps) {
     const isHeadless = MODULE_HEADLESS_PAGES.has(comp.key);
+    const isFlat = !isHeadless && MODULE_FLAT_PAGES.has(comp.key);
+    const isFullBleed = !isHeadless && MODULE_FULL_BLEED_PAGES.has(comp.key);
+    const nativeNav = NATIVE_NAV_PAGES.has(comp.key);
     const imports = [
       ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
       ...(isHeadless ? [] : [`import DemoModuleHead from '../../components/DemoModuleHead.vue'`]),
@@ -1238,17 +1393,65 @@ for (const sub of subpackages) {
       .map((demo, i) => {
         if (isHeadless) {
           // 无模块头页面：整页就是 demo 本体，不再包 .module 卡片与标题行。
-          return `      <Demo${i} />`;
+          return `      <Demo${i} class="demo-host" />`;
         }
         const badge = demo.scenario === '' ? '' : ` badge="${demo.scenario}"`;
+        // 通栏页把模块左右内边距归零了（让 cell 入口行铺满整行），标题行
+        // 因此要自己补回留白 —— 通过 `inset` 交给 DemoModuleHead 自己的样式。
+        // 不能写成页面里的后代选择器：mp-weixin 的 WXSS 只支持 class 选择器，
+        // `.module .demo-module-head` 会被静默丢弃（H5 却正常，是最难发现的
+        // 一类跨端差异）。
+        const inset = isFullBleed ? ' inset' : '';
+        const head = `<DemoModuleHead class="demo-host" :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge}${inset} />`;
+        // 通栏平铺页：标题行包一层本页作用域的节点，才能在不改共享
+        // DemoModuleHead、也不用 :deep()（uni-app x 转换会丢弃）的前提下
+        // 给标题行单独铺底。
+        const headRow = isFlat
+          ? `        <view class="module__head">
+          ${head}
+        </view>`
+          : `        ${head}`;
         return `      <view class="module">
-        <DemoModuleHead :title="t('${titleAttr(scenarioLabel(comp.key, demo.scenario))}', '${titleAttr(scenarioLabelEn(comp.key, demo.scenario))}')"${badge} />
+${headRow}
         <view class="module__body">
-          <Demo${i} />
+          <Demo${i} class="demo-host" />
         </view>
       </view>`;
       })
       .join('\n');
+    // 组件级 CSS 追加段（透明变体 / 通栏标题行）合并成一个插值，避免给
+    // 其它组件页的生成物多塞空行（产物按字节比对需保持稳定）。
+    const extraModuleCss = [
+      !isHeadless && MODULE_BARE_PAGES.has(comp.key)
+        ? `
+/* ${comp.key}：场景模块透明变体——${MODULE_BARE_COMMENTS[comp.key] ?? MODULE_BARE_COMMENTS.default}。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+`
+        : '',
+      isFlat
+        ? `
+.module__head {
+  padding: 24rpx 32rpx 16rpx;
+  background: var(--demo-card-bg);
+}
+`
+        : '',
+      // 通栏页：模块去掉左右内边距，cell 入口行铺满整行（左右由 cell 自己
+      // 的 spacing 承担）。标题行的左右留白由 DemoModuleHead 的 `inset` 属性
+      // 自己负责 —— 后代选择器在 mp-weixin 的 WXSS 里不被支持。
+      isFullBleed
+        ? `
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+`
+        : '',
+    ].join('');
     const vue = `<script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— ${comp.key} 组件全部场景聚合页（静态展开）。
 ${imports}
@@ -1262,7 +1465,7 @@ const { t } = useDemoUi();`
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'">
+  <DemoPageShell class="demo-host" :title-zh="'${titleAttr(comp.title)}'" :title-en="'${titleAttr(titleEnOf(comp.key))}'" :desc="'${titleAttr(comp.desc)}'" :bg="'${PAGE_BG_OVERRIDES[comp.key] ?? ''}'"${nativeNav ? ' nav-style="native"' : ''}>
     <view class="page">
 ${modules}
     </view>
@@ -1271,36 +1474,42 @@ ${modules}
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: ${isFlat || isFullBleed ? '0 0 48rpx' : '24rpx 24rpx 48rpx'};
 }
 
-/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+${
+  isFlat
+    ? `/* ${comp.key}：按参考稿完整展开——场景模块去掉白底 / 圆角 / 描边 / 柔影 /
+ * 内边距，导航栏示例通栏铺满整行；标题行单独留白铺底。刻意不设 overflow /
+ * transform / backdrop-filter——它们会把 position: fixed 的后代变成卡片坐标系。 */`
+    : `/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
  * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
  * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
- * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */`
+}
 .module {
   margin-bottom: 24rpx;
-  padding: 32rpx;
-  border-radius: 24rpx;
-  background: var(--demo-card-bg);
-  border: 1px solid var(--demo-card-border);
-  box-shadow: var(--demo-card-shadow);
+  padding: ${isFlat ? '0' : '32rpx'};
+  border-radius: ${isFlat ? '0' : '24rpx'};
+  background: ${isFlat ? 'transparent' : 'var(--demo-card-bg)'};
+  border: ${isFlat ? 'none' : '1px solid var(--demo-card-border)'};
+  box-shadow: ${isFlat ? 'none' : 'var(--demo-card-shadow)'};
 }
-${
-  !isHeadless && MODULE_BARE_PAGES.has(comp.key)
-    ? `
-/* ${comp.key}：场景模块透明变体——${MODULE_BARE_COMMENTS[comp.key] ?? MODULE_BARE_COMMENTS.default}。 */
-.module {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}`
-    : ''
-}
-
+${extraModuleCss}
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>
 `;
     writeFileSync(`${pagesDir}${sub.root}/${comp.key}.vue`, vue);

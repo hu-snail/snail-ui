@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/avatar-mp-mode.en.vue sha256:1836eb4d42bc0383 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-avatar (uni-end) — image fit (`mode`) + root class / inline style
@@ -13,8 +14,7 @@ const demo = '/static/avatar-mode.png';
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta"
       >mode is forwarded to the inner &lt;image&gt; (aspectFill crops / aspectFit letterboxes);
-      asset: 600×400 landscape.</text
-    >
+      asset: 600×400 landscape.</text>
     <view class="sn-demo__row">
       <view class="sn-demo__cell">
         <SnAvatar :src="demo" mode="aspectFill" size="large" />
@@ -28,8 +28,7 @@ const demo = '/static/avatar-mode.png';
 
     <text class="sn-demo__meta"
       >customClass lands on the root node (outline) and customStyle is appended to its inline
-      style.</text
-    >
+      style.</text>
     <view class="sn-demo__row">
       <SnAvatar
         text="CC"

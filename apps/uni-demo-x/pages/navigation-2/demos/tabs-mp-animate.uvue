@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-animate.vue sha256:6cfc40c31d717638 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tabs — 切换动画（animated）。
@@ -18,8 +19,7 @@ const animatedActive = ref(0);
     </SnTabs>
 
     <text class="sn-demo__meta"
-      >animated + duration=600：底部条过渡 + 选中项平滑滚入；当前页签：{{ animatedActive }}</text
-    >
+      >animated + duration=600：底部条过渡 + 选中项平滑滚入；当前页签：{{ animatedActive }}</text>
   </view>
 </template>
 <style scoped>

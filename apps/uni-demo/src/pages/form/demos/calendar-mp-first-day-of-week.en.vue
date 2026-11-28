@@ -2,14 +2,13 @@
 /**
  * Demo: sn-calendar — week start day (firstDayOfWeek).
  *
- * One cell card carries the entry: first-day-of-week = 1 makes Monday the
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): first-day-of-week = 1 makes Monday the
  * first column; the row shows the picked date and tapping opens the sheet.
  */
 import { computed, ref } from 'vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -28,17 +27,14 @@ const mondayText = computed(() => fmtDate(mondayFirst.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Week start day">
-      <SnCell
-        title="Monday first"
-        label="first-day-of-week = 1 (Monday)"
-        :value="mondayText"
-        placeholder="Not selected"
-        :prefix-icon-data="Calendar"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Monday first"
+      :value="mondayText"
+      placeholder="Not selected"
+      :prefix-icon-data="Calendar"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="mondayFirst"

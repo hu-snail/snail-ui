@@ -1,72 +1,33 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — all 12 placement directions (wot-ui demo grid).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ * Demo: sn-popover (uni-end) — four directions. Per AUI-DOCS-016: imports the
+ * real @snui/uni sn-popover.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 
-type Placement =
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'left'
-  | 'left-start'
-  | 'left-end'
-  | 'right'
-  | 'right-start'
-  | 'right-end';
-
-/** One grid row; `null` fills a cell so the left / right families mirror. */
-const rows: (Placement | null)[][] = [
-  ['bottom-start', 'bottom', 'bottom-end'],
-  ['right-start', null, 'left-start'],
-  ['right', null, 'left'],
-  ['right-end', null, 'left-end'],
-  ['top-start', 'top', 'top-end'],
-];
-
-const openPlacement = ref<Placement | null>(null);
-
-function setOpen(placement: Placement, value: boolean): void {
-  openPlacement.value = value
-    ? placement
-    : openPlacement.value === placement
-      ? null
-      : openPlacement.value;
-}
+const options = ['top', 'right', 'bottom', 'left'] as const;
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-popover-demo__grid">
-      <template v-for="(row, rowIndex) in rows" :key="rowIndex">
-        <view
-          v-for="(placement, cellIndex) in row"
-          :key="placement ?? `empty-${rowIndex}-${cellIndex}`"
-          class="sn-popover-demo__cell"
-        >
-          <SnPopover
-            v-if="placement"
-            :model-value="openPlacement === placement"
-            :content="`${placement} hint text`"
-            :placement="placement"
-            @update:model-value="setOpen(placement, $event)"
-          >
-            <SnButton type="primary" size="small">{{ placement }}</SnButton>
-          </SnPopover>
-        </view>
-      </template>
+      <SnPopover
+        v-for="item in options"
+        :key="item"
+        :placement="item"
+        content="A text hint"
+        custom-class="sn-popover-demo__cell"
+      >
+        <SnButton size="small">{{ item }}</SnButton>
+      </SnPopover>
     </view>
 
-    <text class="sn-popover-demo__meta">
-      Miniprogram has no hover, so all 12 directions open on tap; tapping anywhere outside the
-      bubble closes it (the mask takes the outside tap).
-    </text>
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">Four directions: top / right / bottom / left</text>
+    <text class="sn-demo__hint">The arrow always points at the trigger; tap a button to open, tap it again to close.</text>
   </view>
 </template>
 
@@ -76,18 +37,25 @@ function setOpen(placement: Placement, value: boolean): void {
   flex-direction: column;
   gap: 16rpx;
 }
-.sn-popover-demo__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx 16rpx;
-  padding: 40rpx 0;
-}
-.sn-popover-demo__cell {
-  display: flex;
-  justify-content: center;
-}
-.sn-popover-demo__meta {
+.sn-demo__meta {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.sn-popover-demo__space {
+  height: 260rpx;
+}
+/* uni-app x 的 view 默认 overflow: hidden——包装类全链放开（AGENTS.md §103）。 */
+.sn-popover-demo__grid,
+.sn-popover-demo__space {
+  overflow: visible;
 }
 </style>

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-slots.en.vue sha256:e7d81824866d2e92 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-steps — English shadow of steps-mp-slots.
@@ -29,7 +30,11 @@ import { Star } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+/* MP / App drop flex gap: spacing rides on margins (§116). */
+.sn-demo__title {
+  margin-bottom: var(--sn-mp-spacing-1);
 }
 .sn-demo__slot-icon {
   color: var(--sn-mp-color-action-primary);

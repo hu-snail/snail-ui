@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-card.en.vue sha256:dade099bd31ff1f0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — card form with a title icon per card.
@@ -25,8 +26,7 @@ const single = ref([]);
       </SnCollapseItem>
       <SnCollapseItem name="b" title="Payment" :title-icon-data="CreditCard">
         <text class="sn-demo__body"
-          >WeChat Pay and Alipay are supported; invoice details later.</text
-        >
+          >WeChat Pay and Alipay are supported; invoice details later.</text>
       </SnCollapseItem>
       <SnCollapseItem name="c" title="Invoice" :title-icon-data="FileText" icon-size="small">
         <text class="sn-demo__body">The e-invoice reaches your inbox within 24 hours.</text>

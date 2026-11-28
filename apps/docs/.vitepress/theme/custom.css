@@ -396,7 +396,9 @@
    7. Top bar
    ===================================================================== */
 
-.VPNavBar {
+/* 文档页 navbar：浅色玻璃底 + 发丝底边，与左侧侧栏的发丝线接成一体。
+ * 首页（.home）不命中此条 —— 首页 navbar 完全透明，与 hero 画布一体（见 §15）。 */
+.VPNavBar:not(.home) {
   background-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -1111,19 +1113,20 @@ html[data-sn-template-end='uni']
    VPNavBar 是 fixed 定位，画布从视口顶部起画，二者自然叠合。 */
 
 /* VPNavBar 在 home 布局下自带 `home` 类（vitepress 原生），直接命中；
-   文档页不受影响。玻璃底跟随站点深浅（html.dark），与 SnDocsHome 的
-   `sn-home--dark` 画布、SnDocsNav 的 inverted 保持同步。 */
-
+   文档页不受影响。首页要求导航与画布一体：完全透明、无发丝底边，
+   让 SnDocsHome 的极光渐变直接透到导航带下方（hover/滚动态也不出
+   现分割线）；深色画布只负责切换 SnDocsNav 的 inverted 文字配色。 */
 .VPNavBar.home {
-  background-color: rgb(255 255 255 / 0.72) !important;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--sn-doc-hairline);
+  background-color: transparent !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom: none;
 }
 
-/* 底边颜色由 --sn-doc-hairline 的 .dark 覆盖统一提供，这里只换玻璃底色。 */
-.dark .VPNavBar.home {
-  background-color: rgb(8 12 24 / 0.72) !important;
+/* 导航内部仍有一条 vitepress 默认的分隔线容器，首页一并去掉。 */
+.VPNavBar.home .divider,
+.VPNavBar.home .divider-line {
+  display: none;
 }
 
 /* 移动端汉堡（VitePress 默认件）：浅色画布用深色线条，深色画布用浅色 */
@@ -1302,9 +1305,29 @@ html[data-sn-template-end='uni']
   * ===================================================================== */
 @media (min-width: 960px) {
   /* ── 默认态（页面未滚动） ── */
-  .VPNavBar,
-  .VPNavBar.home,
-  .dark .VPNavBar.home {
+  /* 首页 navbar 独立出来：与 hero 画布一体，完全透明、无描边无底色；
+     文档页保持白底通栏（见下方 .VPNavBar 默认态）。 */
+  .VPNavBar.home {
+    position: relative;
+    top: 0;
+    width: 100% !important;
+    margin: 0;
+    border-radius: 0;
+    border: 0 !important;
+    border-bottom: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    transition:
+      top 0.35s ease,
+      width 0.35s ease,
+      border-radius 0.35s ease,
+      background-color 0.3s ease,
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .VPNavBar {
     position: relative;
     top: 0;
     width: 100% !important;
@@ -1325,9 +1348,11 @@ html[data-sn-template-end='uni']
       box-shadow 0.35s ease;
   }
 
-  .dark .VPNavBar,
-  .dark .VPNavBar.home {
+  .dark .VPNavBar {
     background: var(--vp-c-bg) !important;
+  }
+  .dark .VPNavBar.home {
+    background: transparent !important;
   }
   /* 文档页的常规 navbar：通栏 + 一条发丝分界线，和左侧侧栏的分界线接成一体。
    * 首页不需要（画布与 hero 同色，无边线是设计要求）。 */
@@ -1375,13 +1400,20 @@ html[data-sn-template-end='uni']
     background: transparent !important;
   }
 
-  /* 内容与侧栏整体下移。首页要为悬浮岛留出 26px 呼吸空隙（岛底 ≈
-   * 16 + 64 = 80px）；文档页是常规通栏导航，直接贴 navbar 下缘。 */
+  /* 内容与侧栏整体下移。文档页是常规通栏导航，内容直接贴 navbar 下缘。 */
   .VPContent {
-    padding-top: calc(var(--vp-nav-height) + 26px) !important;
+    padding-top: var(--vp-nav-height) !important;
   }
   html:has(.VPSidebar) .VPContent {
     padding-top: var(--vp-nav-height) !important;
+  }
+  /* ── 首页画布从视口顶部起画 ──
+   * VPContent 自带白色底 + 通栏 padding：若首页保留 padding，padding 空档
+   * 会露出白色 VPContent 底，与 #f7f8fb 画布形成一条断层带（navbar 透明
+   * 后尤其明显）。首页去掉 padding，画布顶到视口顶，透明 navbar 直接压在
+   * 画布上；滚动后的磨砂胶囊岛悬浮在画布之上，不受影响。 */
+  .VPContent.is-home {
+    padding-top: 0 !important;
   }
 
   .VPSidebar {
@@ -1411,5 +1443,15 @@ html[data-sn-template-end='uni']
     top: var(--sn-switch-pin);
     margin-top: var(--sn-switch-pin);
     padding-top: calc(var(--sn-sidebar-clearance) - var(--vp-nav-height) + 6px);
+  }
+}
+
+/* ── 首页窄屏（<960px）画布一体 ──
+ * 窄屏 VPNav 是文档流内元素（relative）：透明 navbar 自占 56px 流空间，
+ * 画布若从它下方开始，navbar 区域露出 body 白底，与画布形成断层。
+ * 负 margin 把画布拉到 navbar 之下，与桌面端「画布从视口顶起画」对齐。 */
+@media (max-width: 959px) {
+  .VPContent.is-home {
+    margin-top: calc(-1 * var(--vp-nav-height));
   }
 }

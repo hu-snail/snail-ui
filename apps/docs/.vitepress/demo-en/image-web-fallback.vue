@@ -8,7 +8,7 @@ import { SnImage } from '@snui/vue-web';
     <SnImage
       width="120"
       src="This URL is guaranteed to fail"
-      fallback-src="https://picsum.photos/id/1020/400/300"
+      fallback-src="https://cdn.uviewui.com/uview/album/7.jpg"
       alt="Fallback on load failure"
     />
   </div>

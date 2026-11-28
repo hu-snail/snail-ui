@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/segmented-mp-theme.vue sha256:ba558a07c96286e5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-segmented — 主题（theme）。 */
 import SnSegmented from '@snui/uni-x/components/sn-segmented/sn-segmented.uvue';

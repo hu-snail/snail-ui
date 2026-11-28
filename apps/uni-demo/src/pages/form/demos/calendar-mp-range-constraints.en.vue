@@ -2,7 +2,7 @@
 /**
  * Demo: sn-calendar — range constraints (maxRange / allowSameDay / defaultTime).
  *
- * One cell card carries the entry: a daterange sheet with max-range = 7,
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): a daterange sheet with max-range = 7,
  * allow-same-day and default-time = 08:00:00; picks beyond the span are
  * rejected with the rangePrompt message.
  */
@@ -10,7 +10,6 @@ import { computed, ref } from 'vue';
 import { Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -35,17 +34,14 @@ const rangeText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Range constraints">
-      <SnCell
-        title="Range span"
-        label="max-range = 7 · allow-same-day · default-time = 08:00:00"
-        :value="rangeText"
-        placeholder="Not selected"
-        :prefix-icon-data="Clock"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Range span"
+      :value="rangeText"
+      placeholder="Not selected"
+      :prefix-icon-data="Clock"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">Range: {{ rangeText || 'Not selected' }}</text>
 

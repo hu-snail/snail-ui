@@ -619,8 +619,14 @@ const wrapperStyle = computed(() => {
          identity/value-stable during typing (external-only value, cached
          class), so this component's per-keystroke UI re-render can never
          cascade into uni-input and clobber the field. See sn-input-field.vue. -->
+    <!-- `class` lands on the component's root node (the native field on H5,
+         the wrapper node on classic MP / uni-app x). `sn-input__field` gives
+         that node `flex: 1` so the clear / suffix siblings are pushed to the
+         right edge — on MP the field's own `flex: 1` cannot reach its
+         wrapper, which left the clear chip stranded in the middle. -->
     <SnInputField
       ref="fieldRef"
+      class="sn-input__field"
       :value="boundNativeValue"
       :is-textarea="isTextarea"
       :type="effectivePasswordType"
@@ -717,7 +723,13 @@ const wrapperStyle = computed(() => {
    * follow automatically (§116.2 — no literal colors). */
   --sn-input-icon-size: var(--sn-mp-icon-size-medium);
   --sn-input-icon-color: var(--sn-mp-color-text-tertiary);
-  display: inline-flex;
+  /* Block-level flex + full width: the field must own a stable track that
+   * fills its parent instead of shrink-wrapping its content. With the old
+   * `inline-flex`, every keystroke widened the box (a long value pushed the
+   * right edge out), and the clear chip tracked the text instead of the
+   * container's right edge. */
+  display: flex;
+  width: 100%;
   align-items: center;
   gap: 12rpx;
   position: relative;
@@ -855,9 +867,22 @@ const wrapperStyle = computed(() => {
   border-color: var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
 }
 
+/* The field's root node (native input on H5, uni-input wrapper on MP).
+ * `flex: 1` here is what pushes the clear / suffix / count siblings to the
+ * right edge; `min-width: 0` lets it shrink instead of overflowing. */
+.sn-input__field {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+}
+
 /* Native input/textarea fill the available row */
 .sn-input__native {
   flex: 1 1 auto;
+  /* `flex: 1` alone is not enough on mini-programs: their native input has
+   * an intrinsic width and ignores flex-grow, so without an explicit width
+   * it shrink-wraps the text and drags the clear chip into the middle. */
+  width: 100%;
   min-width: 0;
   border: none;
   outline: none;

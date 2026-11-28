@@ -1,10 +1,11 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-mp-lazy-load.vue sha256:dfd2f286edb72a54 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img (uni-end) — lazy loading (`lazyLoad`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
  */
 import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
-const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
+const plain = 'https://cdn.uviewui.com/uview/album/2.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

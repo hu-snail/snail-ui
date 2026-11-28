@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-cropper-mp-export-props.en.vue sha256:1fdf6f864f2b0b1a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img-cropper (uni-end) — declared export props (`exportScale` / `quality` / `fileType`).
@@ -11,7 +12,7 @@ const exportScale = ref(2);
 const quality = ref(0.85);
 const fileType = ref<'png' | 'jpg'>('png');
 
-const imgSrc = 'https://picsum.photos/seed/snui-crop-export/1200/900';
+const imgSrc = 'https://cdn.uviewui.com/uview/album/1.jpg';
 
 function open(next: 'png' | 'jpg') {
   fileType.value = next;

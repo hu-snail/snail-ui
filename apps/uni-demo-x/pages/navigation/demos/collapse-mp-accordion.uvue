@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-accordion.vue sha256:ccd5a871c39e1d55 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — 手风琴模式。
@@ -12,10 +13,14 @@ const open = ref('a');
   <view class="sn-demo sn-demo--column">
     <SnCollapse v-model="open" accordion>
       <SnCollapseItem name="a" title="常见问题">
-        <text class="sn-demo__body">同时只展开一项。</text>
+        <text class="sn-demo__body"
+          >同时只展开一项。再次点击当前标题会收起面板，点击其他标题则自动切换，适合
+          FAQ、设置分组等需要聚焦阅读的场景。</text>
       </SnCollapseItem>
       <SnCollapseItem name="b" title="售后政策">
-        <text class="sn-demo__body">7 天无理由退换。</text>
+        <text class="sn-demo__body"
+          >7 天无理由退换。商品需保持完好并保留包装与配件，退款将在仓库签收后 1-3
+          个工作日内原路退回。</text>
       </SnCollapseItem>
     </SnCollapse>
     <text class="sn-demo__meta">当前展开：{{ open || '无' }}</text>

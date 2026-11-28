@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-same-day.en.vue sha256:0bda9259dfdae8ea —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar-view — same start and end day (allowSameDay).
@@ -29,8 +30,7 @@ const sameDayText = computed(() => {
       :panel-height="220"
     />
     <text class="sn-demo__meta"
-      >allowSameDay: both range ends may be the same day — currently {{ sameDayText }}</text
-    >
+      >allowSameDay: both range ends may be the same day — currently {{ sameDayText }}</text>
   </view>
 </template>
 <style scoped>

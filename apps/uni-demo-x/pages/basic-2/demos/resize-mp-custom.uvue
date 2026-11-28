@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/resize-mp-custom.vue sha256:5a6bb175b9bee962 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-resize (uni-end) — custom-class / custom-style 与嵌套测量边界。

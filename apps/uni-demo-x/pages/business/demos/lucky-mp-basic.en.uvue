@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/lucky-mp-basic.en.vue sha256:6abe84a9befd7f20 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-lucky (uni-end) — Basic usage: the built-in button starts play(),
@@ -40,8 +41,7 @@ onBeforeUnmount(() => {
     <SnLucky ref="luckyRef" :prizes="prizes" :speed="60" @start="onStart" @end="onEnd" />
     <text class="sn-demo__meta">{{ result }}</text>
     <text class="sn-demo__meta"
-      >After start the host requests a result, then calls stop(index)</text
-    >
+      >After start the host requests a result, then calls stop(index)</text>
   </view>
 </template>
 <style scoped>

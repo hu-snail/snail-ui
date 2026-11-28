@@ -55,7 +55,7 @@ function pick(direction: string, label: string): void {
       type="primary"
       position="right-bottom"
       :gap="{ bottom: 16, right: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__bubble"
@@ -81,7 +81,7 @@ function pick(direction: string, label: string): void {
       type="success"
       position="left-top"
       :gap="{ top: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view class="sn-fab-demo__bubble" role="button" aria-label="Star" @tap="pick('down', 'Star')">
         <SnIcon :icon="Star" size="var(--sn-mp-icon-size-large)" />
@@ -97,7 +97,7 @@ function pick(direction: string, label: string): void {
       type="warning"
       position="right-center"
       :gap="{ right: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__bubble"
@@ -123,7 +123,7 @@ function pick(direction: string, label: string): void {
       type="info"
       position="left-center"
       :gap="{ left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__bubble"
@@ -189,8 +189,4 @@ function pick(direction: string, label: string): void {
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

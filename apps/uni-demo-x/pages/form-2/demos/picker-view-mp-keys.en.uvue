@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-keys.en.vue sha256:901404a7005e9a14 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-picker-view — custom field names (`valueKey` / `labelKey` / `childrenKey`).
@@ -42,8 +43,7 @@ const cascade = ref<Array<string | number>>(['zj', 'hz']);
       children-key="nodes"
     />
     <text class="sn-demo__meta"
-      >childrenKey="nodes": the cascade tree uses a custom children field</text
-    >
+      >childrenKey="nodes": the cascade tree uses a custom children field</text>
   </view>
 </template>
 <style scoped>

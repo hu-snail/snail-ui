@@ -41,6 +41,7 @@
  * it).
  */
 
+import { resolveUniHost } from '../../utils/uni-host';
 /** Handlers the SFCs feed in — the same shape as their touch path. */
 export interface HorizontalDragMouseHandlers {
   /** Button pressed at a page-x (CSS px). */
@@ -69,12 +70,10 @@ const RPX_MAX_DEVICE_WIDTH = 960;
  * reports one (tests, exotic hosts).
  */
 function viewportWidth(): number {
-  const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowWidth?: number } };
-    innerWidth?: number;
-  };
-  const width = host.uni?.getSystemInfoSync?.()?.windowWidth ?? host.innerWidth;
-  return typeof width === 'number' && width > 0 ? width : 0;
+  const uniWidth = resolveUniHost<{ getSystemInfoSync?: () => { windowWidth?: number } }>()?.getSystemInfoSync?.()?.windowWidth;
+  if (typeof uniWidth === 'number' && uniWidth > 0) return uniWidth;
+  const innerWidth = (globalThis as { innerWidth?: number }).innerWidth;
+  return typeof innerWidth === 'number' && innerWidth > 0 ? innerWidth : 0;
 }
 
 /**

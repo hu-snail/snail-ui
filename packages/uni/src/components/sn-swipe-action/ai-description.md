@@ -8,7 +8,9 @@
 
 Swipe-to-reveal row for mobile lists (mail, chat, cart). Swiping left exposes the
 `right` action area, swiping right exposes the `left` one; a tap on the open row
-closes it and reports `click`.
+closes it and reports `click`. Supports two presentation forms: full-bleed rows
+and floating cards with pill buttons (iOS Mail style) — the component paints no
+background, so the form is decided by what the slots render.
 
 ## Reference Library
 
@@ -73,20 +75,72 @@ import { SnSwipeAction } from '@snui/uni';
 
 | Token         | CSS Variable                        | Purpose                  |
 | ------------- | ----------------------------------- | ------------------------ |
-| Surface       | `--sn-mp-color-background-elevated` | Row + content background |
 | Text          | `--sn-mp-color-text-primary`        | Content text             |
 | Disabled text | `--sn-mp-color-text-disabled`       | Disabled row text        |
+
+Row and action surfaces are consumer-owned (paint them with e.g.
+`--sn-mp-color-background-elevated` on the slot content); the component itself
+consumes only the text tokens above.
+
+## Surfaces
+
+The component paints no background — surfaces belong to the slot content. This
+is what enables the floating-card form (iOS Mail style): the default slot
+paints a rounded card, the action slots paint pill buttons, and the page canvas
+shows through between them while a row is open. Classic full-bleed rows keep
+working by painting the surface on the slot content (or via `custom-style` on
+the root). Cell-style groups work by sandwiching the row between an
+`sn-cell-group card` and an `sn-cell` — the group paints the card surface and
+hairlines, the row carries the gesture.
+
+## Reveal Fade (CSS vars, additive)
+
+The root publishes each side's reveal progress (0 = fully covered by the
+content, 1 = fully revealed) as CSS custom properties:
+
+| CSS var                              | Meaning                                   |
+| ------------------------------------ | ----------------------------------------- |
+| `--sn-swipe-action-reveal-left`      | Left action area reveal progress (0–1).   |
+| `--sn-swipe-action-reveal-right`     | Right action area reveal progress (0–1).  |
+
+The value tracks the occluded fraction 1:1 during a drag and jumps to the
+settle target when the row settles (ease it with a short `transition: opacity`
+on the consuming element). Bind action-button glyph / label opacity to it:
+
+```css
+.sw-pill__content {
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
+}
+```
+
+The button surface stays fully painted — only the glyph + name fade. Where a
+runtime cannot resolve inline custom properties the fallback `1` keeps glyphs
+visible (no fade, no breakage).
 
 ## Gestures
 
 - `touchstart` / `touchmove` / `touchend` / `touchcancel` on the root node only —
   no global listener, so nothing has to be unbound (miniprogram has no `document`).
+- The row drags from where it sits: the content offset at `touchstart` is the
+  drag base, so touching an open row does not snap it shut.
 - A mostly-vertical gesture is handed to the page scroll; a horizontal one
   `preventDefault()`s so the page does not move while the row follows the finger.
+- Settle decision on release: (1) an open row dragged back towards rest closes
+  first (an opposite drag is closing intent — a side flip only happens once the
+  drag crosses the centre); (2) past the open threshold (30% of the side's
+  distance, min 24px) the dragged side settles open; (3) a flick (≥0.5 px/ms)
+  settles below the threshold; (4) everything else springs back closed with the
+  300ms spring-feel settle transition (`cubic-bezier(0.32, 0.72, 0, 1)`).
 - `touchcancel` (a system gesture stealing the touch) settles the row closed, so it
   can never stick half-open.
-- The open distance equals the real action-area width, measured once per gesture
-  through `uni.createSelectorQuery()` → the DOM node → a fallback constant.
+- The open distance equals the real action-area width, measured once per gesture:
+  the DOM node (H5 / docs preview) → a set of `uni.createSelectorQuery()`
+  variants fired together (mp `$scope` host · page-level query ·
+  `.in(Vue proxy)`) against a per-instance id (`#sn-swipe-action-<uid>-left |
+  right` — ids cannot cross-match between rows the way class selectors did)
+  → a fallback constant. On uni-app x mp the scoped variants match nothing and
+  the page-level id query is the one that reaches inside nested components.
 - While the row is closed (no drag, no settle animation, no open side) the action
   areas are translated fully outside the root's `overflow: hidden` clip
   (`translateX(±100%)`), so the closed state never relies on the content layer
@@ -104,6 +158,8 @@ import { SnSwipeAction } from '@snui/uni';
 - `click` fires when the open content area is tapped (wd semantics: "tapped and
   closed"), so the tap closes the row and reports the event.
 - `before-close` is also consulted for the swipe-driven close, not only for `close()`.
+- The settle uses a travel threshold + flick instead of committing on every
+  horizontal travel: small drags spring back closed.
 
 ## Disposal
 

@@ -158,7 +158,13 @@ describe('sn-collapse', () => {
       ]);
       const body = wrapper.find('.sn-collapse-item__body');
       expect(body.classes()).toContain('sn-collapse-item__body--clamped');
-      expect(body.attributes('style')).toContain('-webkit-line-clamp: 3');
+      /* The clamp must sit on the box that owns the text: `-webkit-line-clamp`
+         is inert on any element that is not itself the `-webkit-box`. */
+      const clampBox = body.find('.sn-collapse-item__body-clamp');
+      expect(clampBox.classes()).toContain('sn-collapse-item__body-clamp--clamped');
+      expect(clampBox.attributes('style')).toContain('-webkit-line-clamp: 3');
+      /* Padding lives one level up — it would otherwise leak the next line. */
+      expect(clampBox.classes()).not.toContain('sn-collapse-item__body-inner');
     });
 
     it('drops the clamp once expanded', () => {
@@ -166,6 +172,9 @@ describe('sn-collapse', () => {
       expect(wrapper.find('.sn-collapse-item__body').classes()).not.toContain(
         'sn-collapse-item__body--clamped',
       );
+      const clampBox = wrapper.find('.sn-collapse-item__body-clamp');
+      expect(clampBox.classes()).not.toContain('sn-collapse-item__body-clamp--clamped');
+      expect(clampBox.attributes('style') ?? '').not.toContain('-webkit-line-clamp');
     });
 
     it('renders the more control and flips the flag', async () => {
@@ -184,7 +193,7 @@ describe('sn-collapse', () => {
           return () =>
             h(
               SnCollapse,
-              { viewmore: true, modelValue: true },
+              { viewmore: true, useMoreSlot: true, modelValue: true },
               {
                 default: () => [h(SnCollapseItem, { name: 'a' })],
                 more: ({ expanded }: { expanded: boolean }) =>
@@ -194,6 +203,29 @@ describe('sn-collapse', () => {
         },
       });
       expect(mount(Harness).find('.custom-more').text()).toBe('true');
+    });
+
+    it('keeps the built-in control unless useMoreSlot opts in', async () => {
+      const Harness = defineComponent({
+        setup() {
+          const open = ref(false);
+          return () =>
+            h(
+              SnCollapse,
+              { viewmore: true, modelValue: open.value },
+              {
+                default: () => [h(SnCollapseItem, { name: 'a' })],
+                more: () => h('text', { class: 'custom-more' }, 'custom'),
+              },
+            );
+        },
+      });
+      const wrapper = mount(Harness);
+      expect(wrapper.find('.custom-more').exists()).toBe(false);
+      const more = wrapper.find('.sn-collapse__more');
+      expect(more.text()).toBe('展开');
+      await more.trigger('tap');
+      expect(wrapper.find('.custom-more').exists()).toBe(false);
     });
   });
 
@@ -495,15 +527,19 @@ describe('sn-collapse', () => {
     });
 
     it('hides the body of a closed panel in normal mode', () => {
-      // happy-dom's getComputedStyle does not feed VTU's isVisible() for the
-      // v-show contract here, so assert the inline style v-show writes.
+      // The body stays mounted so max-height/opacity can animate; the open
+      // class and aria-hidden carry the collapsed state instead of v-show.
       const closed = mountCollapse({ modelValue: [] }, [{ name: 'a' }]);
-      expect(closed.find('.sn-collapse-item__body').attributes('style')).toContain('display: none');
+      expect(closed.find('.sn-collapse-item__body').classes()).not.toContain(
+        'sn-collapse-item__body--open',
+      );
+      expect(closed.find('.sn-collapse-item__body').attributes('aria-hidden')).toBe('true');
 
       const open = mountCollapse({ modelValue: ['a'] }, [{ name: 'a' }]);
-      expect(open.find('.sn-collapse-item__body').attributes('style') ?? '').not.toContain(
-        'display: none',
+      expect(open.find('.sn-collapse-item__body').classes()).toContain(
+        'sn-collapse-item__body--open',
       );
+      expect(open.find('.sn-collapse-item__body').attributes('aria-hidden')).toBe('false');
     });
 
     it('forwards customClass on the container and the item', () => {

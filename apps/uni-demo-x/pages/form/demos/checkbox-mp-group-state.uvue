@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-group-state.vue sha256:80fab3f32196e582 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-checkbox — 组状态与半选（disabled / readonly / indeterminate）。 */
 import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';

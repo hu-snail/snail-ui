@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/textarea-mp-error.vue sha256:50247158a304a145 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-textarea — 错误态：error 由表单驱动标记内容不合规。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
+const errored = ref('不合规的内容');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">error</text>
+    <SnTextarea v-model="errored" error placeholder="内容不合规时由表单驱动 error" />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

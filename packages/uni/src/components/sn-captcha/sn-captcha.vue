@@ -75,6 +75,7 @@ import {
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { RefreshCw as RefreshIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 import { bindHorizontalDragMouse, pxPerDesign, resolveNodeEl } from './sn-captcha-mouse';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnCaptcha' });
 
@@ -201,8 +202,7 @@ function applyStageWidth(cssWidth: number): void {
  * nor the selector on screen; the `width` prop stays the travel base.
  */
 function queryStageWidth(): void {
-  const host = globalThis as { uni?: { createSelectorQuery?: () => SelectorQueryLike } };
-  const createSelectorQuery = host.uni?.createSelectorQuery;
+  const createSelectorQuery = resolveUniHost<{ createSelectorQuery?: () => SelectorQueryLike }>()?.createSelectorQuery;
   if (typeof createSelectorQuery !== 'function' || instance === null) return;
   try {
     createSelectorQuery()

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/scratchcard-mp-states.vue sha256:02f4494c6d394fed —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-scratchcard (uni-end) — 状态与事件：open 每轮只触发一次，reset()

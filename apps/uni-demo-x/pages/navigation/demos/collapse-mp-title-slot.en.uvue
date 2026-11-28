@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-title-slot.en.vue sha256:344bd3c4b78de066 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — English shadow of collapse-mp-title-slot.
@@ -24,8 +25,7 @@ const open = ref(['a']);
               size="var(--sn-mp-icon-size-medium)"
             />
             <text class="sn-demo__title-text"
-              >Shipping (title slot · {{ expanded ? 'open' : 'closed' }})</text
-            >
+              >Shipping (title slot · {{ expanded ? 'open' : 'closed' }})</text>
           </view>
         </template>
         <text class="sn-demo__body">SF Express, delivery in 2 days.</text>

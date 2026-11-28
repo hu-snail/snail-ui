@@ -1,8 +1,13 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/swipe-action-mp-before-close.en.vue sha256:57ef273b6bb63bd6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-swipe-action (uni-end) — English shadow of swipe-action-mp-before-close.
+ * Demo: sn-swipe-action (uni-end) — the before-close guard, EN copy.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
  */
 import SnSwipeAction from '@snui/uni-x/components/sn-swipe-action/sn-swipe-action.uvue';
+import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
+import { Trash } from '@snui/uni-x/components/sn-icon/sn-icon-set';
+
 const guarded = ref<'left' | 'close' | 'right'>('close');
 const guardHits = ref(0);
 
@@ -15,14 +20,21 @@ function beforeClose(): boolean {
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnSwipeAction v-model="guarded" :before-close="beforeClose">
-      <view class="sn-swipe-demo__row">
-        <text class="sn-swipe-demo__title">before-close blocks the first close</text>
-        <text class="sn-swipe-demo__desc">Called {{ guardHits }} time(s)</text>
+      <view class="sw-card">
+        <view class="sw-card__body">
+          <text class="sw-card__title">before-close blocks the first close</text>
+          <text class="sw-card__snippet">Called {{ guardHits }} time(s)</text>
+        </view>
       </view>
 
       <template #right>
-        <view class="sn-swipe-demo__action">
-          <text class="sn-swipe-demo__action-text">Archive</text>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--danger">
+            <view class="sw-pill__content">
+              <SnIcon :icon="Trash" :size="20" />
+              <text class="sw-pill__label">Delete</text>
+            </view>
+</view>
         </view>
       </template>
     </SnSwipeAction>
@@ -32,32 +44,73 @@ function beforeClose(): boolean {
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 8rpx;
 }
-.sn-swipe-demo__row {
+
+/* Floating card: the demo paints the surface — the component paints none. */
+.sw-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 20rpx 24rpx;
+  padding: 32rpx;
+  border-radius: 32rpx;
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.08);
+}
+
+.sw-card__body {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8rpx;
-  padding: 24rpx 32rpx;
 }
-.sn-swipe-demo__title {
+
+.sw-card__title {
   font-size: 28rpx;
+  font-weight: 600;
   color: var(--sn-mp-color-text-primary);
 }
-.sn-swipe-demo__desc {
+
+.sw-card__snippet {
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }
-.sn-swipe-demo__action {
+
+.sw-pillbar {
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  padding-right: 24rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 160rpx;
-  background: var(--sn-mp-color-feedback-danger);
-  flex-direction: row;
-}
-.sn-swipe-demo__action-text {
-  font-size: 28rpx;
+  width: 136rpx;
+  height: 132rpx;
+  border-radius: 40rpx;
   color: var(--sn-mp-color-text-on-primary);
+}
+
+/* 图标 + 名称随遮挡距离渐显 / 渐隐（组件经 CSS var 发布进度，200ms 缓动跟手）。 */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
+}
+
+.sw-pill--danger {
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
 }
 </style>

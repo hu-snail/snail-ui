@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/scratchcard-mp-ratio.vue sha256:9bf5511608efe47b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-scratchcard (uni-end) — 刮开阈值：ratio（0.3 vs 0.9）。

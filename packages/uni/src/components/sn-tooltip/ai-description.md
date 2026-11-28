@@ -6,13 +6,20 @@
 
 ## Purpose
 
-Tap-triggered text hint bubble for mobile / miniprogram. A trigger element with a
-short hint attached to one of twelve placements. Used for icon-only buttons,
-truncated labels and inline explanations.
+Tap-triggered **text-only** hint bubble for mobile / miniprogram. A trigger
+element with a short hint attached to one of twelve placements. Used for
+icon-only buttons, truncated labels and inline explanations.
+
+Scope split from `sn-popover` (deliberate): the tooltip renders plain text on
+the platform-standard dark transient plate (the toast token pair) — there is
+deliberately no `content` slot, no title / description / icon / actions. Rich
+anchored cards, menus and bottom sheets belong to `sn-popover`; page-level
+filters to `sn-drop-menu`. The former `content` slot and object-row rendering
+were removed when the two components were split (breaking, by design).
+
 Outside taps close the bubble through the wot-ui-style `useQueue` /
-`closeOutside` page-root hook (see docs). The bubble
-defaults to the elevated surface — white in the light theme — with the page
-text color; recolor via `--sn-tooltip-bg` / `--sn-tooltip-color`.
+`closeOutside` page-root hook (see docs). Recolor the plate via
+`--sn-tooltip-bg` / `--sn-tooltip-color`.
 
 ## Reference Library
 
@@ -40,10 +47,11 @@ import { SnTooltip } from '@snui/uni';
 | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
 | `modelValue`   | `boolean`                                                                                                                                                            | `false`    | no       | Whether the bubble is shown (`v-model`).                                                                         |
 | `trigger`      | `'slot' \| 'manual'`                                                                                                                                                 | `'slot'`   | no       | `slot` (default) toggles from the trigger tap (an App-only catcher node receives it on uni-app x App). `manual` leaves toggling to the page via v-model — for remote tap targets only; slotted components with page-bound listeners are inert on App. |
-| `content`      | `string \| Array<Record<string, unknown> \| string>`                                                                                                                 | `''`       | no       | Bubble text; an array renders one line per entry (`label` / `text` / `content` / `name` key, or a plain string). |
+| `content`      | `string \| string[]`                                                                                                                                                 | `''`       | no       | Bubble text; an array renders one plain-text line per entry. Non-string entries (legacy object rows) are dropped, never stringified. |
 | `placement`    | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end'` | `'bottom'` | no       | Bubble anchor.                                                                                                   |
-| `offset`       | `number \| number[] \| { x?, y? }`                                                                                                                                   | `0`        | no       | Gap between trigger and bubble, in design px. Published as `--sn-tooltip-offset-x` / `-y`.                       |
+| `offset`       | `number \| number[] \| { x?, y? }`                                                                                                                                   | `0`        | no       | Gap between trigger and bubble, in design px. Published as `--sn-tooltip-offset-x` / `-y`; the 14rpx gap stays a static margin (MP-safe) and a nonzero offset re-adds it inline on the pop node.                       |
 | `visibleArrow` | `boolean`                                                                                                                                                            | `true`     | no       | Render the arrow pointing at the trigger.                                                                        |
+| `theme`        | `'dark' \| 'light'`                                                                                                                                                  | `'dark'`   | no       | Plate appearance (AUI addition — wd-tooltip is dark-only): `dark` translucent toast plate; `light` white surface plate with `--sn-mp-shadow-md`, arrow re-skins with it. |
 | `disabled`     | `boolean`                                                                                                                                                            | `false`    | no       | Disables the trigger — taps are ignored and the bubble stays closed.                                             |
 | `showClose`    | `boolean`                                                                                                                                                            | `false`    | no       | Render a close button inside the bubble.                                                                         |
 | `customArrow`  | `string`                                                                                                                                                             | `''`       | no       | Extra class on the arrow node.                                                                                   |
@@ -66,7 +74,6 @@ import { SnTooltip } from '@snui/uni';
 | Name      | Description                                         |
 | --------- | --------------------------------------------------- |
 | `default` | Trigger content (the element the bubble points at). |
-| `content` | Custom bubble body; replaces `content`.             |
 
 ## Exposed Methods
 
@@ -78,14 +85,14 @@ import { SnTooltip } from '@snui/uni';
 
 ## Tokens Consumed (end: mp)
 
-| Token          | CSS Variable                                                                                                                   | Purpose                                                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| Component vars | `--sn-tooltip-bg` (default: `--sn-mp-color-background-elevated`), `--sn-tooltip-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
-| Secondary text | `--sn-mp-color-text-secondary`                                                                                                 | Close glyph color                                                         |
-| Elevation      | `--sn-mp-shadow-md`                                                                                                            | Bubble shadow                                                             |
-| Radius         | `--sn-mp-radius-md`                                                                                                            | Bubble corners                                                            |
-| Spacing        | `--sn-mp-spacing-2/3/4`                                                                                                        | Bubble padding / gaps                                                     |
-| Typography     | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal`                                                                      | Bubble text                                                               |
+| Token          | CSS Variable                                                                                                                                                     | Purpose                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Component vars | `--sn-tooltip-bg` (default: `--sn-mp-color-background-inverse`), `--sn-tooltip-color` (default: `--sn-mp-color-text-on-primary`), `--sn-tooltip-width` (default `320rpx`) | Dark transient plate (toast token pair) / text on it / fixed plate width |
+| Elevation      | — (the dark plate reads without a shadow)                                                                                                                        | The former bubble shadow is gone with the dark plate                         |
+| Radius         | `--sn-mp-radius-md`                                                                                                                                              | Plate corners                                                                |
+| Spacing        | `--sn-mp-spacing-3/4`                                                                                                                                            | Plate padding / gaps                                                         |
+| Elevation (light theme) | `--sn-mp-shadow-md`                                                                                                                                    | `theme="light"` 白色底盘的投影（dark 无阴影）                                |
+| Typography     | `--sn-mp-font-size-xs`, `--sn-mp-font-line-height-normal`                                                                                                        | Plate text                                                                   |
 
 ## Accessibility
 
@@ -96,9 +103,16 @@ import { SnTooltip } from '@snui/uni';
 
 ## Documented Divergences
 
+- Text hints only (split from sn-popover, breaking by design): the `content`
+  slot and object-row rendering were removed; `content` is `string \| string[]`.
 - No hover trigger: miniprogram / touch devices have no `hover`, so the trigger
   is tapped to toggle. The `trigger` prop switches between slot-internal
   toggling and page-driven v-model toggling — it is not a hover/click selector.
+- Dark plate: the bubble rides the platform-standard toast token pair instead
+  of the elevated card surface, so the tooltip reads as a hint, not a card.
+- Fixed plate width (additive, cross-platform): `max-content` / `vw` sizing is
+  unsupported on uni-app x App — the plate width is the `--sn-tooltip-width`
+  component var; text wraps inside it.
 - Click-outside close: wot-ui `useQueue` / `closeOutside` parity — the page
   root binds the tap dispatcher; the component registers an idempotent close.
   No mask is rendered (a mask swallowed taps and broke one-gesture switching).
@@ -119,5 +133,6 @@ is registered, so nothing else can leak.
 
 ## Versioning
 
-`@snui/uni@0.4.0` — initial release. Part of the M2 overlay / interaction batch
-(tooltip / popover / drop-menu / curtain / swipe-action / floating-panel).
+`@snui/uni@0.4.0` — M2 overlay / interaction batch. Text-only scope split and
+dark plate added in the reference-design refactor (breaking: `content` slot and
+object rows removed).

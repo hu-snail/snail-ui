@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/index-bar-mp-scrollto.en.vue sha256:0e75a06e380a364a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-index-bar — `scrollTo()` from code and custom root styling.

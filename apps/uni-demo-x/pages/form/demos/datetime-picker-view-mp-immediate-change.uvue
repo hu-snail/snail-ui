@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-view-mp-immediate-change.vue sha256:df0fdc5b5b06c799 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — 即时 change（immediateChange）：每次滚动立即 emit change。 */
 import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';
@@ -8,8 +9,7 @@ const changes = ref(0);
   <view class="sn-demo sn-demo--stack">
     <SnDatetimePickerView v-model="instant" type="date" immediate-change @change="changes += 1" />
     <text class="sn-demo__meta"
-      >immediateChange（每次滚动立即 emit change，已触发 {{ changes }} 次）</text
-    >
+      >immediateChange（每次滚动立即 emit change，已触发 {{ changes }} 次）</text>
   </view>
 </template>
 <style scoped>

@@ -14,6 +14,7 @@ const members = [
   { text: '李', base: '#2563EB', gradient: 'linear-gradient(135deg, #3B82F6, #2563EB)' },
   { text: '陈', base: '#059669', gradient: 'linear-gradient(135deg, #10B981, #059669)' },
   { text: '王', base: '#D97706', gradient: 'linear-gradient(135deg, #F59E0B, #D97706)' },
+  { text: '赵', base: '#DB2777', gradient: 'linear-gradient(135deg, #EC4899, #DB2777)' },
 ];
 </script>
 
@@ -34,8 +35,8 @@ const members = [
     </view>
 
     <view class="grp-scene">
-      <text class="grp-label">Square stack (shape="square")</text>
-      <SnAvatarGroup shape="square" size="64rpx" cascading="right-up">
+      <text class="grp-label">Square stack (shape="square" + max-count)</text>
+      <SnAvatarGroup shape="square" size="64rpx" :max-count="3" cascading="right-up">
         <SnAvatar
           v-for="member in members"
           :key="member.text"

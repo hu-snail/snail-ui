@@ -1,0 +1,247 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-swipe-action (uni-end) — floating card rows (iOS-mail style), EN copy.
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
+ *
+ * The row cards and the pill actions paint their own surfaces — the component
+ * itself is background-free, so the page canvas shows through between the card
+ * and the revealed button (reference: iOS Mail swipe interactions).
+ */
+import { computed, ref } from 'vue';
+
+import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Mail } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const openA = ref<'left' | 'close' | 'right'>('close');
+const openB = ref<'left' | 'close' | 'right'>('close');
+const openC = ref<'left' | 'close' | 'right'>('close');
+
+/** Archive feedback: tapping the pill collapses the row and counts it. */
+const archived = ref({ a: false, b: false, c: false });
+
+const archivedCount = computed(
+  () => Object.values(archived.value).filter((hit) => hit).length,
+);
+
+function archive(key: 'a' | 'b' | 'c'): void {
+  archived.value[key] = true;
+  if (key === 'a') openA.value = 'close';
+  if (key === 'b') openB.value = 'close';
+  if (key === 'c') openC.value = 'close';
+}
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <SnSwipeAction v-model="openA">
+      <view class="sw-card">
+        <view class="sw-card__avatar sw-card__avatar--a" />
+        <view class="sw-card__body">
+          <view class="sw-card__line">
+            <text class="sw-card__title">Design Team</text>
+            <text class="sw-card__time">9:41</text>
+          </view>
+          <view class="sw-card__line">
+            <text class="sw-card__snippet">Maya: Pushed the new prototypes</text>
+            <view class="sw-card__badge"><text class="sw-card__badge-text">3</text></view>
+          </view>
+        </view>
+      </view>
+
+      <template #right>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--primary" @tap="archive('a')">
+            <view class="sw-pill__content">
+              <SnIcon :icon="Mail" :size="20" />
+              <text class="sw-pill__label">Archive</text>
+            </view>
+</view>
+        </view>
+      </template>
+    </SnSwipeAction>
+
+    <SnSwipeAction v-model="openB">
+      <view class="sw-card">
+        <view class="sw-card__avatar sw-card__avatar--b" />
+        <view class="sw-card__body">
+          <view class="sw-card__line">
+            <text class="sw-card__title">Ava Thompson</text>
+            <text class="sw-card__time">8:15</text>
+          </view>
+          <view class="sw-card__line">
+            <text class="sw-card__snippet">Quarterly planning agenda is attached</text>
+            <view class="sw-card__badge"><text class="sw-card__badge-text">1</text></view>
+          </view>
+        </view>
+      </view>
+
+      <template #right>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--primary" @tap="archive('b')">
+            <view class="sw-pill__content">
+              <SnIcon :icon="Mail" :size="20" />
+              <text class="sw-pill__label">Archive</text>
+            </view>
+</view>
+        </view>
+      </template>
+    </SnSwipeAction>
+
+    <SnSwipeAction v-model="openC">
+      <view class="sw-card">
+        <view class="sw-card__avatar sw-card__avatar--c" />
+        <view class="sw-card__body">
+          <view class="sw-card__line">
+            <text class="sw-card__title">Weekend Trip</text>
+            <text class="sw-card__time">Yesterday</text>
+          </view>
+          <view class="sw-card__line">
+            <text class="sw-card__snippet">Liam: Booked the cabin for Saturday</text>
+          </view>
+        </view>
+      </view>
+
+      <template #right>
+        <view class="sw-pillbar">
+          <view class="sw-pill sw-pill--primary" @tap="archive('c')">
+            <view class="sw-pill__content">
+              <SnIcon :icon="Mail" :size="20" />
+              <text class="sw-pill__label">Archive</text>
+            </view>
+</view>
+        </view>
+      </template>
+    </SnSwipeAction>
+
+    <text class="sw-meta">
+      {{ archivedCount > 0 ? `${archivedCount} archived` : 'Swipe a card to the left' }}
+    </text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+/* Floating card: the demo paints the surface — the component paints none, so
+ * the page canvas shows through between the card and the revealed pill. */
+.sw-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24rpx;
+  margin: 20rpx 24rpx;
+  padding: 28rpx 32rpx;
+  border-radius: 32rpx;
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.08);
+}
+
+.sw-card__avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+}
+
+.sw-card__avatar--a {
+  background-image: linear-gradient(135deg, #93c5fd, #6366f1);
+}
+
+.sw-card__avatar--b {
+  background-image: linear-gradient(135deg, #fdba74, #f43f5e);
+}
+
+.sw-card__avatar--c {
+  background-image: linear-gradient(135deg, #6ee7b7, #0ea5e9);
+}
+
+.sw-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.sw-card__line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.sw-card__title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sw-card__time {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sw-card__snippet {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sw-card__badge {
+  padding: 2rpx 16rpx;
+  border-radius: 999rpx;
+  background-color: var(--sn-mp-color-action-primary);
+}
+
+.sw-card__badge-text {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+/* Pills: rounded buttons floating behind the card, 24rpx off the screen edge. */
+.sw-pillbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  padding-right: 24rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 136rpx;
+  height: 132rpx;
+  border-radius: 40rpx;
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+/* 图标 + 名称随遮挡距离渐显 / 渐隐（组件经 CSS var 发布进度，200ms 缓动跟手）。 */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
+}
+
+.sw-pill--primary {
+  background-color: var(--sn-mp-color-action-primary);
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
+}
+
+.sw-meta {
+  margin: 8rpx 24rpx 0;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

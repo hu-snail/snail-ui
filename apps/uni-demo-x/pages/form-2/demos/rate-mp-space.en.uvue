@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-space.en.vue sha256:c6e0e6eee6ef7660 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — gap & full-row spread: `space` sets the gap (a number is an rpx design value ×2), `size` the glyph size and `block` stretches the icons across the row. */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

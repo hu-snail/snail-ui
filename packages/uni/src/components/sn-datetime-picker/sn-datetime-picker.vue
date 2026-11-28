@@ -60,6 +60,14 @@ type DateTimeTab = 'start' | 'end';
 
 defineOptions({ name: 'SnDatetimePicker' });
 
+defineSlots<{
+  /**
+   * Custom wheel band paint (additive) — forwarded to
+   * `sn-datetime-picker-view`. Scope: `{ mode, columnIndex }`.
+   */
+  band?(scope: { mode: 'shared' | 'perColumn'; columnIndex: number }): unknown;
+}>();
+
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-datetime-picker` 1:1 surface ────────────────────────── */
@@ -116,6 +124,22 @@ const props = withDefaults(
     zIndex?: number;
     /** Write `v-model` on every roll instead of only on confirm. */
     immediateChange?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：转发给
+     * `sn-datetime-picker-view`，选中行渲染圆角胶囊高亮带 + 远行淡出。
+     */
+    wheel?: boolean;
+    /**
+     * 高亮带形态（additive）：`shared`（默认）横跨全部列一整条带；
+     * `perColumn` 每列一条。转发给 `sn-datetime-picker-view`。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：转发给
+     * `sn-datetime-picker-view`，滑动经过每一行档位时触发
+     * `uni.vibrateShort({ type: 'light' })`。
+     */
+    vibrateShort?: boolean;
     /** Class on the root node. */
     customClass?: string;
     /** Inline style on the sheet. */
@@ -168,6 +192,9 @@ const props = withDefaults(
     beforeConfirm: undefined,
     zIndex: 15,
     immediateChange: false,
+    wheel: false,
+    wheelBand: 'shared',
+    vibrateShort: false,
     customClass: '',
     customStyle: '',
     rootPortal: false,
@@ -317,8 +344,20 @@ const viewClass = computed(() => props.customViewClass);
         :filter="props.filter"
         :immediate-change="props.immediateChange"
         :lunar="props.lunar"
+        :wheel="props.wheel"
+        :wheel-band="props.wheelBand"
+        :vibrate-short="props.vibrateShort"
         @change="onViewChange"
-      />
+      >
+        <!-- uvue: 无参 v-bind="obj" 不支持 → 显式绑定；$slots.band 守卫仅约束
+             H5/App——mp 端二级插槽转发错位（uni-app x mp alpha 缺陷），
+             条件编译跳过，mp 端回落默认漆面（显式退化，§85）。 -->
+        <!-- #ifndef MP-WEIXIN -->
+        <template v-if="$slots.band" #band="scope"
+          ><slot name="band" :mode="scope.mode" :column-index="scope.columnIndex"
+        /></template>
+        <!-- #endif -->
+      </SnDatetimePickerView>
     </view>
   </SnPopup>
 </template>

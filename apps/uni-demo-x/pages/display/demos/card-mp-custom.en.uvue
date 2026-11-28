@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/card-mp-custom.en.vue sha256:f6543810a9ef0881 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-card (uni-end) — custom-title-class / custom-content-class / custom-footer-class / custom-class / custom-style.
@@ -45,8 +46,7 @@ const rows = [
       <text class="sn-card-demo__rect-body">rectangle type with a custom content class</text>
     </SnCard>
     <text class="sn-demo__meta"
-      >The rectangle variant honours customClass / customContentClass too.</text
-    >
+      >The rectangle variant honours customClass / customContentClass too.</text>
   </view>
 </template>
 <style scoped>

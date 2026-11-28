@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-keys.vue sha256:8db022b6dee4b698 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-picker-view — 自定义字段名：valueKey / labelKey / childrenKey。

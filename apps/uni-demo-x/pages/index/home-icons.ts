@@ -1,3 +1,4 @@
+// gen-x: source apps/uni-demo/src/pages/index/home-icons.ts sha256:684b0541980270cd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * 首页卡片图标 —— 组件 key → sn-icon 内置目录名（string icon API）。
  *

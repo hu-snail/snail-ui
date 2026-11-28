@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-indicator.en.vue sha256:cde8feb28908253e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — indicator shape (lineTheme).
@@ -40,8 +41,7 @@ const dotText = computed(() => TEXT[String(dotValue.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >lineTheme="underline": the indicator spans the active column's bottom edge; lineHeight is an
-      rpx design value.</text
-    >
+      rpx design value.</text>
     <view class="sn-demo__cards">
       <SnCell
         card
@@ -62,8 +62,7 @@ const dotText = computed(() => TEXT[String(dotValue.value)] ?? '');
     />
 
     <text class="sn-demo__label"
-      >lineTheme="text" + lineWidth: the dot / text indicator takes a width and height.</text
-    >
+      >lineTheme="text" + lineWidth: the dot / text indicator takes a width and height.</text>
     <view class="sn-demo__cards">
       <SnCell
         card

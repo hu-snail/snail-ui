@@ -58,7 +58,10 @@ defineOptions({ name: 'SnDialog' });
 /** Dialog flavour. Mirrors `wd-dialog` `type`. */
 type DialogType = 'alert' | 'confirm' | 'prompt';
 
-/** Button style. Mirrors `wd-dialog` `theme`. */
+/**
+ * Button style. Named after `wd-dialog` `theme`, but `text` renders the
+ * wot-ui `plain` (朴素) button variant — see the prop doc below.
+ */
 type DialogTheme = 'button' | 'text';
 
 /** Action button arrangement. Mirrors `wd-dialog` `action-layout`. */
@@ -97,7 +100,13 @@ const props = withDefaults(
     msg?: string;
     /** Dialog flavour: `alert` (one button), `confirm` (two), `prompt` (two + input). */
     type?: DialogType;
-    /** Button style: filled buttons or borderless text buttons. */
+    /**
+     * Button style. Both values render full sn-buttons (arrangement follows
+     * `actionLayout`): `button` = filled `base` buttons, `text` = wot-ui
+     * 朴素按钮 `plain` variant (transparent fill + type-colored outline).
+     * Deliberate divergence from wd-dialog, whose `theme="text"` renders
+     * borderless text labels — AUI design review chose real buttons here.
+     */
     theme?: DialogTheme;
     /** Stacking level of the dialog. */
     zIndex?: number;
@@ -367,7 +376,6 @@ const bodyClass = computed(() => ['sn-dialog__body', `sn-dialog__body--${props.t
 const actionsClass = computed(() => [
   'sn-dialog__actions',
   `sn-dialog__actions--${props.actionLayout}`,
-  { 'sn-dialog__actions--text': props.theme === 'text' },
 ]);
 </script>
 
@@ -466,7 +474,7 @@ const actionsClass = computed(() => [
             <SnButton
               v-if="cancelButton.visible"
               class="sn-dialog__cancel"
-              :variant="theme === 'text' ? 'text' : 'base'"
+              :variant="theme === 'text' ? 'plain' : 'base'"
               v-bind="cancelButton.attrs"
               @click="handleCancel"
             >
@@ -476,7 +484,7 @@ const actionsClass = computed(() => [
               v-if="confirmButton.visible"
               class="sn-dialog__confirm"
               type="primary"
-              :variant="theme === 'text' ? 'text' : 'base'"
+              :variant="theme === 'text' ? 'plain' : 'base'"
               v-bind="confirmButton.attrs"
               @click="handleConfirm"
             >
@@ -534,11 +542,15 @@ const actionsClass = computed(() => [
   margin-bottom: var(--sn-mp-spacing-3);
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-xl);
-  font-weight: var(--sn-mp-font-weight-medium);
+  font-weight: var(--sn-mp-font-weight-semibold);
   line-height: var(--sn-mp-font-line-height-tight);
 }
 
 .sn-dialog__msg {
+  /* uni-app x App: <text> does not inherit text-align from the parent view,
+   * so the centering must sit on the message itself (the title stays centered
+   * through the body's flex align-items). */
+  text-align: center;
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
@@ -587,11 +599,6 @@ const actionsClass = computed(() => [
 .sn-dialog__actions--horizontal .sn-dialog__cancel,
 .sn-dialog__actions--horizontal .sn-dialog__confirm {
   flex: 1 1 0;
-}
-
-.sn-dialog__actions--text {
-  flex-direction: column;
-  gap: var(--sn-mp-spacing-1);
 }
 
 .sn-dialog__action {

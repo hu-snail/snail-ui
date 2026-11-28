@@ -84,6 +84,46 @@ import { PickerView } from '@snui/uni';
       blurb: '`immediateChange` fires `change` continuously while dragging for live updates.',
     },
     {
+      name: 'picker-view-mp-wheel',
+      title: 'Wheel style (`wheel`)',
+      blurb: 'The wheel mode swaps in a rounded pill selection band with a distance fade, shared across columns.',
+    },
+    {
+      name: 'picker-view-mp-icons',
+      title: 'Icon options (`#option` slot)',
+      blurb: 'The scoped `option` slot replaces row content: icon + label, the active row turns theme-colored.',
+    },
+    {
+      name: 'picker-view-mp-band',
+      title: 'Band theme (`--sn-picker-view-wheel-band`)',
+      blurb: 'customStyle overrides the band color and radius variables — one-line reskin.',
+    },
+    {
+      name: 'picker-view-mp-slots',
+      title: 'Time slots (`#option` slot + distance)',
+      blurb: 'The slot draws a dashed box per row with a solid theme border on the active row and a distance fade.',
+    },
+    {
+      name: 'picker-view-mp-rich',
+      title: 'Rich rows (`#option` slot)',
+      blurb: 'Title + subtitle two-line layout; option.raw carries business fields.',
+    },
+    {
+      name: 'picker-view-mp-band-mode',
+      title: 'Band customization (`wheelBand` / gradient / inset)',
+      blurb: 'shared renders one pill across columns; perColumn one per column; paint / radius / inset via CSS vars.',
+    },
+    {
+      name: 'picker-view-mp-band-dots',
+      title: 'Dotted texture band (`#band` slot)',
+      blurb: 'The #band slot replaces the pill paint: soft blue + dot grid + border — textures CSS vars cannot express.',
+    },
+    {
+      name: 'picker-view-mp-band-soft',
+      title: 'Full soft band (`#band` slot)',
+      blurb: 'Zero inset + large radius full-width soft blue band, matching the time-roller reference.',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: 'Root styling (`customClass` / `customStyle`)',
       blurb:
@@ -148,6 +188,24 @@ import { PickerView } from '@snui/uni';
         desc: 'Treat `columns` as a nested option tree.',
       },
       { name: 'disabled', type: 'boolean', default: 'false', desc: 'Disables the whole roller.' },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Wheel style (additive): the selected row renders a rounded pill band with a distance fade.',
+      },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "Band shape (additive): shared spans every column with one pill; perColumn one band per column. Paint / radius / inset via `--sn-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset`.",
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Slide haptic (additive): fires `uni.vibrateShort({ type: "light" })` per detent on App / mini-program; H5 skips silently.',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -171,7 +229,7 @@ import { PickerView } from '@snui/uni';
   },
   pager: {
     prev: { text: 'Picker', link: '/en/components/uni/picker' },
-    next: { text: 'SelectPicker', link: '/en/components/uni/select-picker' },
+    next: { text: 'WheelPicker', link: '/en/components/uni/wheel-picker' },
   },
   toc: [
     { id: 'usage', text: 'Usage' },

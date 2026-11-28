@@ -1,0 +1,269 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-swipe-action (uni-end) — cell-style list group (gapless rows).
+ * Per AUI-DOCS-016: imports the real @snui/uni sn-swipe-action from its SFC source.
+ *
+ * sn-cell-group card 提供整组卡面与行间分割线，swipe-action 夹在分组与
+ * sn-cell 之间承担滑动手势——组件不画背景，行高与分割线由 cell 决定，
+ * 滑开区域露出组卡面，操作钮贴合行高。操作钮的图标 + 名称随遮挡距离
+ * 渐显 / 渐隐（组件经 CSS var 发布进度）。
+ */
+import { ref } from 'vue';
+
+import SnSwipeAction from '@snui/uni-src/components/sn-swipe-action/sn-swipe-action.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Bell, Trash } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+
+const openA = ref<'left' | 'close' | 'right'>('close');
+const openB = ref<'left' | 'close' | 'right'>('close');
+const openC = ref<'left' | 'close' | 'right'>('close');
+const openD = ref<'left' | 'close' | 'right'>('close');
+
+/** 点操作钮收起该行并计数，给出反馈。 */
+const dismissed = ref({ mute: 0, del: 0 });
+
+function dismiss(kind: 'mute' | 'del', key: 'a' | 'b' | 'c' | 'd'): void {
+  dismissed.value[kind] += 1;
+  if (key === 'a') openA.value = 'close';
+  if (key === 'b') openB.value = 'close';
+  if (key === 'c') openC.value = 'close';
+  if (key === 'd') openD.value = 'close';
+}
+</script>
+
+<template>
+  <view class="sw-group">
+    <SnCellGroup card class="demo-host">
+      <SnSwipeAction v-model="openA">
+        <SnCell title="设计组" label="Maya：新原型已推送">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--a" />
+          </template>
+          <template #default>
+            <text class="sw-time">9:41</text>
+            <view class="sw-badge"><text class="sw-badge-text">3</text></view>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'a')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label">静音</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'a')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">删除</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+
+      <SnSwipeAction v-model="openB">
+        <SnCell title="Ava Thompson" label="季度规划议程已附上">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--b" />
+          </template>
+          <template #default>
+            <text class="sw-time">8:15</text>
+            <view class="sw-badge"><text class="sw-badge-text">1</text></view>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'b')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label">静音</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'b')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">删除</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+
+      <SnSwipeAction v-model="openC">
+        <SnCell title="周末行程" label="Liam：周六的小屋订好了">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--c" />
+          </template>
+          <template #default>
+            <text class="sw-time">昨天</text>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'c')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label">静音</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'c')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">删除</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+
+      <SnSwipeAction v-model="openD">
+        <SnCell title="Noah Carter" label="好的，发票我没问题了">
+          <template #prefix>
+            <view class="sw-avatar sw-avatar--d" />
+          </template>
+          <template #default>
+            <text class="sw-time">周一</text>
+          </template>
+        </SnCell>
+
+        <template #right>
+          <view class="sw-pillbar">
+            <view class="sw-pill sw-pill--soft" @tap="dismiss('mute', 'd')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Bell" :size="20" />
+                <text class="sw-pill__label">静音</text>
+              </view>
+            </view>
+            <view class="sw-pill sw-pill--danger" @tap="dismiss('del', 'd')">
+              <view class="sw-pill__content">
+                <SnIcon :icon="Trash" :size="20" />
+                <text class="sw-pill__label">删除</text>
+              </view>
+            </view>
+          </view>
+        </template>
+      </SnSwipeAction>
+    </SnCellGroup>
+  </view>
+
+  <text class="sw-meta">
+    {{
+      dismissed.mute + dismissed.del > 0
+        ? `静音 ${dismissed.mute} 次 · 删除 ${dismissed.del} 次`
+        : '任意一行左滑试试，图标和名称随露出渐显'
+    }}
+  </text>
+</template>
+
+<style scoped>
+/* 通栏页里组卡自带左右外间距，浮在页面画布上。 */
+.sw-group {
+  padding: 20rpx var(--sn-mp-spacing-4) 0;
+}
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩：组卡宿主转 block 铺满列宽，行与
+ * 操作钮才贴得住屏幕右缘（同 sn-step virtualHost / 生成页 demo-host）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
+
+/* 行头像：渐变圆点（prefix 插槽，替换默认图标）。 */
+.sw-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+}
+
+.sw-avatar--a {
+  background-image: linear-gradient(135deg, #93c5fd, #6366f1);
+}
+
+.sw-avatar--b {
+  background-image: linear-gradient(135deg, #fdba74, #f43f5e);
+}
+
+.sw-avatar--c {
+  background-image: linear-gradient(135deg, #6ee7b7, #0ea5e9);
+}
+
+.sw-avatar--d {
+  background-image: linear-gradient(135deg, #c4b5fd, #7c3aed);
+}
+
+.sw-time {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sw-badge {
+  margin-left: 16rpx;
+  padding: 2rpx 16rpx;
+  border-radius: 999rpx;
+  background-color: var(--sn-mp-color-action-primary);
+}
+
+.sw-badge-text {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+/* cell 行的操作钮：贴合行高的圆角条（与浮卡胶囊区分）。 */
+.sw-pillbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  padding-right: 16rpx;
+}
+
+.sw-pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  margin: 10rpx 0;
+  width: 120rpx;
+  border-radius: 24rpx;
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+.sw-pill--soft {
+  background-color: var(--sn-mp-color-control-unchecked);
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sw-pill--danger {
+  background-color: var(--sn-mp-color-feedback-danger);
+}
+
+/* 图标 + 名称随遮挡距离渐显 / 渐隐（组件经 CSS var 发布进度，200ms 缓动跟手）。 */
+.sw-pill__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  opacity: var(--sn-swipe-action-reveal-right, 1);
+  transition: opacity 200ms ease-out;
+}
+
+.sw-pill__label {
+  font-size: 22rpx;
+}
+
+.sw-meta {
+  display: block;
+  margin: 16rpx 24rpx 0;
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+</style>

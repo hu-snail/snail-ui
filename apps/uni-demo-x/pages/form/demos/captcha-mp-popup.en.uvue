@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/captcha-mp-popup.en.vue sha256:d0e3651166bbcca1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-captcha (uni-end) — tap to open the popup overlay.
@@ -16,8 +17,8 @@ const lockedScrim = ref(false);
 
 /** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
 const SCENES = [
-  'https://picsum.photos/seed/snui-captcha-popup-a/600/400',
-  'https://picsum.photos/seed/snui-captcha-popup-b/600/400',
+  'https://cdn.uviewui.com/uview/album/3.jpg',
+  'https://cdn.uviewui.com/uview/album/4.jpg',
 ];
 
 const sceneIndex = ref(0);

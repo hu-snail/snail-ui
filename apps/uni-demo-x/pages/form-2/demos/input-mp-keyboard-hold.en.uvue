@@ -1,0 +1,18 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-keyboard-hold.en.vue sha256:0915a5c2f4f0687c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — keyboard hold and page push (holdKeyboard / adjustPosition / always-embed). */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const held = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="held" hold-keyboard adjust-position placeholder="Keyboard up + auto scroll" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

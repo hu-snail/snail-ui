@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-swiper.en.vue sha256:ad3558b4dbcad5b3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tabs — native swiper content area (`swipeable` / `duration` / `swiper-easing` / `swiper-height`).
@@ -20,9 +21,7 @@ const easingActive = ref(0);
       <SnTab title="For you" :name="0">
         <view class="sn-demo__pane"
           ><text class="sn-demo__pane-text"
-            >Drag the content area left or right to switch tabs.</text
-          ></view
-        >
+            >Drag the content area left or right to switch tabs.</text></view>
       </SnTab>
       <SnTab title="Following" :name="1">
         <view class="sn-demo__pane"><text class="sn-demo__pane-text">Second pane.</text></view>
@@ -51,9 +50,7 @@ const easingActive = ref(0);
       <SnTab title="Month" :name="2" disabled>
         <view class="sn-demo__pane"
           ><text class="sn-demo__pane-text"
-            >Monthly stats (disabled: swiping here snaps back)</text
-          ></view
-        >
+            >Monthly stats (disabled: swiping here snaps back)</text></view>
       </SnTab>
     </SnTabs>
 

@@ -78,6 +78,7 @@ import SnIcon from '../sn-icon/sn-icon.vue';
 import SnLoading from '../sn-loading/sn-loading.vue';
 import type { LoadingType } from '../sn-loading/sn-loading-types';
 import { Check, ChevronDown } from '../sn-icon/sn-icon-set';
+import { resolveUniHost } from '../../utils/uni-host';
 import { MAX_PULL_RATIO, createBrowserPagingGesture } from './sn-paging-simulate';
 
 defineOptions({ name: 'SnPaging' });
@@ -88,7 +89,7 @@ defineOptions({ name: 'SnPaging' });
  * `@scrolltolower` do not exist and the touch fallback takes over.
  */
 const isBrowserHost =
-  typeof document !== 'undefined' && typeof (globalThis as { uni?: unknown }).uni === 'undefined';
+  typeof document !== 'undefined' && resolveUniHost() === null;
 
 /**
  * uni-h5 host (real uni runtime on a browser platform): the scroll-view IS
@@ -943,7 +944,7 @@ function measureFloorScroll(): void {
     f2MaxScroll = Math.max(el.scrollHeight - el.clientHeight, 0);
     return;
   }
-  const query = (globalThis as { uni?: FloorUniHost }).uni?.createSelectorQuery?.();
+  const query = resolveUniHost<FloorUniHost>()?.createSelectorQuery?.();
   const instance = getCurrentInstance()?.proxy;
   if (!query || !instance) return;
   const scoped = query.in ? query.in(instance) : query;

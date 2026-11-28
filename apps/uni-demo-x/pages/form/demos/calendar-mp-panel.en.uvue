@@ -1,15 +1,15 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue sha256:34a899c3d26d3edd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — panel size and switcher (panelHeight / switchMode).
  *
- * One cell card carries the entry: panel-height stretches the scrollable
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): panel-height stretches the scrollable
  * panel, show-panel-title drops the month caption, switch-mode = year-month
  * swaps in the month / year switcher and duration tunes the animation.
  */
 import { Settings } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-x/components/sn-calendar/sn-calendar.uvue';
 import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
-import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
 
@@ -26,17 +26,14 @@ const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Panel size &amp; switcher">
-      <SnCell
-        title="Month / year switch"
-        label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
-        :value="monthSwitchText"
-        placeholder="Not selected"
-        :prefix-icon-data="Settings"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Month / year switch"
+      :value="monthSwitchText"
+      placeholder="Not selected"
+      :prefix-icon-data="Settings"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="monthSwitch"

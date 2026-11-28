@@ -22,6 +22,9 @@ to the wd-toast parity list.
 - `selector` — accepted for parity, no effect in the component form.
 - `class-prefix` / `css-icon` — accepted for parity; uni icons are `IconData`
   objects resolved through `sn-icon`, so the iconfont-class path is inert.
+- **Outside-tap dismiss** — deliberately not registered in the page-level
+  `closeOutside` queue (wot-ui parity). A toast closes via `duration` /
+  `v-model` only; taps (including on the toast itself) never dismiss it.
 
 ## Import
 

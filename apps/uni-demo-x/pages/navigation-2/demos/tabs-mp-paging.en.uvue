@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-paging.en.vue sha256:c03ebcd22c75911a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tabs — composed with sn-paging: every pane hosts its own paged list.

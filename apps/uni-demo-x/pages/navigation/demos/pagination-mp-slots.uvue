@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/pagination-mp-slots.vue sha256:b20e583c4e456146 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-pagination — 插槽自定义与根节点样式。
@@ -21,8 +22,7 @@ const page = ref(1);
     >
       <template #prev="{ modelValue }">
         <text class="sn-demo__slot" :class="{ 'sn-demo__slot--off': modelValue <= 1 }"
-          >‹ 上一页</text
-        >
+          >‹ 上一页</text>
       </template>
       <template #size="{ modelValue, totalPageNum }">
         <text class="sn-demo__slot">{{ modelValue }} / {{ totalPageNum }}</text>

@@ -86,6 +86,46 @@ import { PickerView } from '@snui/uni';
       blurb: 'immediateChange 拖动中持续触发 change，配合事件实时联动。',
     },
     {
+      name: 'picker-view-mp-wheel',
+      title: 'wheel 风格（`wheel`）',
+      blurb: 'wheel 模式换装圆角胶囊高亮带 + 远行淡出，多列共享同一条带。',
+    },
+    {
+      name: 'picker-view-mp-icons',
+      title: '图标选项（`#option` 插槽）',
+      blurb: '#option 作用域插槽自定义行内容：图标 + 文字，选中行转主题色。',
+    },
+    {
+      name: 'picker-view-mp-band',
+      title: '胶囊带主题（`--sn-picker-view-wheel-band`）',
+      blurb: 'customStyle 覆盖高亮带底色与圆角变量，一行换肤。',
+    },
+    {
+      name: 'picker-view-mp-slots',
+      title: '时间槽（`#option` 插槽 + distance）',
+      blurb: '插槽画每行虚线时间槽盒，选中行实线主题框，远行按 distance 淡出。',
+    },
+    {
+      name: 'picker-view-mp-rich',
+      title: '富内容行（`#option` 插槽）',
+      blurb: '主标题 + 副标题双行布局，option.raw 透传业务字段。',
+    },
+    {
+      name: 'picker-view-mp-band-mode',
+      title: '块自定义（`wheelBand` / 渐变带 / inset）',
+      blurb: 'shared 一整条横跨全部列；perColumn 每列一条；带漆 / 圆角 / 内边距走 CSS 变量。',
+    },
+    {
+      name: 'picker-view-mp-band-dots',
+      title: '点阵纹理带（`#band` 插槽）',
+      blurb: '#band 插槽替换高亮块的漆面：浅蓝底 + 圆点阵列 + 描边，CSS 变量做不到的纹理由调用方绘制。',
+    },
+    {
+      name: 'picker-view-mp-band-soft',
+      title: '整幅软色带（`#band` 插槽）',
+      blurb: '零内边距 + 大圆角的整幅浅蓝带，对齐时间滚轮参考稿。',
+    },
+    {
       name: 'picker-view-mp-custom-style',
       title: '根节点样式（`customClass` / `customStyle`）',
       blurb: 'customClass / customStyle 落在根节点上，改滚轮外框与底色。',
@@ -124,6 +164,24 @@ import { PickerView } from '@snui/uni';
       },
       { name: 'cascade', type: 'boolean', default: 'false', desc: '把 columns 当树处理' },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '禁用滚轮' },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'wheel 风格（additive）：选中行渲染圆角胶囊高亮带 + 远行淡出。',
+      },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: "高亮带形态（additive）：shared 横跨全部列一整条带；perColumn 每列一条。带漆 / 圆角 / 内边距经 `--sn-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset` 自定义。",
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: '滑动短震动（additive）：每档位触发 `uni.vibrateShort({ type: "light" })`，App / 小程序生效。',
+      },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       {
         name: 'customStyle',
@@ -147,7 +205,7 @@ import { PickerView } from '@snui/uni';
   },
   pager: {
     prev: { text: 'Picker', link: '/components/uni/picker' },
-    next: { text: 'SelectPicker', link: '/components/uni/select-picker' },
+    next: { text: 'WheelPicker', link: '/components/uni/wheel-picker' },
   },
   toc: [
     { id: 'usage', text: '代码用法' },

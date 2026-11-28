@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-closable.vue sha256:8592825694b51d2b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — closable 筛选条件。 */
 import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';

@@ -2,7 +2,7 @@
 /**
  * Demo: sn-calendar — shortcut callback and confirm veto (onShortcutsClick / beforeConfirm).
  *
- * One cell card carries the entry: shortcuts provide the chips, the
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): shortcuts provide the chips, the
  * on-shortcuts-click callback echoes the last tapped chip, before-confirm
  * vetoes confirm while the value is empty. Tapping opens the sheet.
  */
@@ -10,7 +10,6 @@ import { ref } from 'vue';
 import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -34,18 +33,15 @@ const guard = (payload: number | number[] | null) => payload !== null;
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Shortcut callback &amp; confirm veto">
-      <SnCell
-        title="Shortcuts"
-        label="shortcuts + on-shortcuts-click + before-confirm"
-        :value="Array.isArray(value) ? `${value.length} dates` : ''"
-        placeholder="Not selected"
-        :prefix-icon-data="Filter"
-        is-link
-        @click="open = true"
-      />
-      <SnCell title="Last shortcut tapped" :value="lastShortcut" />
-    </SnCellGroup>
+    <SnCell
+      title="Shortcuts"
+      :value="Array.isArray(value) ? `${value.length} dates` : ''"
+      placeholder="Not selected"
+      :prefix-icon-data="Filter"
+      is-link
+      @click="open = true"
+    />
+    <SnCell title="Last shortcut tapped" :value="lastShortcut" />
 
     <SnCalendar
       v-model="value"

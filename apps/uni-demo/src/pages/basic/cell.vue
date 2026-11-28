@@ -16,6 +16,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'单元格'"
     :title-en="'Cell'"
     :desc="'列表行容器，可组合图标与箭头'"
@@ -23,39 +24,49 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('基础用法', 'Basic usage')"
+          badge="basic"
+          inset
+        />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead class="demo-host" :title="t('卡片', 'Card')" badge="card" inset />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('图标', 'Icon')" badge="icon" />
+        <DemoModuleHead class="demo-host" :title="t('图标', 'Icon')" badge="icon" inset />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('布局', 'Layout')" badge="layout" />
+        <DemoModuleHead class="demo-host" :title="t('布局', 'Layout')" badge="layout" inset />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('link', 'Link')" badge="link" />
+        <DemoModuleHead class="demo-host" :title="t('link', 'Link')" badge="link" inset />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('无边框', 'No border')" badge="no-border" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('无边框', 'No border')"
+          badge="no-border"
+          inset
+        />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
     </view>
@@ -64,7 +75,7 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -89,7 +100,23 @@ const { t } = useDemoUi();
   box-shadow: none;
 }
 
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

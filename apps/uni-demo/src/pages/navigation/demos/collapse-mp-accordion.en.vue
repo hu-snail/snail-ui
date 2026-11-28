@@ -15,10 +15,17 @@ const open = ref('a');
   <view class="sn-demo sn-demo--column">
     <SnCollapse v-model="open" accordion>
       <SnCollapseItem name="a" title="FAQ">
-        <text class="sn-demo__body">Only one panel stays open at a time.</text>
+        <text class="sn-demo__body"
+          >Only one panel stays open at a time. Tapping the open header collapses it; tapping
+          another header switches the active panel — ideal for FAQs and settings groups.</text
+        >
       </SnCollapseItem>
       <SnCollapseItem name="b" title="Return policy">
-        <text class="sn-demo__body">7-day no-questions returns.</text>
+        <text class="sn-demo__body"
+          >7-day no-questions returns. Items must be unused and in their original packaging; refunds
+          go back to the original payment method within 1-3 business days after the warehouse
+          receives them.</text
+        >
       </SnCollapseItem>
     </SnCollapse>
     <text class="sn-demo__meta">Currently open: {{ open || 'none' }}</text>

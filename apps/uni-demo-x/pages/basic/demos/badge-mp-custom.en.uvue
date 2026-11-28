@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/badge-mp-custom.en.vue sha256:de6c6ef987cae3ca —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-badge (uni-end) — `customClass` / `customStyle`.
@@ -44,8 +45,7 @@ const items = [
     </view>
 
     <text class="sn-demo__meta"
-      >Both together: customClass adds the frame, customStyle adds padding and fill</text
-    >
+      >Both together: customClass adds the frame, customStyle adds padding and fill</text>
     <view class="sn-demo__row">
       <SnBadge
         is-dot
@@ -57,8 +57,7 @@ const items = [
     </view>
 
     <text class="sn-demo__meta"
-      >The marker itself (type / bgColor / top / right) is untouched by these two props</text
-    >
+      >The marker itself (type / bgColor / top / right) is untouched by these two props</text>
     <view class="sn-demo__row">
       <SnBadge
         :value="6"

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-icon.en.vue sha256:9838bbbd1a85bd41 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — title-icon sources, size tiers and colours.
@@ -58,7 +59,7 @@ const colored = ref([]);
       <SnCollapseItem
         name="a"
         title="Brand avatar"
-        title-icon-url="https://picsum.photos/seed/snui-collapse/96"
+        title-icon-url="https://cdn.uviewui.com/uview/album/1.jpg"
       >
         <text class="sn-demo__body">Image icons share the same size box as the SVG ones.</text>
       </SnCollapseItem>

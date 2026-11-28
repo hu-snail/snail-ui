@@ -18,7 +18,7 @@ import { Check, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label">node 插槽完全替换默认节点</text>
-    <SnSteps :active="1">
+    <SnSteps :active="1" align-center>
       <SnStep title="提交订单" description="09:00">
         <template #node>
           <view class="sn-demo__node">
@@ -61,14 +61,18 @@ import { Check, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-4);
   width: 100%;
 }
 
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__label {
+  margin: var(--sn-mp-spacing-4) 0 var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
+}
+.sn-demo__label:first-child {
+  margin-top: 0;
 }
 
 /* 自定义节点自带外观与尺寸，连接线仍由容器拼装。 */
@@ -104,8 +108,10 @@ import { Check, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 .sn-demo__content {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-1);
   padding: var(--sn-mp-spacing-2) 0;
+}
+.sn-demo__title {
+  margin-bottom: var(--sn-mp-spacing-1);
 }
 
 .sn-demo__title {

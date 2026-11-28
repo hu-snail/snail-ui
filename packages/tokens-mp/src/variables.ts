@@ -129,6 +129,7 @@ export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-color-feedback-danger-hover', 'var(--aui-color-feedback-danger-hover)'],
   ['--sn-mp-color-feedback-danger-soft', 'var(--aui-color-feedback-danger-soft)'],
   ['--sn-mp-color-feedback-info', 'var(--aui-color-feedback-info)'],
+  ['--sn-mp-color-feedback-info-soft', 'var(--aui-color-feedback-info-soft)'],
   // Input surface slots — referenced by sn-input / sn-form-item.
   ['--sn-mp-color-input-bg', 'var(--aui-color-background-surface)'],
   ['--sn-mp-color-input-text', 'var(--aui-color-text-primary)'],

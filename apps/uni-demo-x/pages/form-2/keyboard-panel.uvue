@@ -1,0 +1,62 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/keyboard-panel.vue sha256:435ede7feb9d6bc0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— keyboard-panel 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/keyboard-panel-mp-basic.uvue';
+import DemoModuleHead from '../../components/DemoModuleHead.uvue';
+import DemoPageShell from '../../components/DemoPageShell.uvue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
+</script>
+<template>
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'键盘面板'"
+    :title-en="'Keyboard Panel'"
+    :desc="'内嵌键盘视图'"
+    :bg="''"
+  >
+    <view class="page">
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo0 class="demo-host" />
+        </view>
+      </view>
+    </view>
+  </DemoPageShell>
+</template>
+<style scoped>
+.page {
+  padding: 24rpx 24rpx 48rpx;
+}
+
+/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
+ * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
+ * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
+ * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+.module {
+  margin-bottom: 24rpx;
+  padding: 32rpx;
+  border-radius: 24rpx;
+  background: var(--demo-card-bg);
+  border: 1px solid var(--demo-card-border);
+  box-shadow: var(--demo-card-shadow);
+}
+
+.module__body {
+  padding: 0;
+}
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
+</style>

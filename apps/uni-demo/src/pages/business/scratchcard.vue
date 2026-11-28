@@ -16,6 +16,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'刮刮乐'"
     :title-en="'Scratchcard'"
     :desc="'刮层擦除与阈值回调'"
@@ -23,42 +24,55 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('封面色（coverColor）', 'Cover color')" badge="cover" />
-        <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('刮开阈值（ratio）', 'Scratch threshold')" badge="ratio" />
-        <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
-        <view class="module__body">
-          <Demo3 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('封面色（coverColor）', 'Cover color')"
+          badge="cover"
+        />
+        <view class="module__body">
+          <Demo1 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('刮开阈值（ratio）', 'Scratch threshold')"
+          badge="ratio"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('状态', 'State')" badge="states" />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('标题样式（titleSize / titleColor）', 'Title styling')"
           badge="title-style"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('水印（watermark*）', 'Watermark')" badge="watermark" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('水印（watermark*）', 'Watermark')"
+          badge="watermark"
+        />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
     </view>
@@ -86,4 +100,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

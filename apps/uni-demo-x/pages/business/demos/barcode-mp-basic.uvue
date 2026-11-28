@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/barcode-mp-basic.vue sha256:6616a3461a4f0237 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-barcode (uni-end) — 基础用法：12 位输入自动补算校验位。

@@ -37,18 +37,23 @@ const open = ref(false);
   font-size: 24rpx;
   color: var(--vp-c-text-2);
 }
-/* H5 / WEB only — docs preview pins the fixed layer to the phone frame.
- * uni-app x App compiles this OUT: App-side `position: absolute` lays out in
- * the direct parent's content box (css/position) and the page class still
- * reaches the component root (style-isolation) — the rule would pin the
- * fullscreen fixed layer into the demo card and clip it (App overflow
- * defaults to hidden). */
-/* #ifdef H5 || WEB */
+/* Docs preview only — pin the fixed layer to the phone frame. The uni-demo-x
+ * generated copy strips this rule in gen-x.mjs (vapor ignores style-level
+ * conditional compilation, so the App side must not ship it). */
 .sn-tooltip.sn-demo-contained {
   position: relative;
 }
-/* #endif */
 .sn-tooltip-demo__space {
   height: 180rpx;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-tooltip-demo__meta {
+  overflow: visible;
+}
+.sn-tooltip-demo__space {
+  overflow: visible;
 }
 </style>

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/text-mp-custom.vue sha256:643b3edc4057640b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-text (uni-end) — custom-class / custom-style 与三个插槽。
@@ -15,8 +16,7 @@ import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';
       text="custom-class + custom-style 追加在根节点上"
     />
     <text class="sn-demo__meta"
-      >根节点同时挂 sn-text 与 sn-demo__highlight 两个类，内联样式覆盖内边距与圆角。</text
-    >
+      >根节点同时挂 sn-text 与 sn-demo__highlight 两个类，内联样式覆盖内边距与圆角。</text>
 
     <SnText type="primary" bold>
       <template #prefix>

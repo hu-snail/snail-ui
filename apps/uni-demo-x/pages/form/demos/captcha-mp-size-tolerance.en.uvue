@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/captcha-mp-size-tolerance.en.vue sha256:c0888b30dcfa14b8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-captcha (uni-end) — stage size and tolerance (width / height / tolerance).
@@ -13,7 +14,7 @@ const show = ref(false);
 const passed = ref(false);
 
 /** Stable network poster (picsum seed) so the puzzle cuts a real photo. */
-const SOURCE = 'https://picsum.photos/seed/snui-captcha-size/640/320';
+const SOURCE = 'https://cdn.uviewui.com/uview/album/8.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

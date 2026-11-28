@@ -7,7 +7,7 @@ import { SnComment } from '@snui/vue-web';
   <div class="comment-nest-demo">
     <SnComment
       author="苏格拉底"
-      avatar="https://picsum.photos/id/1011/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/3.jpg"
       datetime="1 小时前"
       content="评论可以嵌套使用，回复会缩进到父评论头像右侧。"
     >
@@ -16,7 +16,7 @@ import { SnComment } from '@snui/vue-web';
       </template>
       <SnComment
         author="柏拉图"
-        avatar="https://picsum.photos/id/64/64/64"
+        avatar="https://cdn.uviewui.com/uview/album/4.jpg"
         datetime="40 分钟前"
         content="感谢分享，正想确认缩进的实现方式。"
       >
@@ -26,7 +26,7 @@ import { SnComment } from '@snui/vue-web';
       </SnComment>
       <SnComment
         author="亚里士多德"
-        avatar="https://picsum.photos/id/1074/64/64"
+        avatar="https://cdn.uviewui.com/uview/album/5.jpg"
         datetime="20 分钟前"
         content="同问，嵌套层级之间的间距也和顶层一致。"
       >

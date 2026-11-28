@@ -50,7 +50,7 @@ import { Navbar } from '@snui/uni';
       name: 'navbar-mp-basic',
       title: 'Basic usage',
       blurb:
-        'title renders the heading; left-text / right-text add side labels; left-arrow shows the back arrow; bordered draws the bottom hairline.',
+        'title renders the heading; left-text / right-text add side labels; left-arrow shows the back arrow (which handles cross-end back by default); bordered draws the bottom hairline.',
     },
     {
       name: 'navbar-mp-slots',
@@ -78,43 +78,78 @@ import { Navbar } from '@snui/uni';
       blurb:
         '#capsule takes over the left zone; #title replaces the heading; custom-class / custom-style land on the root.',
     },
+    {
+      name: 'navbar-mp-capsule',
+      title: 'Capsule style / search bar',
+      blurb:
+        '#capsule renders a WeChat-style back + home capsule; #title becomes a pill search field while both side labels stay.',
+    },
+    {
+      name: 'navbar-mp-mp-capsule',
+      title: 'WeChat mini-program capsule',
+      blurb:
+        'Custom navigation always keeps the WeChat system capsule at the top-right: left capsule, centered title, right inset. safe-area-inset-top reserves the measured inset. Real hosts can skip hand-drawing: with `mp-capsule` on, the bar renders its built-in capsule in the MP environment.',
+    },
   ],
   props: {
     hint: [],
     rows: [
-      { name: 'title', type: 'string', default: "''", desc: '标题文字。' },
-      { name: 'leftText', type: 'string', default: "''", desc: '左侧文案。' },
-      { name: 'rightText', type: 'string', default: "''", desc: '右侧文案。' },
-      { name: 'leftArrow', type: 'boolean', default: 'false', desc: '是否显示左侧返回箭头。' },
-      { name: 'bordered', type: 'boolean', default: 'false', desc: '是否显示下边框。' },
-      { name: 'fixed', type: 'boolean', default: 'false', desc: '是否固定到顶部。' },
+      { name: 'title', type: 'string', default: "''", desc: 'Title text.' },
+      { name: 'leftText', type: 'string', default: "''", desc: 'Left-side label.' },
+      { name: 'rightText', type: 'string', default: "''", desc: 'Right-side label.' },
+      { name: 'leftArrow', type: 'boolean', default: 'false', desc: 'Render the back arrow.' },
+      { name: 'bordered', type: 'boolean', default: 'false', desc: 'Hairline bottom border.' },
+      { name: 'fixed', type: 'boolean', default: 'false', desc: 'Pin the bar to the top.' },
       {
         name: 'placeholder',
         type: 'boolean',
         default: 'false',
-        desc: '固定到顶部时，是否在原位置生成一个等高的占位元素。',
+        desc: 'Reserve an equal-height spacer in flow while fixed.',
       },
-      { name: 'zIndex', type: 'number', default: '10', desc: '导航栏 z-index。' },
+      { name: 'zIndex', type: 'number', default: '10', desc: 'Stacking level (fixed only).' },
       {
         name: 'safeAreaInsetTop',
         type: 'boolean',
         default: 'false',
-        desc: '是否开启顶部安全区适配。',
+        desc: 'Add the status-bar height as top padding.',
       },
       {
         name: 'leftDisabled',
         type: 'boolean',
         default: 'false',
-        desc: '是否禁用左侧按钮（透明度降低且不触发事件）。',
+        desc: 'Dim the left zone and block its events.',
       },
       {
         name: 'rightDisabled',
         type: 'boolean',
         default: 'false',
-        desc: '是否禁用右侧按钮（透明度降低且不触发事件）。',
+        desc: 'Dim the right zone and block its events.',
       },
-      { name: 'customClass', type: 'string', default: "''", desc: '根节点自定义类名。' },
-      { name: 'customStyle', type: 'string', default: "''", desc: '根节点自定义样式。' },
+      { name: 'customClass', type: 'string', default: "''", desc: 'Extra class on the root node.' },
+      {
+        name: 'customStyle',
+        type: 'string',
+        default: "''",
+        desc: 'Inline style on the root node.',
+      },
+      {
+        name: 'autoBack',
+        type: 'boolean',
+        default: 'true',
+        desc: 'The arrow performs the cross-end back navigation (AUI additive; pass `false` to own it).',
+      },
+      {
+        name: 'backFallback',
+        type: 'string',
+        default: "''",
+        desc: 'Page opened through `uni.reLaunch` when the stack has no previous page (AUI additive).',
+      },
+      {
+        name: 'mpCapsule',
+        type: 'boolean',
+        default: 'true',
+        desc: 'Auto-renders the built-in back + home capsule in the MP environment (measured system capsule) when no `#capsule` slot is given and the left zone is empty: faint hairline pill with secondary icon colour, back half reuses `auto-back`, home half emits `back-home` (AUI additive; pass `false` to opt out).',
+      },
     ],
   },
   ai: {

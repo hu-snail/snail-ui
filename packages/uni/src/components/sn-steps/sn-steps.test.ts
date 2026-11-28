@@ -11,6 +11,8 @@
 
 import { describe, it, expect, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { defineComponent, h } from 'vue';
 import SnSteps from './sn-steps.vue';
 import SnStep from './sn-step.vue';
@@ -35,7 +37,9 @@ async function mountSteps(
     },
   });
   const wrapper = mount(Harness);
-  /* Registration happens in `onMounted` — flush it before asserting. */
+  /* Registration + status publication happen in mount / watchEffect — flush
+   * both before asserting. */
+  await wrapper.vm.$nextTick();
   await wrapper.vm.$nextTick();
   return wrapper;
 }
@@ -111,6 +115,52 @@ describe('sn-steps', () => {
       expect(wrapper.find('.sn-step__line').exists()).toBe(false);
     });
 
+    it('renders a pure dot in dot mode (no number or status glyph)', async () => {
+      const wrapper = await mountSteps({ dot: true, active: 1 });
+      expect(wrapper.findAll('.sn-step__dot')).toHaveLength(3);
+      expect(wrapper.find('.sn-step__number').exists()).toBe(false);
+      expect(wrapper.find('.sn-step__indicator .sn-icon').exists()).toBe(false);
+    });
+
+    it('applies the center class only for horizontal align-center', async () => {
+      const centered = await mountSteps({ alignCenter: true });
+      expect(centered.find('.sn-step').classes()).toContain('sn-step--center');
+      const vertical = await mountSteps({ alignCenter: true, vertical: true });
+      expect(vertical.find('.sn-step').classes()).not.toContain('sn-step--center');
+    });
+
+    it('keeps centered connectors continuous with hidden outer rails', async () => {
+      const steps = (await mountSteps({ alignCenter: true })).findAll('.sn-step');
+      expect(steps[0]!.find('.sn-step__line--before').classes()).toContain('sn-step__line--hidden');
+      expect(steps[0]!.find('.sn-step__line--after').classes()).not.toContain(
+        'sn-step__line--hidden',
+      );
+      expect(steps[1]!.find('.sn-step__line--before').classes()).not.toContain(
+        'sn-step__line--hidden',
+      );
+      expect(steps.at(-1)!.find('.sn-step__line--after').classes()).toContain(
+        'sn-step__line--hidden',
+      );
+    });
+
+    it('colours the leading rail with the previous step status', async () => {
+      const steps = (await mountSteps({ alignCenter: true, active: 1 })).findAll('.sn-step');
+      expect(steps[1]!.classes()).toContain('sn-step--prev-finished');
+      expect(steps[2]!.classes()).not.toContain('sn-step--prev-finished');
+    });
+
+    it('keeps an explicit error step colour on the following connector', async () => {
+      const steps = (
+        await mountSteps({ alignCenter: true, active: 2 }, [
+          { title: 'A' },
+          { title: 'B' },
+          { title: 'C', status: 'error' },
+          { title: 'D' },
+        ])
+      ).findAll('.sn-step');
+      expect(steps[3]!.classes()).toContain('sn-step--prev-error');
+    });
+
     it('suppresses the connector on the last step', async () => {
       const steps = (await mountSteps()).findAll('.sn-step');
       expect(steps.at(-1)!.classes()).toContain('sn-step--last');
@@ -130,6 +180,59 @@ describe('sn-steps', () => {
       expect(
         (await mountSteps({ alignCenter: true, vertical: true })).find('.sn-steps').classes(),
       ).not.toContain('sn-steps--center');
+    });
+
+    it('anchors the vertical connector on the step root via the vertical modifier', async () => {
+      const steps = (await mountSteps({ vertical: true })).findAll('.sn-step');
+      expect(steps[0]!.find('.sn-step__line').classes()).toContain('sn-step__line--vertical');
+      expect(steps[1]!.find('.sn-step__line').classes()).toContain('sn-step__line--vertical');
+    });
+
+    it('leaves the horizontal connector in flow (no vertical modifier)', async () => {
+      const steps = (await mountSteps()).findAll('.sn-step');
+      expect(steps[0]!.find('.sn-step__line').classes()).not.toContain('sn-step__line--vertical');
+    });
+
+    it('declares a virtual host so the MP wrapper node stops being the flex item', async () => {
+      /* Device-verified regression: on mp-weixin the custom-component host
+       * node is the flex item of .sn-steps, so the root's `flex: 1 1 0` never
+       * applied and horizontal connectors stopped short of the next
+       * indicator. The fix is the MP-only `virtualHost` option (wot-ui's
+       * wd-step flips the same switch) — invisible to happy-dom, hence
+       * source-anchored like the picker suite. */
+      const source = readFileSync(resolve(__dirname, 'sn-step.vue'), 'utf8');
+      expect(source).toMatch(
+        /\/\/\s*#ifdef MP-WEIXIN\s*\n\s*options:\s*\{\s*virtualHost:\s*true\s*\}\s*,?\s*\n\s*\/\/\s*#endif/,
+      );
+    });
+
+    it('writes content padding in longhands the uni-x flattener keeps intact', async () => {
+      /* Device-verified regression: `padding: 0 0 var(--sn-mp-spacing-5)
+       * var(--sn-mp-spacing-3)` was split across the injected --snx-* vars
+       * into invalid multi-value longhands — the vertical content lost its
+       * left indent and bottom spacing on mp-weixin. */
+      const source = readFileSync(resolve(__dirname, 'sn-step.vue'), 'utf8');
+      /* Single-value shorthands (`padding: 0`) are safe — the flattener only
+       * mangles multi-value splits. Restrict to one line so `padding: 0;`
+       * followed by another declaration cannot match. */
+      const shorthandPaddings = source.match(/^[ \t]*padding:[ \t]+\S+[ \t]+\S+/gm) ?? [];
+      expect(shorthandPaddings).toEqual([]);
+      expect(source).toContain('padding-top: var(--sn-mp-spacing-2)');
+      expect(source).toContain('padding-bottom: var(--sn-mp-spacing-5)');
+      expect(source).toContain('padding-left: var(--sn-mp-spacing-3)');
+    });
+
+    it('paints centered connectors as adjacent segments without a scaled overhang', async () => {
+      /* Device-verified regression: the centered connector was one trailing
+       * rail stretched across the step boundary with scaleX(2); the overhang
+       * never rendered on mp-weixin, leaving the next step's leading rail as
+       * a visible gap before every indicator. The connector is now two
+       * adjacent in-flow rails — leading (previous step's status colour) +
+       * trailing (own) — with no transform involved. */
+      const source = readFileSync(resolve(__dirname, 'sn-step.vue'), 'utf8');
+      expect(source).not.toContain('scaleX');
+      expect(source).toContain('.sn-step--prev-finished .sn-step__line--before');
+      expect(source).toContain('.sn-step--prev-error .sn-step__line--before');
     });
 
     it('writes the custom space on each step', async () => {

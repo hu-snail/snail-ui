@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-cropper-mp-export-props.vue sha256:d22c1703cbe0c73f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img-cropper (uni-end) — 导出声明参数（exportScale / quality / fileType）。

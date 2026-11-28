@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/icon-mp-iconify.vue sha256:b7fd57465fc14f8d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-icon (uni-end) — Iconify 按需加载（第三方图标库接入）。

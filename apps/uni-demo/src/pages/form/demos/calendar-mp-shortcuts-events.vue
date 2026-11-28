@@ -2,14 +2,13 @@
 /**
  * Demo: sn-calendar — 快捷回调与确认拦截（onShortcutsClick / beforeConfirm）。
  *
- * 一张 cell 卡片承载入口：shortcuts 提供快捷 chip，on-shortcuts-click 回显
+ * 一行 sn-cell 承载入口（无分组卡片，模块标题由页面外层承担）：shortcuts 提供快捷 chip，on-shortcuts-click 回显
  * 最近点击项，before-confirm 在值为空时拦下确认，点击打开弹层。
  */
 import { ref } from 'vue';
 import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -33,18 +32,15 @@ const guard = (payload: number | number[] | null) => payload !== null;
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="快捷回调与确认拦截">
-      <SnCell
-        title="快捷选项"
-        label="shortcuts + on-shortcuts-click + before-confirm"
-        :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
-        placeholder="未选择"
-        :prefix-icon-data="Filter"
-        is-link
-        @click="open = true"
-      />
-      <SnCell title="最近点击的快捷项" :value="lastShortcut" />
-    </SnCellGroup>
+    <SnCell
+      title="快捷选项"
+      :value="Array.isArray(value) ? `${value.length} 个日期` : ''"
+      placeholder="未选择"
+      :prefix-icon-data="Filter"
+      is-link
+      @click="open = true"
+    />
+    <SnCell title="最近点击的快捷项" :value="lastShortcut" />
 
     <SnCalendar
       v-model="value"

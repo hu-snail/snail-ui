@@ -5,9 +5,11 @@
  * rows, the cascade column derivation and the exposed query API. No rpx
  * numbers in assertions — happy-dom discards lengths it cannot parse.
  */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import SnPickerView from './sn-picker-view.vue';
 import { PICKER_DRAG_CLOCK_INJECT } from './sn-picker-view-drag';
 import type { PickerViewChangePayload } from './sn-picker-view-types';
@@ -283,9 +285,7 @@ describe('sn-picker-view', () => {
       const w = mountView({ modelValue: ['apple'] });
       const column = w.find('.sn-picker-view__column');
       await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
-      expect(w.find('.sn-picker-view__roller').classes()).toContain(
-        'sn-picker-view__roller--dragging',
-      );
+      expect(w.classes()).toContain('sn-picker-view--dragging');
       await column.trigger('touchend', { touches: [{ clientY: 300 }] });
       expect(w.find('.sn-picker-view__roller').classes()).not.toContain(
         'sn-picker-view__roller--dragging',
@@ -592,6 +592,204 @@ describe('sn-picker-view', () => {
       expect(w.findAll('.sn-picker-view__column')).toHaveLength(2);
       const secondColumn = w.findAll('.sn-picker-view__column')[1];
       expect(secondColumn?.find('.sn-picker-view__item--active').text()).toBe('Hangzhou');
+    });
+  });
+
+  describe('wheel style (additive)', () => {
+    it('flags the root with the wheel class only when enabled', () => {
+      expect(mountView().classes()).not.toContain('sn-picker-view--wheel');
+      expect(mountView({ wheel: true }).classes()).toContain('sn-picker-view--wheel');
+    });
+
+    it('fades rows two or more slots away from the selection', () => {
+      const w = mountView({ modelValue: ['c'], columns: [['a', 'b', 'c', 'd', 'e']], wheel: true });
+      const items = w.findAll('.sn-picker-view__item');
+      expect(items[0]?.classes()).toContain('sn-picker-view__item--far');
+      // Adjacent row keeps the default tone; the active row never fades.
+      expect(items[1]?.classes()).not.toContain('sn-picker-view__item--far');
+      expect(items[2]?.classes()).not.toContain('sn-picker-view__item--far');
+      expect(items[2]?.classes()).toContain('sn-picker-view__item--active');
+      expect(items[4]?.classes()).toContain('sn-picker-view__item--far');
+    });
+
+    it('does not fade rows when wheel is off', () => {
+      const w = mountView({ modelValue: ['banana'] });
+      expect(w.findAll('.sn-picker-view__item--far')).toHaveLength(0);
+    });
+
+    it('renders one shared band across columns by default', () => {
+      const w = mountView({ wheel: true, columns: [FRUITS, ['a', 'b']] });
+      // One root-level pill; the per-column indicators are gone.
+      expect(w.findAll('.sn-picker-view__wheel-band')).toHaveLength(1);
+      expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(0);
+    });
+
+    it('keeps a per-column pill when wheelBand is perColumn', () => {
+      const w = mountView({
+        wheel: true,
+        wheelBand: 'perColumn',
+        columns: [FRUITS, ['a', 'b']],
+      });
+      expect(w.findAll('.sn-picker-view__wheel-band')).toHaveLength(0);
+      // One pill per column.
+      expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(2);
+    });
+
+    it('renders hairline indicators without any wheel band', () => {
+      const w = mountView({ columns: [FRUITS, ['a', 'b']] });
+      expect(w.findAll('.sn-picker-view__wheel-band')).toHaveLength(0);
+      expect(w.findAll('.sn-picker-view__indicator')).toHaveLength(2);
+    });
+
+    it('paints the band through the overridable wheel-band variable', () => {      const w = mountView({ wheel: true, customStyle: '--sn-picker-view-wheel-band: #e6f0ff' });
+      // customStyle lands on the root; the CSS var chain reaches the indicator.
+      expect(w.attributes('style')).toContain('--sn-picker-view-wheel-band: #e6f0ff');
+    });
+  });
+
+  describe('option slot (additive)', () => {
+    it('renders the label by default', () => {
+      const w = mountView();
+      expect(w.findAll('.sn-picker-view__item')[0]?.text()).toBe('apple');
+    });
+
+    it('replaces row content with the slot scope', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['banana'], columns: [FRUITS] },
+        slots: {
+          option: `
+            <template #option="{ option, active, distance, index }">
+              <text class="slot-row">{{ index }}:{{ option.label }}:{{ active }}:{{ distance }}</text>
+            </template>
+          `,
+        },
+      });
+      const rows = w.findAll('.slot-row');
+      expect(rows).toHaveLength(3);
+      // banana sits at index 1: neighbours read distance 1, the active row 0.
+      expect(rows[0]?.text()).toBe('0:apple:false:1');
+      expect(rows[1]?.text()).toBe('1:banana:true:0');
+      expect(rows[2]?.text()).toBe('2:cherry:false:1');
+    });
+  });
+
+  describe('wheel z-stack (additive, regression)', () => {
+    it('paints the band behind the text and the fade masks over it', () => {
+      // happy-dom cannot reproduce paint order; the z-stack is anchored on the
+      // source (same pattern as sn-calendar's flex contract). Regression: the
+      // opaque wheel band sat at z-index 2 and hid the selected label.
+      const source = readFileSync(resolve(__dirname, 'sn-picker-view.vue'), 'utf8');
+      const stack = source.slice(source.indexOf('.sn-picker-view__indicator {'));
+      expect(stack).toMatch(/\.sn-picker-view__indicator \{[^}]*z-index: 0/s);
+      expect(stack).toMatch(/\.sn-picker-view__mask \{[^}]*z-index: 2/s);
+      expect(source).toMatch(
+        /\.sn-picker-view__roller \{\n[^}]*position: relative;\n {2}z-index: 1;/,
+      );
+    });
+  });
+
+  describe('conditional compilation (regression)', () => {
+    it('closes the #ifndef MP-WEIXIN block before the root view close', () => {
+      // The #endif once sat AFTER the root </view>: the MP-WEIXIN stripper
+      // removed the root close together with the block, and the uts compile
+      // died with "Element is missing end tag" at the root view (uni-demo-x).
+      const source = readFileSync(resolve(__dirname, 'sn-picker-view.vue'), 'utf8');
+      const templateEnd = source.lastIndexOf('</template>');
+      const endif = source.lastIndexOf('<!-- #endif -->', templateEnd);
+      const rootClose = source.lastIndexOf('</view>', templateEnd);
+      expect(endif).toBeGreaterThan(0);
+      expect(rootClose).toBeGreaterThan(0);
+      expect(endif).toBeLessThan(rootClose);
+    });
+  });
+
+  describe('band slot (additive)', () => {
+    it('replaces the shared band paint and reports mode / columnIndex', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a'], columns: [['a', 'b']], wheel: true },
+        slots: { band: `<template #band="{ mode, columnIndex }"><view class="custom-band">{{ mode }}:{{ columnIndex }}</view></template>` },
+      });
+      const band = w.find('.sn-picker-view__wheel-band .custom-band');
+      expect(band.exists()).toBe(true);
+      expect(band.text()).toBe('shared:-1');
+    });
+
+    it('paints every per-column band in perColumn mode', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a', 'x'], columns: [['a', 'b'], ['x', 'y']], wheel: true, wheelBand: 'perColumn' },
+        slots: { band: `<template #band="{ columnIndex }"><view class="custom-band">{{ columnIndex }}</view></template>` },
+      });
+      const bands = w.findAll('.custom-band');
+      expect(bands).toHaveLength(2);
+      expect(bands.map((b) => b.text())).toEqual(['0', '1']);
+    });
+
+    it('does not render the band slot in hairline mode', () => {
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a'], columns: [['a', 'b']] },
+        slots: { band: `<template #band><view class="custom-band" /></template>` },
+      });
+      expect(w.findAll('.custom-band')).toHaveLength(0);
+    });
+  });
+
+  describe('vibrateShort (additive)', () => {
+    /** Host stub collecting `uni.vibrateShort` calls; cleaned up per test. */
+    function stubHost(): unknown[] {
+      const calls: unknown[] = [];
+      (globalThis as { uni?: unknown }).uni = {
+        vibrateShort: (opts: unknown) => calls.push(opts),
+      };
+      return calls;
+    }
+
+    afterEach(() => {
+      delete (globalThis as { uni?: unknown }).uni;
+    });
+
+    it('does not vibrate by default while sliding', async () => {
+      // FB-010：阶跃时钟（+4ms < MIN_SAMPLE_MS）排除动量对落点的干扰。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const calls = stubHost();
+      const w = mountView({ modelValue: ['apple'] }, { [PICKER_DRAG_CLOCK_INJECT]: stepClock });
+      const column = w.find('.sn-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 212 }] });
+      await column.trigger('touchend', { changedTouches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(0);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['cherry']]);
+    });
+
+    it('vibrates per detent while sliding when enabled', async () => {
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const calls = stubHost();
+      const w = mountView(
+        { modelValue: ['apple'], vibrateShort: true },
+        { [PICKER_DRAG_CLOCK_INJECT]: stepClock },
+      );
+      const column = w.find('.sn-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      // 44px per row at the reference viewport: each crossing ticks once.
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      expect(calls).toHaveLength(1);
+      await column.trigger('touchmove', { touches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(2);
+      // Push the clock past the 100ms velocity window so the release carries
+      // no flick: the settle lands on the already-ticked row, no third tick.
+      clockT += 200;
+      await column.trigger('touchend', { changedTouches: [{ clientY: 212 }] });
+      expect(calls).toHaveLength(2);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['cherry']]);
+    });
+
+    it('does not vibrate on a tap selection', async () => {
+      const calls = stubHost();
+      const w = mountView({ modelValue: ['apple'], vibrateShort: true });
+      await w.findAll('.sn-picker-view__item')[1]!.trigger('tap');
+      expect(calls).toHaveLength(0);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']]);
     });
   });
 });

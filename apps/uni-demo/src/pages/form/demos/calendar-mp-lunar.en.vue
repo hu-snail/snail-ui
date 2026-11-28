@@ -1,14 +1,14 @@
 <script setup lang="ts">
 /**
  * Demo: sn-calendar — lunar captions (`show-lunar`, additive): a lunar day name
- * under each cell, the month name on 初一. The entry row uses the cell card
- * form and echoes the Gregorian + lunar pair of the confirmed value.
+ * under each cell, the month name on 初一. The entry row uses sn-cell directly
+ * (no group card; the module title is carried by the page) and echoes the
+ * Gregorian + lunar pair of the confirmed value.
  */
 import { computed, ref } from 'vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { formatLunar } from '@snui/uni-src/utils/sn-lunar';
 
 const min = new Date(2025, 0, 1).getTime();
@@ -28,17 +28,14 @@ const text = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Lunar captions">
-      <SnCell
-        title="Lunar calendar"
-        label="show-lunar: caption under each day, month name on 初一"
-        :value="text"
-        placeholder="Not selected"
-        :prefix-icon-data="Calendar"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Lunar calendar"
+      :value="text"
+      placeholder="Not selected"
+      :prefix-icon-data="Calendar"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">Selected: {{ text || 'Not selected' }}</text>
 

@@ -1,3 +1,4 @@
+// gen-x: source packages/templates/src/shared/types.ts sha256:48650d3adc8c43ce —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * Shared AI template contracts — consumed by both the web and uni templates.
  *

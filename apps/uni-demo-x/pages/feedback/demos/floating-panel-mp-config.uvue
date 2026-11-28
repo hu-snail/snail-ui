@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/floating-panel-mp-config.vue sha256:273ccd017387af89 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-floating-panel (uni-end) — controlled height, disabled animation,
@@ -38,8 +39,7 @@ function shrink(): void {
       <view class="sn-floating-panel-demo__body">
         <text class="sn-floating-panel-demo__title">duration=0：吸附无动画</text>
         <text class="sn-floating-panel-demo__item"
-          >content-draggable=false：内容区拖动不改变高度</text
-        >
+          >content-draggable=false：内容区拖动不改变高度</text>
         <text class="sn-floating-panel-demo__item">show-scrollbar=false：隐藏滚动条</text>
         <text class="sn-floating-panel-demo__item">safe-area-inset-bottom：适配底部安全区</text>
       </view>

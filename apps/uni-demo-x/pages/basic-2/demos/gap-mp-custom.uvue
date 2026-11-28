@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/gap-mp-custom.vue sha256:42c3ccebefcce471 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-gap (uni-end) — rpx 字符串高度 + custom-class / custom-style。

@@ -11,7 +11,6 @@ import { computed, ref } from 'vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -43,18 +42,15 @@ const dayCount = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Sheet header slot">
-      <SnCell
-        title="Date range"
-        label="the header slot replaces the title row; summary follows the picks"
-        :value="rangeText"
-        placeholder="Not selected"
-        :prefix-icon-data="Calendar"
-        is-link
-        @click="open = true"
-      />
-      <SnCell title="Days selected" :value="dayCount" placeholder="Not selected" />
-    </SnCellGroup>
+    <SnCell
+      title="Date range"
+      :value="rangeText"
+      placeholder="Not selected"
+      :prefix-icon-data="Calendar"
+      is-link
+      @click="open = true"
+    />
+    <SnCell title="Days selected" :value="dayCount" placeholder="Not selected" />
 
     <text class="sn-demo__meta">
       Selected: {{ rangeText || 'Not selected' }}{{ dayCount === '' ? '' : ` (${dayCount})` }}

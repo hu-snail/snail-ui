@@ -40,7 +40,10 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
   gap: 24rpx;
   width: 100%;
 }
+/* Full-bleed page: demos no longer carry outer padding — captions pad
+ * themselves back to align with cell rows (24rpx) and the module head inset. */
 .sn-demo__label {
+  padding: 0 var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }

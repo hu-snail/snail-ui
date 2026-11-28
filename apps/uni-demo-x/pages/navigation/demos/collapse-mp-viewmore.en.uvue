@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-viewmore.en.vue sha256:be2eaa8bf4b01d87 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-collapse — view-more mode (clamped to 2 lines). */
 import { FileText } from '@snui/uni-x/components/sn-icon/sn-icon-set';

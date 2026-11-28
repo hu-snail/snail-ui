@@ -16,7 +16,7 @@ function openPreview(): void {
     <SnImage
       ref="imageRef"
       width="120"
-      src="https://picsum.photos/id/1043/1200/800"
+      src="https://cdn.uviewui.com/uview/album/2.jpg"
       alt="手动预览"
     />
   </div>

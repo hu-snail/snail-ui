@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-clearable.en.vue sha256:1932ae0f69b8df37 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — clearable: re-tapping the current score clears back to null. */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

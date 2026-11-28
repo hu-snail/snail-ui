@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-icon.vue sha256:c59ab91b90cd47e0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tag (uni-end) — 图标三轨：内置目录名 / IconData 对象 / iconUrl 位图。
@@ -11,8 +12,8 @@ import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';
 import { Gift, Truck } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 /** 位图图标：与矢量图标共用同一组尺寸档位。 */
-const brandLogo = 'https://picsum.photos/seed/snui-tag-brand/48/48';
-const badgeShot = 'https://picsum.photos/seed/snui-tag-shot/48/48';
+const brandLogo = 'https://cdn.uviewui.com/uview/album/10.jpg';
+const badgeShot = 'https://cdn.uviewui.com/uview/album/1.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

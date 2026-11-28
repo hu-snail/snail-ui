@@ -1,30 +1,51 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.en.vue sha256:abdcd1dd36e098b4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — disabled & loading.
+ * Demo: sn-button (uni-end) — disabled state (semantic hues + variant forms).
+ * Loading states live in the dedicated loading module.
+ * Spacing note: uni-app x has no flex `gap` support — inline `custom-style`
+ * margins + explicit `flex-direction: row`.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-const loading = ref(false);
-function trigger(): void {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
-}
+/** In-row spacing fallback (uni-app x lacks gap). */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton disabled><text>Disabled</text></SnButton>
-    <SnButton loading><text>Loading</text></SnButton>
-    <SnButton :loading="loading" type="primary" @click="trigger"><text>Click to trigger loading</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-label">Disabled (× semantic hues)</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" disabled><text>Default button</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="primary"><text>Primary button</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="success"><text>Success button</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="info"><text>Info button</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="warning"><text>Warning button</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="danger"><text>Danger button</text></SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">Disabled (× variants: plain / soft / dashed / hairline)</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" disabled variant="plain" type="primary"><text>Plain disabled</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled variant="soft" type="primary"><text>Soft disabled</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled variant="dashed" type="primary"><text>Dashed disabled</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled><text>Hairline disabled</text></SnButton>
+    </view>
   </view>
 </template>
 <style scoped>
-.sn-demo {
+.sn-mp-btn-stack {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+  flex-direction: column;
+}
+.sn-mp-btn-row {
+  display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

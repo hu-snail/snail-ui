@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-toggle-all.vue sha256:ea8b8346bff75b15 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-checkbox — 全选 / 全不选（toggleAll，通过 expose 调用）。 */
 import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';

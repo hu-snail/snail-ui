@@ -7,7 +7,7 @@ import { SnComment } from '@snui/vue-web';
   <div class="comment-nest-demo">
     <SnComment
       author="Socrates"
-      avatar="https://picsum.photos/id/1011/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/7.jpg"
       datetime="1 hour ago"
       content="Comments can be nested; replies indent to the right of the parent avatar."
     >
@@ -16,7 +16,7 @@ import { SnComment } from '@snui/vue-web';
       </template>
       <SnComment
         author="Plato"
-        avatar="https://picsum.photos/id/64/64/64"
+        avatar="https://cdn.uviewui.com/uview/album/8.jpg"
         datetime="40 minutes ago"
         content="Thanks for sharing — I was just about to ask how the indentation works."
       >
@@ -26,7 +26,7 @@ import { SnComment } from '@snui/vue-web';
       </SnComment>
       <SnComment
         author="Aristotle"
-        avatar="https://picsum.photos/id/1074/64/64"
+        avatar="https://cdn.uviewui.com/uview/album/9.jpg"
         datetime="20 minutes ago"
         content="Same question here — is the spacing between nesting levels the same as the top level too?"
       >

@@ -3,7 +3,7 @@
  * Demo: sn-collapse — English shadow of collapse-mp-more-slot.
  *
  * - in viewmore mode the `more` slot replaces the bottom expand / collapse area; its
- *   scope is `{ expanded }`
+ *   scope is `{ expanded }` (opt in with `use-more-slot`)
  * - `custom-more-slot-class` appends a class to that area
  */
 import { ref } from 'vue';
@@ -17,7 +17,13 @@ const viewmore = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnCollapse v-model="viewmore" viewmore :line-num="2" custom-more-slot-class="sn-demo__more">
+    <SnCollapse
+      v-model="viewmore"
+      viewmore
+      use-more-slot
+      :line-num="2"
+      custom-more-slot-class="sn-demo__more"
+    >
       <SnCollapseItem name="intro" title="About the framework">
         <text class="sn-demo__body">
           This block verifies the line-num clamp: two lines show before expanding, and only the

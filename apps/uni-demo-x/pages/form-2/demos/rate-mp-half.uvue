@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-half.vue sha256:60c8c2d99d29f4cb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — 半星：allowHalf 允许半星评分，v-model 出现 .5。 */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';

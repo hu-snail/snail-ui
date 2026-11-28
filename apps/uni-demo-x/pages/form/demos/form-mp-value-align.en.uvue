@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-value-align.en.vue sha256:c4734aff0c88e33c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — value alignment (valueAlign): valueAlign="right" right-aligns numeric fields. */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

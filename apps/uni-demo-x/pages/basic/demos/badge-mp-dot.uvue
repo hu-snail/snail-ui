@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/badge-mp-dot.vue sha256:5ee533105dd3cc6d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-badge (uni-end) — 红点角标（is-dot）。 */
 import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-colors.vue sha256:57460a983d41dfa4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-checkbox — 选中颜色（checkedColor / uncheckedColor）。 */
 import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';

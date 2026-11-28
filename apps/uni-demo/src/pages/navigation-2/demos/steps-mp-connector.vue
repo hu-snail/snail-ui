@@ -13,21 +13,21 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label">connector="solid"（默认直线）</text>
-    <SnSteps :active="1">
+    <SnSteps :active="1" align-center>
       <SnStep title="下单" description="09:00" />
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
     </SnSteps>
 
     <text class="sn-demo__label">connector="dashed"（虚线）</text>
-    <SnSteps :active="1" connector="dashed">
+    <SnSteps :active="1" connector="dashed" align-center>
       <SnStep title="下单" description="09:00" />
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
     </SnSteps>
 
     <text class="sn-demo__label">connector="dotted"（点线）</text>
-    <SnSteps :active="1" connector="dotted">
+    <SnSteps :active="1" connector="dotted" align-center>
       <SnStep title="下单" description="09:00" />
       <SnStep title="支付" description="09:05" />
       <SnStep title="发货" description="待处理" />
@@ -46,13 +46,17 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-4);
   width: 100%;
 }
 
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__label {
+  margin: var(--sn-mp-spacing-4) 0 var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
+}
+.sn-demo__label:first-child {
+  margin-top: 0;
 }
 </style>

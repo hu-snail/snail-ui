@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-first-day-of-week.vue sha256:907df6ff85a2d974 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar-view — 周起始日（firstDayOfWeek）。

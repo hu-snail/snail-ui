@@ -35,6 +35,14 @@
  * gesture away) and `.prevent` blocks the native scroll on H5 / App. The
  * roller must therefore own the whole vertical gesture once a drag starts.
  *
+ * ## Detent haptics (additive)
+ *
+ * `onDetent` fires when the row under the pointer changes during a slide —
+ * once per crossing while dragging, once at the landing row after a flick.
+ * The SFCs wire it to `utils/uni-haptics#vibrateShort` behind the
+ * `vibrateShort` prop, giving App / mini-program rollers the per-detent tick.
+ * Tap selection and programmatic commits never detent.
+ *
  * ## Desktop H5: mouse + wheel (additive, AGENTS.md §112)
  *
  * A uni H5 page opened in a desktop browser has a mouse, and browsers do not
@@ -62,6 +70,7 @@
  */
 
 import { ref, type Ref } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 /** Viewport assumed when neither `uni` nor `window` reports a width (tests). */
 const DEFAULT_VIEWPORT_WIDTH = 375;
@@ -141,6 +150,16 @@ export interface RollerDragOptions {
   onStart(): void;
   /** `pickend` hook (fires on `touchend` / `touchcancel`). */
   onEnd(): void;
+  /**
+   * Detent tick — the row under the pointer changed during a slide.
+   *
+   * Fires once per row crossing while dragging (with or without
+   * `immediateChange`) and once on release when the settled row differs from
+   * the last ticked one (a quick flick ticks exactly once). Tap selection and
+   * programmatic commits never pass through here — only finger/wheel slides
+   * detent. Consumed as the `vibrateShort` haptic trigger.
+   */
+  onDetent?: ((columnIndex: number, rowIndex: number) => void) | undefined;
   /** Clock override for tests — defaults to `Date.now`. */
   now?: (() => number) | undefined;
 }
@@ -220,13 +239,10 @@ function touchY(event: Event, identifier: number | null): number | null {
 
 /** Viewport width in px — the basis of the rpx unit (750rpx = viewport). */
 function viewportWidth(): number {
-  const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowWidth?: number } };
-    innerWidth?: number;
-  };
-  const width = host.uni?.getSystemInfoSync?.()?.windowWidth;
-  if (typeof width === 'number' && width > 0) return width;
-  if (typeof host.innerWidth === 'number' && host.innerWidth > 0) return host.innerWidth;
+  const uniWidth = resolveUniHost<{ getSystemInfoSync?: () => { windowWidth?: number } }>()?.getSystemInfoSync?.()?.windowWidth;
+  if (typeof uniWidth === 'number' && uniWidth > 0) return uniWidth;
+  const innerWidth = (globalThis as { innerWidth?: number }).innerWidth;
+  if (typeof innerWidth === 'number' && innerWidth > 0) return innerWidth;
   return DEFAULT_VIEWPORT_WIDTH;
 }
 
@@ -241,6 +257,8 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
   let anchorIndex = 0;
   let anchorRpx = 0;
   let startY = 0;
+  /** Last row the detent hook fired for this gesture (tap never re-arms it). */
+  let lastDetentRow = 0;
   /** Rendered row height in px, measured once per gesture (H5 / App). */
   let rowHeightPx = 0;
   /** Furthest the finger travelled from the origin this gesture. */
@@ -382,6 +400,7 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
     anchorRpx = baseOffsetRpx(columnIndex);
     startY = y;
     movedPx = 0;
+    lastDetentRow = anchorIndex;
     dragDelta.value = 0;
     isDragging.value = true;
     resetSamples(y, now());
@@ -395,8 +414,15 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
     trackSample(y, now());
     movedPx = Math.max(movedPx, Math.abs(y - startY));
     dragDelta.value = dampDelta((y - startY) * rpxPerPixel());
+    // The detent tick must fire with or without `immediateChange`, so the
+    // resolved row is computed for the haptic even when no commit follows.
+    const row = resolveRow(active, dragDelta.value);
+    if (row !== lastDetentRow) {
+      lastDetentRow = row;
+      options.onDetent?.(active, row);
+    }
     if (options.isImmediate()) {
-      options.commit(active, resolveRow(active, dragDelta.value));
+      options.commit(active, row);
     }
   }
 
@@ -414,6 +440,11 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
     if (drag && options.lengthOf(active) > 0) {
       const target = resolveRow(active, settledDelta + flingRpx(y, time));
       snapDurationMs.value = settleDurationMs(target);
+      // A flick skips the intermediate rows: one tick at the landing row.
+      if (target !== lastDetentRow) {
+        lastDetentRow = target;
+        options.onDetent?.(active, target);
+      }
       options.commit(active, target);
     }
     options.onEnd();
@@ -590,6 +621,7 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
       const target = stepRow(column.index, from, rows);
       if (target === from) return;
       snapDurationMs.value = settleDurationMs(target);
+      options.onDetent?.(column.index, target);
       options.commit(column.index, target);
     };
 

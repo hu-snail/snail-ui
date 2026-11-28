@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-vertical.en.vue sha256:f501377bd9ad027a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — direction=vertical + adjust-height (Alipay-only).
@@ -5,17 +6,16 @@
  */
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-v1/750/400', text: 'Vertical slide 1' },
-  { value: 'https://picsum.photos/seed/snui-sw-v2/750/400', text: 'Vertical slide 2' },
-  { value: 'https://picsum.photos/seed/snui-sw-v3/750/400', text: 'Vertical slide 3' },
+  { value: 'https://cdn.uviewui.com/uview/album/7.jpg', text: 'Vertical slide 1' },
+  { value: 'https://cdn.uviewui.com/uview/album/8.jpg', text: 'Vertical slide 2' },
+  { value: 'https://cdn.uviewui.com/uview/album/9.jpg', text: 'Vertical slide 3' },
 ];
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnSwiper :list="list" :height="300" direction="vertical" :interval="3000" />
     <text class="sn-demo__meta"
-      >direction="vertical": swipes up and down, the indicator stays bottom-centre.</text
-    >
+      >direction="vertical": swipes up and down, the indicator stays bottom-centre.</text>
 
     <SnSwiper
       :list="list"

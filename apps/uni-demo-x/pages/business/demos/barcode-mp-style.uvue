@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/barcode-mp-style.vue sha256:8ee52a4b66333f4e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-barcode (uni-end) — 样式属性：line-length / line-color /

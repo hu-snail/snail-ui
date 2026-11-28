@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-video.en.vue sha256:ad0019ab4abc5ac2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — video items degrade to an image + the video props.
@@ -14,19 +15,19 @@ import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   {
     type: 'video' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd1/750/400',
-    poster: 'https://picsum.photos/seed/snui-sw-vd1/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/10.jpg',
+    poster: 'https://cdn.uviewui.com/uview/album/10.jpg',
     text: 'Video item 1 · renders the poster',
   },
   {
     type: 'video' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd2/750/400',
-    poster: 'https://picsum.photos/seed/snui-sw-vd2/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/1.jpg',
+    poster: 'https://cdn.uviewui.com/uview/album/1.jpg',
     text: 'Video item 2 · renders the poster',
   },
   {
     type: 'image' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd3/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/2.jpg',
     text: 'Plain image item',
   },
 ];
@@ -51,8 +52,7 @@ const list = [
 
     <SnSwiper :list="list" :height="240" :autoplay="false" :indicator="{ type: 'fraction' }" />
     <text class="sn-demo__meta"
-      >Same data with autoplay off and a fraction indicator to inspect all three slides.</text
-    >
+      >Same data with autoplay off and a fraction indicator to inspect all three slides.</text>
   </view>
 </template>
 <style scoped>

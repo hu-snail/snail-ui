@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-colors.vue sha256:0cd180eda4844f9b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-radio — 选中色：checkedColor / uncheckedColor 组级下发，
@@ -24,8 +25,7 @@ const overridden = ref<string | number | boolean | undefined>('a');
     <SnRadioGroup v-model="overridden">
       <SnRadio value="a"><text>继承组级颜色</text></SnRadio>
       <SnRadio value="b" checked-color="var(--sn-mp-color-feedback-danger)"
-        ><text>单项覆盖为危险色</text></SnRadio
-      >
+        ><text>单项覆盖为危险色</text></SnRadio>
     </SnRadioGroup>
     <text class="sn-demo__meta">当前：{{ overridden ?? '（未选）' }}</text>
   </view>

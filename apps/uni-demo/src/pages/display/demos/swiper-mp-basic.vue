@@ -9,9 +9,9 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 const current = ref(0);
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-a/750/400', text: '第一张 · 图片轮播' },
-  { value: 'https://picsum.photos/seed/snui-sw-b/750/400', text: '第二张 · 支持自动播放' },
-  { value: 'https://picsum.photos/seed/snui-sw-c/750/400', text: '第三张 · 循环播放' },
+  { value: 'https://cdn.uviewui.com/uview/album/2.jpg', text: '第一张 · 图片轮播' },
+  { value: 'https://cdn.uviewui.com/uview/album/3.jpg', text: '第二张 · 支持自动播放' },
+  { value: 'https://cdn.uviewui.com/uview/album/4.jpg', text: '第三张 · 循环播放' },
 ];
 </script>
 

@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-3/demos/textarea-mp-word-limit.vue sha256:972d900d19b72c64 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-textarea — 字数统计：showWordLimit + maxlength 在右下角显示计数。 */
+import SnTextarea from '@snui/uni-x/components/sn-textarea/sn-textarea.uvue';
+const limited = ref('snail-aui 的 uni 端文本域');
+</script>
+<template>
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__title">showWordLimit + maxlength</text>
+    <SnTextarea v-model="limited" :maxlength="60" show-word-limit />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

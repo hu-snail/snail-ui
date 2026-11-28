@@ -45,15 +45,10 @@ function onScrimTap(): void {
 .sn-overlay-demo__text {
   font-size: 28rpx;
 }
-/* H5 / WEB only — docs preview pins the fixed layer to the phone frame.
- * uni-app x App compiles this OUT: App-side `position: absolute` lays out in
- * the direct parent's content box (css/position) and the page class still
- * reaches the component root (style-isolation) — the rule would pin the
- * fullscreen fixed layer into the demo card and clip it (App overflow
- * defaults to hidden). */
-/* #ifdef H5 || WEB */
+/* Docs preview only — pin the fixed layer to the phone frame. The uni-demo-x
+ * generated copy strips this rule in gen-x.mjs (vapor ignores style-level
+ * conditional compilation, so the App side must not ship it). */
 .sn-overlay.sn-demo-contained {
   position: absolute;
 }
-/* #endif */
 </style>

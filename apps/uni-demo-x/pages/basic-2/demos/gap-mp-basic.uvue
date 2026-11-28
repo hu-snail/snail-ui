@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/gap-mp-basic.vue sha256:712e320da452ef7d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-gap (uni-end) — 默认高度 / 自定义高度 / 背景色。 */
 import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';

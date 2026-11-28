@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/dialog-mp-theme.en.vue sha256:70052f2300d684d5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-dialog (uni-end) — English shadow of dialog-mp-theme.
@@ -8,7 +9,7 @@ const textThemeOpen = ref(false);
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton block @click="textThemeOpen = true"><text>Text buttons (theme=&quot;text&quot;)</text></SnButton>
+    <SnButton block @click="textThemeOpen = true"><text>Plain buttons (theme=&quot;text&quot;)</text></SnButton>
 
     <SnDialog
       v-model="textThemeOpen"

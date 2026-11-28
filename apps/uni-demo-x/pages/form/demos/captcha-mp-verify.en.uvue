@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/captcha-mp-verify.en.vue sha256:ce4b04a2f9d1b809 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-captcha (uni-end) — inline puzzle verification.
@@ -13,9 +14,9 @@
 import SnCaptcha from '@snui/uni-x/components/sn-captcha/sn-captcha.uvue';
 /** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
 const SCENES = [
-  'https://picsum.photos/seed/snui-captcha-inline-a/600/400',
-  'https://picsum.photos/seed/snui-captcha-inline-b/600/400',
-  'https://picsum.photos/seed/snui-captcha-inline-c/600/400',
+  'https://cdn.uviewui.com/uview/album/8.jpg',
+  'https://cdn.uviewui.com/uview/album/9.jpg',
+  'https://cdn.uviewui.com/uview/album/10.jpg',
 ];
 
 const sceneIndex = ref(0);

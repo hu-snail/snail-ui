@@ -6,10 +6,10 @@ import { Send, ArrowRight } from 'lucide-vue-next';
 
 <template>
   <div class="sn-demo">
-    <SnButton type="primary" :icon="Send">icon left (default)</SnButton>
-    <SnButton type="primary" :icon="ArrowRight" icon-placement="right"> icon right </SnButton>
+    <SnButton type="primary" :icon="Send">图标在左（默认）</SnButton>
+    <SnButton type="primary" :icon="ArrowRight" icon-placement="right"> 图标在右 </SnButton>
     <SnButton type="primary" :icon="Send" :show-icon="false">
-      showIcon=false (icon hidden)
+      隐藏图标
     </SnButton>
   </div>
 </template>

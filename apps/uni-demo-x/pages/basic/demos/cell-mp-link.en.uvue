@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-link.en.vue sha256:003baa86d2c0e7c5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-cell — tappable rows (arrow / toggle value / button value / hint + arrow). */
 import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
@@ -27,8 +28,7 @@ function record(action: string): void {
       <SnCell title="Shipping addresses" value="3" is-link @click="record('Open addresses')" />
       <SnCell title="Feedback">
         <SnButton size="small" type="primary" @click="record('Feedback submitted')"
-          ><text>Give feedback</text></SnButton
-        >
+          ><text>Give feedback</text></SnButton>
       </SnCell>
       <SnCell
         title="Account & security"

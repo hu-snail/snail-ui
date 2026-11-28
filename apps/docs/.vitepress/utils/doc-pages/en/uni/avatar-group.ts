@@ -80,7 +80,7 @@ import { AvatarGroup } from '@snui/uni';
       name: 'avatar-group-mp-shape',
       title: 'Shape (`shape`)',
       blurb:
-        'Uniform member shape: round (default) and square — the group wins over member props.',
+        'Uniform member shape and fold: round (default) and square with a max-count bubble — the group wins over member props.',
     },
   ],
   props: {

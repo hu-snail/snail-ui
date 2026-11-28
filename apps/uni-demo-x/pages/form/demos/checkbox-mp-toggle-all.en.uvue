@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-toggle-all.en.vue sha256:9fd5976e1b9f938b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-checkbox — select all / clear all (toggleAll, via expose). */
 import SnCheckbox from '@snui/uni-x/components/sn-checkbox/sn-checkbox.uvue';

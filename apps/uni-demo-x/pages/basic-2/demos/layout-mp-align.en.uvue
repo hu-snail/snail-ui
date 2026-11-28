@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/layout-mp-align.en.vue sha256:fb04a60c75c5ecf5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-layout (uni-end) — every justify / align step plus custom-class / custom-style.
@@ -49,8 +50,7 @@ import SnCol from '@snui/uni-x/components/sn-layout/sn-col.uvue';
     >
       <SnCol :span="10"><view class="sn-demo__block"><text>custom-class</text></view></SnCol>
       <SnCol :span="10" custom-style="text-align: right;"
-        ><view class="sn-demo__block"><text>custom-style</text></view></SnCol
-      >
+        ><view class="sn-demo__block"><text>custom-style</text></view></SnCol>
     </SnLayout>
     <text class="sn-demo__meta">
       custom-class lands on the sn-layout root; custom-style works on both the row and a column.

@@ -17,8 +17,8 @@ const lockedScrim = ref(false);
 
 /** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
 const SCENES = [
-  'https://picsum.photos/seed/snui-captcha-popup-a/600/400',
-  'https://picsum.photos/seed/snui-captcha-popup-b/600/400',
+  'https://cdn.uviewui.com/uview/album/10.jpg',
+  'https://cdn.uviewui.com/uview/album/1.jpg',
 ];
 
 const sceneIndex = ref(0);

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/index-bar-mp-basic.en.vue sha256:f6acb71d353aa339 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-index-bar — alphabetical index with a jump sidebar. */
 import SnIndexBar from '@snui/uni-x/components/sn-index-bar/sn-index-bar.uvue';

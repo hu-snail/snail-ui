@@ -71,7 +71,12 @@ describe('sn-avatar-group', () => {
   it('renders no bubble and does not clip without a max-count', () => {
     const wrapper = mount(SnAvatarGroup, { slots: { default: avatarSlot(5) } });
     expect(wrapper.find('.sn-avatar-group__collapse').exists()).toBe(false);
-    expect(wrapper.find('.sn-avatar-group__clip').attributes('style')).toBeUndefined();
+    // uni-app x views clip content by DEFAULT (overflow hidden on App AND
+    // web) - the windowless clip must opt OUT explicitly, or member 1's
+    // pulled edge is shaved by the clip's own box.
+    expect(wrapper.find('.sn-avatar-group__clip').attributes('style')).toBe(
+      'overflow: visible;',
+    );
   });
 
   it('collapses the stack and clips the overflow past max-count', () => {
@@ -121,7 +126,10 @@ describe('sn-avatar-group', () => {
       slots: { default: avatarSlot(4) },
     });
     expect(wrapper.find('.sn-avatar-group__collapse').exists()).toBe(false);
-    expect(wrapper.find('.sn-avatar-group__clip').attributes('style')).toBeUndefined();
+    // Windowless clip opts out of the uni-app x default clip (see above).
+    expect(wrapper.find('.sn-avatar-group__clip').attributes('style')).toBe(
+      'overflow: visible;',
+    );
     expect(wrapper.findAll('.sn-avatar')).toHaveLength(4);
   });
 

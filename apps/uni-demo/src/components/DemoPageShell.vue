@@ -45,43 +45,21 @@ const props = withDefaults(
   { titleZh: '', titleEn: '', desc: '', navStyle: 'blend', bg: '' },
 );
 
-const { lang, isDark, stylePackVars, t, applyNavBar, setNavTitle } = useDemoUi();
+const { lang, isDark, shellVars, t, applyNavBar, setNavTitle } = useDemoUi();
 
 const { closeOutside } = useQueue();
 
 /**
  * 画布样式：bg 覆盖只在浅色主题生效（深色维持暗色画布，白色画布在深色下
- * 不可读）；风格包变量始终透传，二者叠加。
+ * 不可读）；shellVars（锚定 + 风格包 + 深色 inline，见 demo-ui）始终透传，
+ * 二者叠加。
  */
 const shellStyle = computed(() => {
-  if (!props.bg || isDark.value) return stylePackVars;
-  return [stylePackVars, { background: props.bg }];
+  // 显式 .value：computed 返回 ref 不会再被模板解包，:style 会拿到
+  // ComputedRef 而不是样式对象
+  if (!props.bg || isDark.value) return shellVars.value;
+  return [shellVars.value, { background: props.bg }];
 });
-
-/**
- * 通栏头部的返回键：有历史栈时回上一页，直接打开内页（无历史）时回首页。
- * 该 uni H5 运行时不挂全局 `uni` 路由 API（`window.uni` 为空壳，工程内
- * `uni.*` 调用均静默降级），H5 走 hash 路由的历史栈兜底。
- */
-function goBack(): void {
-  const api = globalThis.uni as
-    | {
-        navigateBack?: (options?: { fail?: () => void }) => void;
-        reLaunch?: (options: { url: string }) => void;
-      }
-    | undefined;
-  if (typeof api?.navigateBack === 'function') {
-    api.navigateBack({
-      fail: () => api.reLaunch?.({ url: '/pages/index/index' }),
-    });
-    return;
-  }
-  if (window.history.length > 1) {
-    window.history.back();
-    return;
-  }
-  window.location.hash = '#/pages/index/index';
-}
 
 const isBlend = computed(() => props.navStyle === 'blend');
 /** blend 导航栏只在组件页（传入标题）渲染；首页等自绘头部页不渲染。 */
@@ -116,7 +94,9 @@ watch(
   >
     <!-- 透明背景/磨砂走 custom-style 内联：组件自身底色是 surface，inline
      * 声明优先级更高；blur 只作用于导航栏自身（fixed 弹层 demo 的
-     * containing block 语义不变，见 App.vue demo-glass 注）。 -->
+     * containing block 语义不变，见 App.vue demo-glass 注）。
+     * 返回键走 sn-navbar 默认跨端返回（autoBack）：有上一页 → navigateBack，
+     * 直接打开内页（栈里只有当前页）→ reLaunch 到 back-fallback 首页。 -->
     <SnNavbar
       v-if="showTopbar"
       :title="headerTitle"
@@ -124,8 +104,8 @@ watch(
       fixed
       placeholder
       safe-area-inset-top
+      back-fallback="/pages/index/index"
       custom-style="background-color: transparent; backdrop-filter: blur(24rpx); -webkit-backdrop-filter: blur(24rpx);"
-      @back="goBack"
     >
       <template v-if="desc !== '' && lang === 'zh'" #title>
         <view class="demo-shell__navtitle">
@@ -181,8 +161,13 @@ watch(
   text-overflow: ellipsis;
 }
 
-/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。 */
+/* relative：维持既有的层叠 / absolute 锚定上下文（此前用于压在装饰色块上）。
+ * overflow: visible 同样必须写在**本组件的 scoped 规则里**：uni-app x 按
+ * 组件作用域编译 class 样式，scoped 定义会整体遮蔽 App.uvue 的同名全局类
+ * （而不是按属性合并）——只在 App.vue 全局声明时，这一层仍以运行时默认的
+ * hidden 裁掉伸出卡片边界的弹层（tooltip 等，AGENTS.md §103）。 */
 .demo-shell__body {
   position: relative;
+  overflow: visible;
 }
 </style>

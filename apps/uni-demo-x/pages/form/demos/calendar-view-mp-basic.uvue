@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-basic.vue sha256:b83e514396e7956e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-calendar-view — sn-calendar-view 平铺月网格：minDate / maxDate 决定月份范围，tap 某天写回时间戳。 */
 import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';

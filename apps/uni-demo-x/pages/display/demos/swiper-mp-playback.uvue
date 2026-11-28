@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-playback.vue sha256:b0ec2a6c1d3d4b06 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — autoplay / interval / duration / loop / easing.
@@ -6,9 +7,9 @@
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  'https://picsum.photos/seed/snui-sw-p1/750/400',
-  'https://picsum.photos/seed/snui-sw-p2/750/400',
-  'https://picsum.photos/seed/snui-sw-p3/750/400',
+  'https://cdn.uviewui.com/uview/album/9.jpg',
+  'https://cdn.uviewui.com/uview/album/10.jpg',
+  'https://cdn.uviewui.com/uview/album/1.jpg',
 ];
 
 const autoplay = ref(true);

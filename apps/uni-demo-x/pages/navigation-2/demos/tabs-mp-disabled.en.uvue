@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-disabled.en.vue sha256:bdac249cf423acea —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tabs — English shadow of tabs-mp-disabled.
@@ -13,8 +14,7 @@ const disabledHits = ref(0);
       <SnTab title="For you" :name="0"><text>For you content</text></SnTab>
       <SnTab title="Following" :name="1"><text>Following content</text></SnTab>
       <SnTab title="Disabled" :name="2" disabled
-        ><text>Not tappable — a tap only emits the disabled event</text></SnTab
-      >
+        ><text>Not tappable — a tap only emits the disabled event</text></SnTab>
     </SnTabs>
 
     <text class="sn-demo__meta">

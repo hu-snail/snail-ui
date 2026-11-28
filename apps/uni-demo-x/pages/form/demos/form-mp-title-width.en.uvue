@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-title-width.en.vue sha256:0c0b88f7c93973a1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — label column width (titleWidth): shares one inheritance chain with labelWidth (titleWidth wins). */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

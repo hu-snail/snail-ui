@@ -34,6 +34,15 @@
  *   - `icon-size` / `icon-color` / `loading-*` apply to the built-in spinner and
  *     status glyphs (see `sn-icon`).
  *
+ * ## Deliberately NOT in the outside-close queue
+ *
+ * A toast closes via `duration` / `v-model` only — it must not register in the
+ * page-level `closeOutside` queue. On MP-WEIXIN the uni-x transform drops
+ * `pointer-events: none`, so the fullscreen root swallows every tap while
+ * mounted; any tap (including on the toast itself) would bubble to the page
+ * root and kill a freshly opened toast instantly ("闪一下就关闭"). wot-ui
+ * treats toasts the same way: transient, duration-driven, not tap-dismissed.
+ *
  * ## Dispose (AGENTS.md §41)
  *
  * The auto-close timer is the only resource. It is cleared when the toast is
@@ -49,23 +58,13 @@
  *   - 内联加载指示器 — 用 sn-loading
  */
 
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
 import SnLoading from '../sn-loading/sn-loading.vue';
 
 defineOptions({ name: 'SnToast' });
-
-const instanceId = getCurrentInstance()?.uid ?? 0;
-// Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
-onMounted(() =>
-  registerOutsideClosable(instanceId, () => {
-    if (isShown.value) requestClose();
-  }),
-);
-onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Layout direction of icon + text. Mirrors `wd-toast` `direction`. */
 type ToastDirection = 'horizontal' | 'vertical';

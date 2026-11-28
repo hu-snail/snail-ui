@@ -38,14 +38,17 @@
  * 外层按钮 / 链接 / label 上，而不是图标本身（AGENTS.md §52）。
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch, watchEffect } from 'vue';
 import {
   resolveSnIconStringSync,
   resolveSnIconStringAsync,
   SnIconSourceError,
 } from './sn-icon-providers';
 import { toRpxSize } from '../../utils/sn-size';
+import { resolveUniHost } from '../../utils/uni-host';
 import { buildIconDataUrl, isConcreteIconColor, useMpIconColor } from './sn-icon-mp';
+import { paintIconData, rasterizeIconDataUrl, type RasterCanvas2d } from './sn-icon-mp-raster';
+import { resolveFontIcon } from './sn-icon-font';
 import type { IconData } from './sn-icon-types';
 
 defineOptions({ name: 'SnIcon' });
@@ -122,6 +125,21 @@ const viewBox = computed(() =>
  * background-image 路径。`name` 优先 — 这是 wot-ui 原生调用形态。
  */
 const isGlyph = computed(() => props.name !== '' || typeof props.cssIcon === 'string');
+
+/**
+ * 字体图标命中（registerFontIcon 注册映射，ADR-0011 阶段一）：
+ * `name` 按 `<prefix>:<name>` 或裸 name 命中注册表 → `<text>` unicode 渲染
+ * （三端一致，颜色 CSS 继承），优先于 wot-ui class 字形。未命中 → null，
+ * 走既有 class 字形 / SVG 目录链。
+ */
+const fontGlyph = computed(() => (props.name === '' ? null : resolveFontIcon(props.name)));
+
+/** 字形 text 的内联样式：font-family 指向注册的字体家族，字号 = 图标盒边长。 */
+const fontGlyphStyle = computed(() =>
+  fontGlyph.value === null
+    ? undefined
+    : { fontFamily: `'${fontGlyph.value.fontFamily}'`, fontSize: sizeCss.value },
+);
 
 /** iconfont 字形路径的类名列表。 */
 const glyphClass = computed<string[]>(() => {
@@ -267,6 +285,8 @@ const iconDataUrl = computed<string | undefined>(() => {
   return buildIconDataUrl(icon, strokeColor.value, props.strokeWidth);
 });
 
+
+
 /** 渲染模式：图标数据声明 `render: 'fill'` 时按实心字形填充（Material 类图标）。 */
 const isFillIcon = computed<boolean>(() => displayIcon.value?.render === 'fill');
 
@@ -282,9 +302,13 @@ const remoteStyle = computed(() =>
  * 字符串 `customStyle` 不能塞进对象里的 `cssText` 键：patchStyle 最后才
  * 处理它，会把同对象里先设置的 width/height/color 整体抹掉。改为数组
  * 绑定让 Vue 逐项合并。 */
+/** 尺寸盒边长（数字 = px，字符串经 rpx 归一）—— 盒与字体字形共享同一边长。 */
+const sizeCss = computed(() =>
+  typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size),
+);
+
 const boxStyle = computed(() => {
-  const len = typeof props.size === 'number' ? `${props.size}px` : toRpxSize(props.size);
-  const style: Record<string, string> = { width: len, height: len };
+  const style: Record<string, string> = { width: sizeCss.value, height: sizeCss.value };
   if (props.color !== 'currentColor') style.color = props.color;
   return style;
 });
@@ -294,6 +318,120 @@ const customStyleBinding = computed(() => {
     return props.customStyle !== '' ? props.customStyle : undefined;
   }
   return props.customStyle;
+});
+
+/**
+ * MP 端图标光栅化（AUI-MP-003）：WeChat 的 `<image>` 不解码 SVG data
+ * URL（AUI-MP-002 在真机上渲染空白），两级 canvas 光栅化按可用性择一：
+ *
+ * 1. `uni.createOffscreenCanvas({ type: '2d' })` —— 同步，无节点依赖；
+ * 2. uni-app x 小程序只有 `uni.createCanvasContextAsync`（组件内必须有
+ *    `<canvas>` 节点），异步拿到 context 后绘制，`holder.toDataURL()` 导出。
+ *
+ * 两级都不可用时回落 SVG data URL（H5 / 模拟器不受影响）。
+ */
+const mpRasteredUrl = ref<string | null>(null);
+const rasterSizePx = computed<number>(() => {
+  const m = /^(\d+(?:\.\d+)?)(px|rpx)$/.exec(sizeCss.value);
+  if (!m) return 64;
+  let px = Number(m[1]);
+  if (m[2] === 'rpx') {
+    const host = resolveUniHost<{ getSystemInfoSync?: () => { windowWidth?: number } }>();
+    const width = host?.getSystemInfoSync?.()?.windowWidth;
+    px = (px / 750) * (typeof width === 'number' && width > 0 ? width : 375);
+  }
+  // 2× 物理像素：`<image>` aspectFit 缩回，字形边缘不糊。
+  return Math.max(16, Math.round(px * 2));
+});
+
+/** 光栅化画布的 viewBox 基准（catalog 图标固定 24）。 */
+const rasterViewBoxSize = computed<number>(() => {
+  const icon = displayIcon.value;
+  if (icon === null) return 24;
+  const parts = (icon.viewBox ?? '0 0 24 24').split(/[\s,]+/).map(Number);
+  return parts[2] || 24;
+});
+
+/** Offscreen 快捷路径（同步）：宿主提供 createOffscreenCanvas 时直接出图。 */
+
+
+/** Canvas 节点路径：uni-app x 小程序经 createCanvasContextAsync 拿 2d 上下文。 */
+const instance = getCurrentInstance();
+const rasterCanvasId = `sn-icon-raster-${instance?.uid ?? 0}`;
+let mpCanvasCtx: RasterCanvas2d | null = null;
+let mpCanvasHolder: { toDataURL?: () => string } | null = null;
+const mpCanvasReady = ref(false);
+
+/** Canvas 就绪或图标/颜色/尺寸变化时的重绘（重设 bitmap 会重置变换矩阵）。 */
+function repaintMpCanvasRaster(): void {
+  const icon = displayIcon.value;
+  const ctx = mpCanvasCtx;
+  if (icon === null || ctx === null || mpCanvasHolder === null) {
+    mpRasteredUrl.value = null;
+    return;
+  }
+  try {
+    const element = (ctx as unknown as { canvas?: { width: number; height: number } }).canvas;
+    if (element && typeof element.width === 'number') {
+      element.width = rasterSizePx.value;
+      element.height = rasterSizePx.value;
+    }
+    const vw = rasterViewBoxSize.value;
+    ctx.scale(rasterSizePx.value / vw, rasterSizePx.value / vw);
+    paintIconData(ctx, icon, strokeColor.value, props.strokeWidth);
+    const url = mpCanvasHolder.toDataURL?.() ?? '';
+    mpRasteredUrl.value = url.startsWith('data:image/png') ? url : null;
+  } catch {
+    mpRasteredUrl.value = null;
+  }
+}
+
+// canvas 就绪前 offscreen 已兜底出图；就绪后改走 canvas 路径（真机 PNG）。
+watchEffect(() => {
+  if (mpCanvasReady.value) repaintMpCanvasRaster();
+});
+
+watchEffect(() => {
+  // Offscreen 快捷路径仅在 canvas 节点路径未就绪时使用。
+  const icon = displayIcon.value;
+  if (icon === null || mpCanvasReady.value) {
+    if (icon === null) mpRasteredUrl.value = null;
+    return;
+  }
+  mpRasteredUrl.value = rasterizeIconDataUrl(
+    icon,
+    strokeColor.value,
+    props.strokeWidth,
+    rasterSizePx.value,
+  );
+});
+onMounted(() => {
+  const host = resolveUniHost<{ createCanvasContextAsync?: (o: Record<string, unknown>) => void }>();
+  if (typeof host?.createCanvasContextAsync !== 'function') return;
+  try {
+    host.createCanvasContextAsync({
+      id: rasterCanvasId,
+      component: instance?.proxy,
+      success: (value: unknown) => {
+        if (value === null || typeof value !== 'object') return;
+        const holder = value as {
+          getContext?: (kind: string) => unknown;
+          toDataURL?: () => string;
+        };
+        const context = holder.getContext?.('2d');
+        if (!context || typeof context !== 'object') return;
+        mpCanvasCtx = context as RasterCanvas2d;
+        mpCanvasHolder = holder;
+        mpCanvasReady.value = true;
+        repaintMpCanvasRaster();
+      },
+      fail: () => {
+        /* 无 canvas 面 —— 维持 offscreen / SVG 回落 */
+      },
+    } as Record<string, unknown>);
+  } catch {
+    /* 回落 */
+  }
 });
 </script>
 
@@ -306,10 +444,24 @@ const customStyleBinding = computed(() => {
     :style="[boxStyle, customStyleBinding]"
   >
     <!--
+      字体图标路径（registerFontIcon 注册映射命中，ADR-0011 阶段一）：
+      `<text>` unicode 字面量 + fontFamily —— 三端一致，颜色由 CSS `color`
+      继承。文字必须包在 <text> 里：uni-app x App 的 view 不承载文本。
+    -->
+    <view
+      v-if="fontGlyph"
+      class="sn-icon__glyph sn-icon__glyph--font"
+      :style="fontGlyphStyle"
+      data-sn-icon-glyph=""
+    >
+      <text class="sn-icon__glyph-text">{{ fontGlyph.char }}</text>
+    </view>
+
+    <!--
       iconfont 字形路径（wot-ui 原生）：类名承载字形，样式表由宿主 app 提供。
       阿里 iconfont 项目生成的类名符合 `{prefix}-{name}` 约定时直接可用。
     -->
-    <view v-if="isGlyph" class="sn-icon__glyph" :class="glyphClass" data-sn-icon-glyph="" />
+    <view v-else-if="isGlyph" class="sn-icon__glyph" :class="glyphClass" data-sn-icon-glyph="" />
 
     <!--
       远程 SVG 路径（异步 Provider，如 Iconify 按需加载）：background-image
@@ -344,8 +496,20 @@ const customStyleBinding = computed(() => {
     <image
       v-else-if="displayIcon"
       class="sn-icon__svg"
-      :src="iconDataUrl"
+      :src="mpRasteredUrl || iconDataUrl"
       mode="aspectFit"
+      aria-hidden="true"
+    />
+    <!--
+      光栅化画布（AUI-MP-003）：uni-app x 小程序只能经
+      createCanvasContextAsync 解析组件内 canvas 节点 —— 挂在视口外但保持
+      渲染（display:none 会失去 bitmap），绘制结果导出 PNG 给上方 image。
+    -->
+    <canvas
+      :id="rasterCanvasId"
+      :canvas-id="rasterCanvasId"
+      type="2d"
+      class="sn-icon__raster"
       aria-hidden="true"
     />
     <!-- #endif -->
@@ -358,6 +522,15 @@ const customStyleBinding = computed(() => {
  * 视口缩放的方式与周围 uni-app 组件一致。内层 SVG 通过模板上的样式
  * （width/height 100%）继承包装器尺寸，保证两条渲染路径行为一致。
  */
+.sn-icon__raster {
+  position: absolute;
+  left: -9999rpx;
+  top: 0;
+  width: 120rpx;
+  height: 120rpx;
+  pointer-events: none;
+}
+
 .sn-icon {
   display: inline-flex;
   align-items: center;
@@ -397,5 +570,20 @@ const customStyleBinding = computed(() => {
   height: 100%;
   line-height: 1;
   text-align: center;
+}
+
+/* 字体字形（registerFontIcon 命中）：字号随包装盒（wrapper width/height 由
+ * size prop 驱动），颜色继承宿主级联 —— 字体图标不经过任何取色/烘焙链。 */
+.sn-icon__glyph--font {
+  /* 包一层 flex 让 <text> 在 MP / uni-app x 的非 DOM 布局里垂直居中。 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sn-icon__glyph--font .sn-icon__glyph-text {
+  color: inherit;
+  font-size: inherit;
+  line-height: 1;
 }
 </style>

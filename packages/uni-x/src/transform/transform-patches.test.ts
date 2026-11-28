@@ -2,21 +2,87 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { transformVueToUvue } from './index.ts';
+import { applyPatches } from './patches.ts';
 import { PATCHES } from './patches.ts';
+import type { TransformIssue } from './types.ts';
 
-describe('sn-qr-code canvas patches (uni-app x)', () => {
-  it('should apply every qr-code anchor patch to a source containing all anchors', () => {
-    const patches = PATCHES['sn-qr-code/sn-qr-code.vue'] ?? [];
-    expect(patches.length).toBeGreaterThanOrEqual(5);
-    // A source containing every anchor verbatim guarantees every patch fires.
-    const source = `<script setup lang="ts">\n${patches
-      .map((p) => p.anchor)
-      .join('\n')}\n</script>\n<template>\n  <view />\n</template>\n`;
-    const result = transformVueToUvue(source, 'sn-qr-code/sn-qr-code.vue');
-    expect(result.issues.filter((i) => i.kind === 'patch').length).toBe(patches.length);
-    expect(result.code).toContain('applyCanvasBitmapSize');
+describe('sn-qr-code canvas rendering (uni-app x)', () => {
+  // Regression (device / H5 preview): the component preferred the legacy
+  // `uni.createCanvasContext`, which on uni-app x is a deprecated shim that
+  // paints into a detached surface — every QR rendered fully transparent.
+  // The fix lives in the SHARED source (packages/uni), not in a uni-x patch,
+  // so the classic uni-app branch and the uni-app x branch cannot drift.
+  const source = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-qr-code/sn-qr-code.vue'),
+    'utf8',
+  );
+  const result = transformVueToUvue(source, 'sn-qr-code/sn-qr-code.vue');
+
+  it('keeps the component patch-free and resolves the host via the shared resolver', () => {
+    // The component itself needs no patch: the uni host comes from the shared
+    // utils/uni-host free-identifier resolver, and the W3C surface resolution
+    // (host detection, DPR sizing) stays untouched in the shared source.
+    expect(PATCHES['sn-qr-code/sn-qr-code.vue']).toBeUndefined();
+    expect(result.issues.filter((i) => i.kind === 'patch')).toHaveLength(0);
+    expect(result.code).toContain('resolveUniHost');
+    expect(result.code).not.toContain('declare const uni');
+    expect(result.code).toContain('function isUniAppX()');
+    // Surface resolution is centralised in acquireSurface(): uni-app x Web
+    // takes the W3C element, while uni-app x mini-programs take the cached
+    // async CanvasContext (getElementById is unavailable there).
+    expect(result.code).toContain('function acquireSurface()');
+    expect(result.code).toContain('if (isMiniProgram()) return asyncSurface;');
+    expect(result.code).toContain('return tryW3cSurface();');
+    expect(result.code).toContain('getElementById');
+    expect(result.code).toContain('createCanvasContextAsync');
+  });
+
+  it('sizes the bitmap from the element box × DPR and draws in device pixels', () => {
+    expect(result.code).toContain('elementBoxSize');
+    expect(result.code).toContain('devicePixelRatio()');
+    expect(result.code).toContain('const extent = surface.extent');
+    // No scale(): a second sizing pass used to double the DPR transform.
+    expect(result.code).not.toContain('ctx.scale(');
+    expect(result.code).not.toContain('applyCanvasBitmapSize');
+  });
+
+  it('keeps the legacy draw() flush and the component proxy scope for classic uni-app', () => {
+    expect(result.code).toContain('tryLegacySurface()');
+    expect(result.code).toContain('componentScope()');
+    // The draw() flush now covers both the legacy uni context and the
+    // mini-program async context that queues commands behind a W3C-shaped API.
+    expect(result.code).toContain('surface.legacy || surface === asyncSurface');
+    expect(result.code).toContain("typeof ctx.draw === 'function'");
+  });
+
+  it('retries first paint until layout is measured and exports via toDataURL', () => {
+    expect(result.code).toContain('UNI_X_RETRY_DELAYS');
+    expect(result.code).toContain('onCanvasReady');
+    expect(result.code).toContain('@ready="onCanvasReady"');
     expect(result.code).toContain('toDataURL');
-    expect(result.code).toContain('getDeviceInfo');
+  });
+
+  it('carries the rounded corner blocks from the shared source, not a patch', () => {
+    expect(result.code).toContain('cornerRadius?: number');
+    expect(result.code).toContain('DEFAULT_CORNER_RADIUS');
+    expect(result.code).toContain('function cornerBlocks(matrix: SnQrEncoded)');
+    expect(result.code).toContain('function paintRoundedRect(');
+    expect(result.code).toContain('cornerRadiusValue.value');
+    // `data-*` attributes are tool hooks only and must not reach the uvue.
+    expect(result.code).not.toContain('data-corner-radius');
+  });
+
+  it('keeps the mini-program async CanvasContext path in the shared source', () => {
+    // Regression: on MP-WEIXIN the synchronous element lookup is unavailable
+    // and a template ref is not a W3C canvas. Painting through it left every
+    // QR blank. The fix is a host check + cached createCanvasContextAsync
+    // surface + logical-px extent + draw() flush + bounded repaint tail.
+    expect(result.code).toContain('function isMiniProgram()');
+    expect(result.code).toContain('getSystemInfoSync');
+    expect(result.code).toContain('asyncSurface');
+    expect(result.code).toContain('surface === asyncSurface');
+    expect(result.code).toContain('isUniAppX() && !hasBitmap');
+    expect(result.code).toContain('UNI_X_RETRY_DELAYS');
   });
 });
 
@@ -179,5 +245,90 @@ describe('sn-circle ring patches (uni-app x)', () => {
 
   it('degrades gradient-map colors to the last stop solid on App', () => {
     expect(result.code).toContain('entries[entries.length - 1]');
+  });
+});
+
+describe('sn-avatar-group separating ring (uni-app x)', () => {
+  // Regression (device / web preview): the upstream 4rpx spread box-shadow
+  // painted a white crescent over each neighbouring avatar on App and on
+  // flattened vapor views, so every member looked half covered by a white
+  // border. The ring is still REQUIRED — it must be a thin in-box border
+  // instead. Run the real upstream sources through the full pipeline — anchor
+  // drift fails here at test time instead of silently restoring the shadow.
+  const groupSource = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-avatar-group/sn-avatar-group.vue'),
+    'utf8',
+  );
+  const avatarSource = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/components/sn-avatar/sn-avatar.vue'),
+    'utf8',
+  );
+  const group = transformVueToUvue(groupSource, 'sn-avatar-group/sn-avatar-group.vue');
+  const avatar = transformVueToUvue(avatarSource, 'sn-avatar/sn-avatar.vue');
+  const avatarStyle = avatar.code.slice(
+    avatar.code.indexOf('<style'),
+    avatar.code.indexOf('</style>'),
+  );
+
+  it('hands the ring down as a border width, not a spread shadow', () => {
+    expect(group.code).toContain("const RING = '4rpx';");
+    expect(group.code).not.toContain('0 0 0 4rpx');
+    // The stacking contract stays intact — only the ring's paint channel changed.
+    expect(group.code).toContain('--sn-avatar-group-overlap-left');
+    expect(group.code).toContain('--sn-avatar-group-ring');
+  });
+
+  it('paints the ring as a surface-coloured border inside the circle', () => {
+    expect(avatarStyle).toContain('border-width');
+    expect(avatarStyle).toContain('var(--sn-avatar-group-ring, 0)');
+    expect(avatarStyle).toContain('border-style');
+    expect(avatarStyle).toContain('solid');
+    expect(avatarStyle).toContain('border-color');
+    expect(avatarStyle).toContain('var(--sn-mp-color-background-surface)');
+    expect(avatarStyle).not.toContain('box-shadow: var(--sn-avatar-group-ring');
+  });
+
+  it('keeps the doodle skin border override reachable through the flattened vars', () => {
+    // The css flattener wraps base longhands in --snx-* vars; the skin must
+    // still be able to replace the white ring with its own ink border.
+    expect(avatarStyle).toContain('--snx-sn-avatar__body-border-width: 4rpx');
+    expect(avatarStyle).toContain('--snx-sn-avatar__body-border-style: solid');
+  });
+
+  it('keeps every avatar-group anchor applied', () => {
+    const patches = [
+      ...(PATCHES['sn-avatar-group/sn-avatar-group.vue'] ?? []),
+      ...(PATCHES['sn-avatar/sn-avatar.vue'] ?? []),
+    ];
+    const hits = [...group.issues, ...avatar.issues].filter((issue) => issue.kind === 'patch');
+    expect(hits.length).toBe(patches.length);
+  });
+});
+
+describe('utils-shared/uni-host.ts (uni-app x)', () => {
+  // The shared uni-host resolver owns the AUI-UNI-FB-012 compiler contract:
+  // a free `uni` identifier (rewritten by the uni compilers into their
+  // injected API module) with a globalThis fallback for test stubs. The .ts
+  // helper carries an ambient `declare const uni` for tsc that UTS cannot
+  // parse — the patch strips exactly that line.
+  const source = readFileSync(
+    join(import.meta.dirname, '../../../uni/src/utils/uni-host.ts'),
+    'utf8',
+  );
+  const issues: TransformIssue[] = [];
+  const patched = applyPatches(source, 'utils-shared/uni-host.ts', issues);
+
+  it('strips only the ambient declare, keeping the free-identifier reads', () => {
+    expect(PATCHES['utils-shared/uni-host.ts']).toHaveLength(1);
+    expect(issues.filter((issue) => issue.kind === 'patch')).toHaveLength(1);
+    expect(patched).not.toMatch(/declare const uni/);
+    expect(patched).toContain('return uni as T');
+    expect(patched).toContain('globalThis as { uni?: T }');
+  });
+
+  it('fails loudly when the upstream helper drifts', () => {
+    expect(() => applyPatches('const drifted = 1;', 'utils-shared/uni-host.ts', [])).toThrow(
+      /patch anchor missing/,
+    );
   });
 });

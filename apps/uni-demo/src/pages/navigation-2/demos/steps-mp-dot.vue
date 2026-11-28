@@ -6,10 +6,10 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnSteps :active="2" dot>
-      <SnStep title="一" />
-      <SnStep title="二" />
-      <SnStep title="三" />
+    <SnSteps :active="2" dot align-center>
+      <SnStep title="注册" />
+      <SnStep title="登录" />
+      <SnStep title="完成" />
     </SnSteps>
     <text class="sn-demo__meta">dot 把指示器换成圆点。</text>
   </view>
@@ -19,10 +19,11 @@ import SnStep from '@snui/uni-src/components/sn-steps/sn-step.vue';
 .sn-demo--column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__meta {
+  margin-top: 12px;
   font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
 }

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/popup-mp-position.vue sha256:321e3a7bfe63d559 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popup (uni-end) — the five anchors.
@@ -29,8 +30,7 @@ function show(position: Anchor): void {
       <view class="sn-popup-demo__body">
         <text class="sn-popup-demo__title">position = {{ anchor }}</text>
         <text class="sn-popup-demo__text"
-          >默认动画会跟随弹出方向：bottom → slide-up，left → slide-right。</text
-        >
+          >默认动画会跟随弹出方向：bottom → slide-up，left → slide-right。</text>
       </view>
     </SnPopup>
   </view>

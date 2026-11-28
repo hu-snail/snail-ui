@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/table-mp-fixed.en.vue sha256:4231207ecff9e32f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-table (uni-end) — pinned header & columns (`fixedHeader` + `fixed`).
@@ -26,8 +27,7 @@ const baseRows: Row[] = [
     </SnTable>
     <text class="sn-demo__meta"
       >Fixed height + pinned header + a left-pinned first column (stays visible while scrolling
-      sideways).</text
-    >
+      sideways).</text>
   </view>
 </template>
 <style scoped>

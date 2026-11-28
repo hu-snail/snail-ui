@@ -2,7 +2,7 @@
 /** Demo: SnImageGroup — show-toolbar-tooltip adds native title hints to the toolbar. */
 import { SnImage, SnImageGroup } from '@snui/vue-web';
 
-const urls = ['https://picsum.photos/id/1050/1200/800', 'https://picsum.photos/id/1051/1200/800'];
+const urls = ['https://cdn.uviewui.com/uview/album/4.jpg', 'https://cdn.uviewui.com/uview/album/5.jpg'];
 </script>
 
 <template>

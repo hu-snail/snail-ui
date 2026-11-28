@@ -12,24 +12,30 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'间隔槽'" :title-en="'Gap'" :desc="'固定高度的占位间隔'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'间隔槽'"
+    :title-en="'Gap'"
+    :desc="'固定高度的占位间隔'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead class="demo-host" :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('safe-area', 'Safe Area')" badge="safe-area" />
+        <DemoModuleHead class="demo-host" :title="t('safe-area', 'Safe Area')" badge="safe-area" />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
     </view>
@@ -57,4 +63,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

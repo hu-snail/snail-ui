@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tour-mp-custom.en.vue sha256:4d63dd5a5b05cb2c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tour — custom copy and mask-tap advance. */
 import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';

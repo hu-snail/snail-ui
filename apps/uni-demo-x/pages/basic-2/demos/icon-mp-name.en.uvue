@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/icon-mp-name.en.vue sha256:17371a9a200e5a04 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-icon (uni-end) — iconfont glyph path (name + class-prefix).
@@ -17,8 +18,7 @@ import SnIcon from '@snui/uni-x/components/sn-icon/sn-icon.uvue';
       <SnIcon name="user" :size="40" />
     </view>
     <text class="sn-demo__meta"
-      >Default classPrefix: sn-icon-home / sn-icon-search / sn-icon-user</text
-    >
+      >Default classPrefix: sn-icon-home / sn-icon-search / sn-icon-user</text>
 
     <view class="sn-demo__row">
       <SnIcon name="home" class-prefix="wd-icon" :size="40" />

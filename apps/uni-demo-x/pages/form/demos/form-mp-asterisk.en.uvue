@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-asterisk.en.vue sha256:7a02e27d1da2f628 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — required asterisk (asteriskPosition / hideAsterisk): move it right or hide it entirely. */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

@@ -8,7 +8,7 @@ import { SnComment } from '@snui/vue-web';
     <p class="comment-align-demo__label">Default (datetime and actions aligned left)</p>
     <SnComment
       author="Balzac"
-      avatar="https://picsum.photos/id/1025/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/6.jpg"
       datetime="1 hour ago"
       content="Design is a plan that constructs an object or a system to specification."
     >
@@ -21,7 +21,7 @@ import { SnComment } from '@snui/vue-web';
     <p class="comment-align-demo__label">align=&quot;right&quot; (both rows right-aligned)</p>
     <SnComment
       author="Balzac"
-      avatar="https://picsum.photos/id/1025/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/6.jpg"
       datetime="1 hour ago"
       content='With align="right", the author stays on the left while datetime and actions move to the right edge.'
       align="right"
@@ -37,7 +37,7 @@ import { SnComment } from '@snui/vue-web';
     </p>
     <SnComment
       author="Balzac"
-      avatar="https://picsum.photos/id/1025/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/6.jpg"
       datetime="1 hour ago"
       content="The object form controls each part independently: datetime keeps following the author, actions align right."
       :align="{ actions: 'right' }"

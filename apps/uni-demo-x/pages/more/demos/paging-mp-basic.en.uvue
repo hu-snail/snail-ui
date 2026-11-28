@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/paging-mp-basic.en.vue sha256:cac02ad2b936c0d8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-paging (uni-end) — Basic usage + loading/theme capsules (EN).
@@ -99,8 +100,7 @@ function onThemeChange(value: string | number): void {
     </view>
     <text class="sn-demo__meta"
       >Pull down to refresh, scroll to bottom for the next page; a short last page stops
-      automatically</text
-    >
+      automatically</text>
   </view>
 </template>
 <style scoped>

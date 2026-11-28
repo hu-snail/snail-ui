@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback/demos/curtain-mp-close-position.en.vue sha256:a69e52b0e69fce34 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-curtain (uni-end) — close-position variants, with custom close styling.

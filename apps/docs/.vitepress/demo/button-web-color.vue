@@ -6,16 +6,16 @@ import { SnButton } from '@snui/vue-web';
 <template>
   <div class="sn-demo">
     <div class="sn-demo__group">
-      <SnButton color="#8b5cf6">Custom purple</SnButton>
-      <SnButton color="#ec4899">Custom pink</SnButton>
-      <SnButton color="#06b6d4" ghost>Custom cyan ghost</SnButton>
-      <SnButton color="#10b981" tertiary>Custom emerald tertiary</SnButton>
+      <SnButton color="#8b5cf6">自定义紫色按钮</SnButton>
+      <SnButton color="#ec4899">自定义粉色按钮</SnButton>
+      <SnButton color="#06b6d4" ghost>自定义青色幽灵按钮</SnButton>
+      <SnButton color="#10b981" tertiary>自定义绿色三级按钮</SnButton>
     </div>
 
     <div class="sn-demo__group">
-      <SnButton type="primary" class="gradient-btn gradient-btn--sunset">Gradient primary</SnButton>
-      <SnButton type="success" class="gradient-btn gradient-btn--emerald">Gradient success</SnButton>
-      <SnButton type="primary" round class="gradient-btn gradient-btn--aurora">Gradient pill</SnButton>
+      <SnButton type="primary" class="gradient-btn gradient-btn--sunset">渐变主要按钮</SnButton>
+      <SnButton type="success" class="gradient-btn gradient-btn--emerald">渐变成功按钮</SnButton>
+      <SnButton type="primary" round class="gradient-btn gradient-btn--aurora">渐变胶囊按钮</SnButton>
     </div>
   </div>
 </template>

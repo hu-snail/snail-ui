@@ -1,30 +1,52 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-state.vue sha256:71bbb422f2d54d56 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — disabled & loading.
+ * Demo: sn-button (uni-end) — disabled 状态（语义色 + 变体形态）。
+ * 加载状态统一收敛到「加载」模块。
+ *
+ * 布局说明：uni-app x 不支持 flex `gap`，间距用内联 `custom-style` margin
+ * 兜底，显式 `flex-direction: row` 抵消 uni-app x 的 column 默认值。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
-const loading = ref(false);
-function trigger(): void {
-  loading.value = true;
-  setTimeout(() => {
-    loading.value = false;
-  }, 1000);
-}
+/** 行内按钮间距（uni-app x 无 gap 兜底）。 */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton disabled><text>禁用</text></SnButton>
-    <SnButton loading><text>加载中</text></SnButton>
-    <SnButton :loading="loading" type="primary" @click="trigger"><text>点击触发加载</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-label">禁用（disabled × 语义色）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" disabled><text>默认按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="primary"><text>主要按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="success"><text>成功按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="info"><text>信息按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="warning"><text>警告按钮</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled type="danger"><text>危险按钮</text></SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">禁用（disabled × 变体：朴素 / 柔和 / 虚线 / 细边框）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" disabled variant="plain" type="primary"><text>朴素禁用</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled variant="soft" type="primary"><text>柔和禁用</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled variant="dashed" type="primary"><text>虚线禁用</text></SnButton>
+      <SnButton :custom-style="rowGap" disabled><text>细边框禁用</text></SnButton>
+    </view>
   </view>
 </template>
 <style scoped>
-.sn-demo {
+.sn-mp-btn-stack {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+  flex-direction: column;
+}
+.sn-mp-btn-row {
+  display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

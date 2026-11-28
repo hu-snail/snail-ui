@@ -8,10 +8,10 @@ import { SnButton } from '@snui/vue-web';
 
 <template>
   <div class="sn-demo">
-    <SnButton size="tiny">tiny</SnButton>
-    <SnButton size="small">small</SnButton>
-    <SnButton size="medium">medium</SnButton>
-    <SnButton size="large">large</SnButton>
+    <SnButton size="tiny" type="primary">极小按钮</SnButton>
+    <SnButton size="small" type="primary">小号按钮</SnButton>
+    <SnButton size="medium" type="primary">中号按钮</SnButton>
+    <SnButton size="large" type="primary">大号按钮</SnButton>
   </div>
 </template>
 

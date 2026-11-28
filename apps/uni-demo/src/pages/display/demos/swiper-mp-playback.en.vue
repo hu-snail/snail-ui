@@ -8,9 +8,9 @@ import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  'https://picsum.photos/seed/snui-sw-p1/750/400',
-  'https://picsum.photos/seed/snui-sw-p2/750/400',
-  'https://picsum.photos/seed/snui-sw-p3/750/400',
+  'https://cdn.uviewui.com/uview/album/4.jpg',
+  'https://cdn.uviewui.com/uview/album/5.jpg',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
 ];
 
 const autoplay = ref(true);

@@ -175,13 +175,13 @@ const chartOption = computed(() => buildCaseOption(chartDef, chartCfg, chartLabe
 /* ── 视频播放器（扩展场景） ── */
 const VIDEO_SRC =
   'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4';
-const VIDEO_POSTER = 'https://picsum.photos/seed/snui-video-cover/800/450';
+const VIDEO_POSTER = 'https://cdn.uviewui.com/uview/album/1.jpg';
 
 /* ── 轮播（扩展场景） ── */
 const slidePhotos = [
-  'https://picsum.photos/seed/snui-carousel-1/800/400',
-  'https://picsum.photos/seed/snui-carousel-2/800/400',
-  'https://picsum.photos/seed/snui-carousel-3/800/400',
+  'https://cdn.uviewui.com/uview/album/2.jpg',
+  'https://cdn.uviewui.com/uview/album/3.jpg',
+  'https://cdn.uviewui.com/uview/album/4.jpg',
 ];
 const carouselSlides = computed(() =>
   [1, 2, 3].map((n, i) => ({

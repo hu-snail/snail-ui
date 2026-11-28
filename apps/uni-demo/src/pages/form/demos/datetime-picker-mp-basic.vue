@@ -3,7 +3,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Calendar, Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const date = ref<string | number | undefined>(undefined);
@@ -30,24 +29,22 @@ const rangedText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="日期选择"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="dateText"
-        is-link
-        @click="openDate = true"
-      />
-      <SnCell
-        title="时间范围一年"
-        :prefix-icon-data="Clock"
-        placeholder="请选择"
-        :value="rangedText"
-        is-link
-        @click="openRanged = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="日期选择"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="dateText"
+      is-link
+      @click="openDate = true"
+    />
+    <SnCell
+      title="时间范围一年"
+      :prefix-icon-data="Clock"
+      placeholder="请选择"
+      :value="rangedText"
+      is-link
+      @click="openRanged = true"
+    />
 
     <SnDatetimePicker v-model="date" v-model:visible="openDate" type="date" title="选择日期" />
     <SnDatetimePicker

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-title-width.vue sha256:af21c82bd2e9ffee —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — 标签列宽（titleWidth）：与 labelWidth 共用一条继承链（titleWidth 优先）。 */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

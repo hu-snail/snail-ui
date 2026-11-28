@@ -799,6 +799,43 @@ describe('sn-input', () => {
     expect(wrapper.find('.sn-input__suffix').exists()).toBe(false);
   });
 
+  /** Extract one top-level style rule by selector, with comments stripped so
+   *  prose mentioning a property can't satisfy an assertion by accident. */
+  function styleRule(source: string, selector: string): string {
+    const style = source
+      .slice(source.indexOf('<style'))
+      .replace(/\/\*[\s\S]*?\*\//g, '');
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return style.match(new RegExp(`^\\s*${escaped}\\s*\\{[^}]*\\}`, 'm'))?.[0] ?? '';
+  }
+
+  it('keeps a fixed full-width track so typing cannot stretch the field', () => {
+    /* Regression (MP, H5): the root used to be `inline-flex` with no width,
+     * so its box shrink-wrapped the value and grew on every keystroke. It
+     * must be a block-level flex container at a stable 100% width. */
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
+    const rootRule = styleRule(source, '.sn-input');
+    expect(rootRule).toMatch(/display:\s*flex/);
+    expect(rootRule).not.toMatch(/inline-flex/);
+    expect(rootRule).toMatch(/width:\s*100%/);
+  });
+
+  it('lets the field wrapper flex so the clear chip sits at the right edge on MP', () => {
+    /* Regression (classic MP / uni-app x): the native input lives inside the
+     * SnInputField component. Its compiled node carries a different scope id,
+     * so a `flex: 1` on `.sn-input__native` never reaches the wrapper that is
+     * the real sibling of `.sn-input__clear`. An explicit class on the
+     * component gives that wrapper its own flex rule; the native input also
+     * gets width: 100% so its own track fills the field. */
+    const source = readFileSync(resolve(import.meta.dirname, 'sn-input.vue'), 'utf8');
+    expect(source).toMatch(/<SnInputField[\s\S]*?class="sn-input__field"/);
+    const fieldRule = styleRule(source, '.sn-input__field');
+    expect(fieldRule).toMatch(/flex:\s*1\s+1\s+auto/);
+    expect(fieldRule).toMatch(/min-width:\s*0/);
+    const nativeRule = styleRule(source, '.sn-input__native');
+    expect(nativeRule).toMatch(/width:\s*100%/);
+  });
+
   it('focuses the native input on mount when focus is true', () => {
     const wrapper = mount(SnInput, { props: { focus: true }, attachTo: document.body });
     expect(document.activeElement).toBe(wrapper.find('input').element);

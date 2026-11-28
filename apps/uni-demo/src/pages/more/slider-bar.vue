@@ -1,10 +1,16 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— slider-bar 组件全部场景聚合页（静态展开）。
-import Demo0 from './demos/slider-bar-mp-basic.vue';
-import Demo1 from './demos/slider-bar-mp-range.vue';
-import Demo2 from './demos/slider-bar-mp-size.vue';
-import Demo3 from './demos/slider-bar-mp-theme.vue';
-import Demo4 from './demos/slider-bar-mp-variant.vue';
+import Demo0 from './demos/slider-bar-mp-look-basic.vue';
+import Demo1 from './demos/slider-bar-mp-look-range.vue';
+import Demo2 from './demos/slider-bar-mp-look-column.vue';
+import Demo3 from './demos/slider-bar-mp-look-color.vue';
+import Demo4 from './demos/slider-bar-mp-shape.vue';
+import Demo5 from './demos/slider-bar-mp-knob-icon.vue';
+import Demo6 from './demos/slider-bar-mp-basic.vue';
+import Demo7 from './demos/slider-bar-mp-range.vue';
+import Demo8 from './demos/slider-bar-mp-size.vue';
+import Demo9 from './demos/slider-bar-mp-theme.vue';
+import Demo10 from './demos/slider-bar-mp-variant.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -14,39 +20,123 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'slider-bar'" :title-en="'Slider Bar'" :desc="''" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'slider-bar'"
+    :title-en="'Slider Bar'"
+    :desc="''"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('参考风格：描边圆盘（Volume）', 'Reference look: ringed disc (Volume)')"
+          badge="look-basic"
+        />
         <view class="module__body">
-          <Demo0 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('区间（`range`）', 'Range (`range`)')" badge="range" />
-        <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('尺寸（`size`）', 'Size (`size`)')" badge="size" />
-        <view class="module__body">
-          <Demo2 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('主题（`theme`）', 'Theme (`theme`)')" badge="theme" />
-        <view class="module__body">
-          <Demo3 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('参考风格：双柄区间', 'Reference look: dual-handle ranges')"
+          badge="look-range"
+        />
+        <view class="module__body">
+          <Demo1 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('参考风格：竖排胶囊', 'Reference look: vertical pills')"
+          badge="look-column"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('参考风格：多彩变体', 'Reference look: colour variants')"
+          badge="look-color"
+        />
+        <view class="module__body">
+          <Demo3 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="
+            t(
+              '把手形状与尺寸（`knobShape` / `knobSize`）',
+              'Knob shape & size (`knobShape` / `knobSize`)',
+            )
+          "
+          badge="shape"
+        />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('把手图标 × 形状（`knobIcon`）', 'Knob glyphs × shapes (`knobIcon`)')"
+          badge="knob-icon"
+        />
+        <view class="module__body">
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__body">
+          <Demo6 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('区间（`range`）', 'Range (`range`)')"
+          badge="range"
+        />
+        <view class="module__body">
+          <Demo7 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('尺寸（`size`）', 'Size (`size`)')"
+          badge="size"
+        />
+        <view class="module__body">
+          <Demo8 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('主题预设（`theme`）', 'Theme presets (`theme`)')"
+          badge="theme"
+        />
+        <view class="module__body">
+          <Demo9 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('竖排（`variant=column`）', 'Vertical (`variant=column`)')"
           badge="variant"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo10 class="demo-host" />
         </view>
       </view>
     </view>
@@ -74,4 +164,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

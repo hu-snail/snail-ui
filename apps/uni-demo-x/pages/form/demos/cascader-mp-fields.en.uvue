@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-fields.en.vue sha256:e627ff2af6cc5b94 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — field mapping: valueKey / textKey / childrenKey / tipKey.
@@ -39,8 +40,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text
-    >
+      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text>
     <view class="sn-demo__cards">
       <SnCell
         card

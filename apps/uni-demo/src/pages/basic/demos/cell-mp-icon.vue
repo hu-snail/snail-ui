@@ -76,12 +76,12 @@ registerSnIcons({ 'cell-moon': MoonIcon });
       <SnCell
         title="前置图片"
         value="头像"
-        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+        prefix-icon-url="https://cdn.uviewui.com/uview/album/7.jpg"
       />
       <SnCell
         title="后置图片"
         value="附件"
-        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+        suffix-icon-url="https://cdn.uviewui.com/uview/album/8.jpg"
       />
     </SnCellGroup>
   </view>
@@ -94,7 +94,10 @@ registerSnIcons({ 'cell-moon': MoonIcon });
   gap: 24rpx;
   width: 100%;
 }
+/* 通栏页 demo 不再包外间距：描述行自己补回左右留白，与 cell 行内 padding
+ * （24rpx）和模块标题的 inset 对齐；贴屏边的文字会被裁。 */
 .sn-demo__label {
+  padding: 0 var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }

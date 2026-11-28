@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-size.vue sha256:63ea4874a58af8b5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form — 尺寸（size）：默认 medium 与 size="small" 两档对比。 */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

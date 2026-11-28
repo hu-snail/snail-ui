@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/skeleton-mp-animation.en.vue sha256:ad80f07a454ac607 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-skeleton (uni-end) — gradient / flashed shimmer + loading toggle.

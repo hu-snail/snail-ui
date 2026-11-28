@@ -25,11 +25,28 @@ interface UniBoundingClientRect {
 /** Chain returned by `uni.createSelectorQuery()` — only what we call. */
 interface UniSelectorQuery {
   in: (component: unknown) => UniSelectorQuery;
-  select: (selector: string) => {
-    boundingClientRect: (callback: (rect: UniBoundingClientRect | null) => void) => {
-      exec: () => void;
-    };
-  };
+  select: (selector: string) => UniNodesRef;
+  exec: (callback?: (res: Array<UniBoundingClientRect | null> | null) => void) => void;
+}
+
+/** Per-node measurement handle; chaining continues the query. */
+interface UniNodesRef {
+  boundingClientRect: (callback?: (rect: UniBoundingClientRect | null) => void) => UniSelectorQuery;
+}
+
+/** Window info slice of `uni.getSystemInfoSync()`. */
+interface UniWindowInfo {
+  statusBarHeight?: number;
+  windowWidth?: number;
+  windowHeight?: number;
+}
+
+/** Capsule (menu button) rect returned by the WeChat-only API. */
+interface UniMenuButtonRect {
+  width?: number;
+  height?: number;
+  top?: number;
+  left?: number;
 }
 
 declare const uni: {
@@ -39,4 +56,27 @@ declare const uni: {
    * its capsule track). Declared statically so the uni-app compiler bundles it.
    */
   createSelectorQuery: () => UniSelectorQuery;
+  /**
+   * Custom-navigation geometry (sn-navbar / overview header). Declared
+   * statically so the uni-app compiler bundles the API — a dynamic
+   * `globalThis.uni?.getSystemInfoSync` lookup is tree-shaken away and leaves
+   * statusBarHeight at 0 on MP.
+   */
+  getSystemInfoSync: () => UniWindowInfo;
+  /** WeChat capsule rect — present on MP-WEIXIN only. */
+  getMenuButtonBoundingClientRect: () => UniMenuButtonRect;
+  /**
+   * Page-stack back used by sn-navbar's default back navigation. Declared
+   * statically so the uni-app compiler bundles the router API — a dynamic
+   * `globalThis.uni?.navigateBack` lookup is tree-shaken away.
+   */
+  navigateBack: (options?: { delta?: number; fail?: (error: unknown) => void }) => unknown;
+  /** No-history fallback of the navbar back (`backFallback`). */
+  reLaunch: (options: { url: string; fail?: (error: unknown) => void }) => unknown;
 };
+
+/**
+ * Page stack (uni-app / uni-app x global). sn-navbar reads its depth to decide
+ * between `navigateBack` and the `backFallback` reLaunch.
+ */
+declare function getCurrentPages(): unknown[];

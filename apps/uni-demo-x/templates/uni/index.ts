@@ -1,3 +1,4 @@
+// gen-x: source packages/templates/src/uni/index.ts sha256:7f979112c45f3271 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * `@snui/templates/uni` — uni-app template barrel.
  *

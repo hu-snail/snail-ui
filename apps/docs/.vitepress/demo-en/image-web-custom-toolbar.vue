@@ -4,7 +4,7 @@ import { h, ref } from 'vue';
 import { SnButton, SnIcon, SnImage } from '@snui/vue-web';
 import { Clipboard, ExternalLink } from 'lucide-vue-next';
 
-const url = 'https://picsum.photos/id/1060/1200/800';
+const url = 'https://cdn.uviewui.com/uview/album/6.jpg';
 const copied = ref(false);
 
 function renderToolbar({ nodes }: { nodes: Record<string, unknown> }): unknown {

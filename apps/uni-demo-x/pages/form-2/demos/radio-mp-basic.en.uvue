@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-basic.en.vue sha256:fcdaebd266f21973 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio-group — basic single-select (single-value v-model). */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';

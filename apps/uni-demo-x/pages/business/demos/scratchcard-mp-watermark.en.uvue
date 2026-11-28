@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/scratchcard-mp-watermark.en.vue sha256:b454c8e3f3f7368a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-scratchcard (uni-end) — Watermark: watermark-text / watermark-size /

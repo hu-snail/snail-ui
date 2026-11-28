@@ -75,12 +75,12 @@ registerSnIcons({ 'cell-moon': MoonIcon });
       <SnCell
         title="Leading image"
         value="Avatar"
-        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+        prefix-icon-url="https://cdn.uviewui.com/uview/album/4.jpg"
       />
       <SnCell
         title="Trailing image"
         value="Attachment"
-        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+        suffix-icon-url="https://cdn.uviewui.com/uview/album/5.jpg"
       />
     </SnCellGroup>
   </view>
@@ -93,7 +93,10 @@ registerSnIcons({ 'cell-moon': MoonIcon });
   gap: 24rpx;
   width: 100%;
 }
+/* Full-bleed page: demos no longer carry outer padding — captions pad
+ * themselves back to align with cell rows (24rpx) and the module head inset. */
 .sn-demo__label {
+  padding: 0 var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }

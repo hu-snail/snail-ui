@@ -1,19 +1,46 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-block.en.vue sha256:819e5ece3be5193e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — block button (`block`).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ * Demo: sn-button (uni-end) — block buttons (`block`) × scenes.
+ * Spacing note: uni-app x has no flex `gap` support — vertical rhythm uses
+ * inline `custom-style` margins.
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+/** Vertical spacing fallback (uni-app x lacks gap). */
+const stackGap = { 'margin-bottom': '16rpx' };
 </script>
 <template>
-  <view class="sn-demo">
-    <SnButton block type="primary"><text>Block button</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-label">Filled (block × semantic hues)</text>
+    <SnButton :custom-style="stackGap" block type="primary"><text>Primary button</text></SnButton>
+    <SnButton :custom-style="stackGap" block type="success"><text>Success button</text></SnButton>
+    <SnButton :custom-style="stackGap" block type="danger"><text>Danger button</text></SnButton>
+
+    <text class="sn-mp-btn-label">Round (block × round)</text>
+    <SnButton :custom-style="stackGap" block round type="primary"><text>Round primary button</text></SnButton>
+    <SnButton :custom-style="stackGap" block round type="success"><text>Round success button</text></SnButton>
+
+    <text class="sn-mp-btn-label">Plain (block × plain)</text>
+    <SnButton :custom-style="stackGap" block variant="plain" type="primary"><text>Plain primary button</text></SnButton>
+    <SnButton :custom-style="stackGap" block variant="plain" type="danger"><text>Plain danger button</text></SnButton>
+
+    <text class="sn-mp-btn-label">Soft (block × soft)</text>
+    <SnButton :custom-style="stackGap" block variant="soft" type="primary"><text>Soft primary button</text></SnButton>
+    <SnButton :custom-style="stackGap" block variant="soft" type="success"><text>Soft success button</text></SnButton>
+
+    <text class="sn-mp-btn-label">Loading (block × loading)</text>
+    <SnButton :custom-style="stackGap" block loading type="primary"><text>Saving</text></SnButton>
+    <SnButton block loading type="success"><text>Submitting</text></SnButton>
   </view>
 </template>
 <style scoped>
-.sn-demo {
+.sn-mp-btn-stack {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+}
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

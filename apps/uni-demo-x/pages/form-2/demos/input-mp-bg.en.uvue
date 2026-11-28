@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-bg.en.vue sha256:ecdea2592d114c94 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — background (bg): surface / transparent / soft variants. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput placeholder='bg="surface" (default)' bg="surface" />
+    <SnInput placeholder='bg="transparent"' bg="transparent" border="none" />
+    <SnInput placeholder='bg="soft"' bg="soft" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

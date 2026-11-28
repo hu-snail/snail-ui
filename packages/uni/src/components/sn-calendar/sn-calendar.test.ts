@@ -7,6 +7,8 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import SnCalendar from './sn-calendar.vue';
 
@@ -56,10 +58,179 @@ describe('sn-calendar', () => {
       expect(mountCalendar({ visible: false }).find('.sn-calendar').exists()).toBe(false);
     });
 
-    it('renders both footer slots', () => {
+    it('renders the footer slot containers only when slots are provided', () => {
+      // An empty flex child still eats one `gap` per side and pushes the
+      // action buttons off the calendar grid's gutters — empty containers
+      // must stay out of the tree.
       const w = mountCalendar();
+      expect(w.find('.sn-calendar__footer-left').exists()).toBe(false);
+      expect(w.find('.sn-calendar__footer-right').exists()).toBe(false);
+    });
+
+    it('renders provided footer slot containers', () => {
+      const w = mount(SnCalendar, {
+        props: {
+          visible: true,
+          minDate: new Date(2024, 5, 1).getTime(),
+          maxDate: new Date(2024, 5, 30).getTime(),
+        },
+        slots: {
+          'confirm-left': '<text class="left-action">left action</text>',
+          'confirm-right': '<text class="right-action">right action</text>',
+        },
+      });
       expect(w.find('.sn-calendar__footer-left').exists()).toBe(true);
       expect(w.find('.sn-calendar__footer-right').exists()).toBe(true);
+      expect(w.find('.left-action').exists()).toBe(true);
+      expect(w.find('.right-action').exists()).toBe(true);
+    });
+
+    it('renders the footer actions as sn-button instances', () => {
+      const w = mountCalendar();
+      const cancel = w.find('.sn-calendar__cancel');
+      const confirm = w.find('.sn-calendar__confirm');
+      expect(cancel.classes()).toContain('sn-button');
+      expect(confirm.classes()).toContain('sn-button');
+      expect(cancel.text()).toBe('取消');
+      expect(confirm.attributes('role')).toBe('button');
+    });
+
+    it('keeps the conventional default button themes', () => {
+      const w = mountCalendar();
+      const cancel = w.find('.sn-calendar__cancel');
+      const confirm = w.find('.sn-calendar__confirm');
+      expect(cancel.classes()).toContain('sn-button--default');
+      expect(cancel.classes()).toContain('sn-button--variant-base');
+      expect(confirm.classes()).toContain('sn-button--primary');
+      expect(confirm.classes()).toContain('sn-button--variant-base');
+    });
+
+    it('maps the button theme / variant props onto sn-button classes', () => {
+      const w = mountCalendar({
+        cancelType: 'info',
+        cancelVariant: 'soft',
+        confirmType: 'danger',
+        confirmVariant: 'plain',
+      });
+      const cancel = w.find('.sn-calendar__cancel');
+      const confirm = w.find('.sn-calendar__confirm');
+      expect(cancel.classes()).toContain('sn-button--info');
+      expect(cancel.classes()).toContain('sn-button--variant-soft');
+      expect(confirm.classes()).toContain('sn-button--danger');
+      expect(confirm.classes()).toContain('sn-button--variant-plain');
+    });
+
+    it('splits the footer row evenly between the actions (source contract)', () => {
+      // Layout is CSS-driven; happy-dom drops stylesheets, so pin the flex
+      // contract on the source text (same pattern as sn-popup's geometry).
+      // The flex cell is a wrapper view, not the sn-button root: on mp-weixin
+      // a child component's root does not receive the parent's scope id, so a
+      // rule aimed at the button root never matched there.
+      const source = readFileSync(resolve(__dirname, 'sn-calendar.vue'), 'utf8');
+      expect(source).toMatch(/\.sn-calendar__action \{\n {2}flex: 1 1 0;/);
+    });
+
+    it('wraps each action in its own flex cell', () => {
+      const w = mountCalendar();
+      expect(w.findAll('.sn-calendar__action')).toHaveLength(2);
+      // Each cell holds exactly one block button.
+      for (const cell of w.findAll('.sn-calendar__action')) {
+        expect(cell.find('.sn-button').classes()).toContain('sn-button--block');
+      }
+    });
+
+    it('keeps a single full-width cell when only confirm is shown', () => {
+      const w = mountCalendar({ showCancel: false });
+      expect(w.findAll('.sn-calendar__action')).toHaveLength(1);
+    });
+  });
+
+  describe('footer visibility', () => {
+    it('hides the whole footer when showFooter is off', () => {
+      const w = mountCalendar({ showFooter: false });
+      expect(w.find('.sn-calendar__footer').exists()).toBe(false);
+      expect(w.find('.sn-calendar__cancel').exists()).toBe(false);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(false);
+      // The grid itself stays.
+      expect(w.find('.sn-calendar-view').exists()).toBe(true);
+    });
+
+    it('renders both buttons by default', () => {
+      const w = mountCalendar();
+      expect(w.find('.sn-calendar__cancel').exists()).toBe(true);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
+    });
+
+    it('drops only the cancel button when showCancel is off', () => {
+      const w = mountCalendar({ showCancel: false });
+      expect(w.find('.sn-calendar__cancel').exists()).toBe(false);
+      // The footer and the confirm button stay — confirm now spans the row.
+      expect(w.find('.sn-calendar__footer').exists()).toBe(true);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
+    });
+
+    it('hides the footer entirely when both buttons are off', () => {
+      const w = mountCalendar({ showCancel: false, showConfirm: false });
+      expect(w.find('.sn-calendar__footer').exists()).toBe(false);
+    });
+  });
+
+  describe('commit timing', () => {
+    it('keeps a draft until confirm when a footer is present', async () => {
+      const w = mountCalendar();
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
+    });
+
+    it('commits and closes on pick when there is no footer', async () => {
+      const w = mountCalendar({ showFooter: false });
+      await dayCells(w)[9]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).getDate()).toBe(10);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('still waits for confirm when the cancel button alone is removed', async () => {
+      const w = mountCalendar({ showCancel: false });
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      await w.find('.sn-calendar__confirm').trigger('tap');
+      expect(w.emitted('update:modelValue')).toHaveLength(1);
+    });
+  });
+
+  describe('confirmOnSelect', () => {
+    it('writes v-model and closes as soon as a single day is tapped', async () => {
+      const w = mountCalendar({ confirmOnSelect: true });
+      await dayCells(w)[9]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).getDate()).toBe(10);
+      expect(w.emitted('confirm')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('waits for both ends of a range before closing', async () => {
+      const w = mountCalendar({ type: 'daterange', confirmOnSelect: true });
+      await dayCells(w)[2]?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      await dayCells(w)[5]?.trigger('tap');
+      expect(w.emitted('confirm')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('stays open after a single tap when the option is off', async () => {
+      const w = mountCalendar();
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
+    });
+
+    it('honours a beforeConfirm veto even on select', async () => {
+      const w = mountCalendar({ confirmOnSelect: true, beforeConfirm: () => false });
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
     });
   });
 
@@ -286,7 +457,7 @@ describe('sn-calendar', () => {
       expect(w.find('.sn-calendar__shortcut').exists()).toBe(true);
       expect(w.find('.sn-calendar-view__day').exists()).toBe(true);
       expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
-      expect(w.find('.sn-calendar__footer-left').exists()).toBe(true);
+      expect(w.findAll('.sn-calendar__action')).toHaveLength(2);
     });
   });
 

@@ -7,8 +7,12 @@
  */
 
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { ref } from 'vue';
 import { mount } from '@vue/test-utils';
 import SnCalendarView from './sn-calendar-view.vue';
+import { SN_POPUP_DRAG_KEY } from '../sn-popup/sn-popup-types';
 
 const JUNE_15 = new Date(2024, 5, 15).getTime();
 
@@ -31,6 +35,8 @@ describe('sn-calendar-view', () => {
   describe('structure', () => {
     it('renders one month block per month in range', () => {
       const w = mountView({
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
@@ -251,6 +257,8 @@ describe('sn-calendar-view', () => {
   describe('switch modes', () => {
     it('renders every month in none mode', () => {
       const w = mountView({
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
@@ -260,6 +268,8 @@ describe('sn-calendar-view', () => {
     it('renders a single month plus controls in month mode', () => {
       const w = mountView({
         switchMode: 'month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
@@ -270,6 +280,8 @@ describe('sn-calendar-view', () => {
     it('advances the active month with the next control', async () => {
       const w = mountView({
         switchMode: 'month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
@@ -284,12 +296,95 @@ describe('sn-calendar-view', () => {
         mountView({ switchMode: 'month' }).find('.sn-calendar-view__control--next-year').exists(),
       ).toBe(false);
     });
+
+    it('steps a whole year forward and back from the controls', async () => {
+      const w = mountView({
+        switchMode: 'year-month',
+        // 显式选中 2023-06-10：初始月由选中值决定
+        modelValue: new Date(2023, 5, 10).getTime(),
+        minDate: new Date(2023, 0, 1).getTime(),
+        maxDate: new Date(2025, 11, 31).getTime(),
+      });
+      const title = () => w.find('.sn-calendar-view__control-title').text();
+
+      await w.find('.sn-calendar-view__control--next-year').trigger('tap');
+      expect(title()).toContain('2024');
+      await w.find('.sn-calendar-view__control--prev-year').trigger('tap');
+      expect(title()).toContain('2023');
+    });
+
+    it('falls back to the nearest month when the target year lacks the same month', async () => {
+      // Bounds stop at 2024-06: stepping a year forward from 2023-11 cannot
+      // land on 2024-11, so the step clamps to the last exposed month.
+      const w = mountView({
+        switchMode: 'year-month',
+        // 显式选中 2023-01-10：初始月 2023-01，随后 shiftMonth 推到 2023-11
+        modelValue: new Date(2023, 0, 10).getTime(),
+        minDate: new Date(2023, 0, 1).getTime(),
+        maxDate: new Date(2024, 5, 30).getTime(),
+      });
+      const vm = w.vm as unknown as {
+        shiftMonth(delta: number): void;
+        shiftYear(delta: number): void;
+      };
+      for (let i = 0; i < 10; i += 1) vm.shiftMonth(1);
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__control-title').text()).toContain('2023 年 11 月');
+
+      vm.shiftYear(1);
+      await w.vm.$nextTick();
+      // 2024-11 is out of range → land on the first month 2024 exposes.
+      expect(w.find('.sn-calendar-view__control-title').text()).toContain('2024 年 1 月');
+    });
+
+    it('sizes the panel to the active month in switch modes, fixed window in none', () => {
+      // miniprogram `scroll-view` only scrolls with a definite height, so the
+      // panel always carries one — but switch modes derive it from the active
+      // month's row count instead of the flat-mode window. happy-dom drops rpx
+      // lengths, so pin the contract on the source.
+      const source = readFileSync(resolve(__dirname, 'sn-calendar-view.vue'), 'utf8');
+      expect(source).toContain("if (props.switchMode === 'none') {");
+      expect(source).toContain('const rows = Math.max(Math.ceil(block.cells.length / 7), 4);');
+      // The auto height that broke mp scrolling must be gone.
+      expect(source).not.toContain('height: auto;');
+    });
+
+    it('scrolls by default when no host sheet is dragging', () => {
+      const w = mountView();
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).not.toBe('false');
+      expect(w.classes()).not.toContain('sn-calendar-view--scroll-locked');
+    });
+
+    it('stops scrolling while a host sheet grabber is being dragged', async () => {
+      // The popup provides this signal; without it the inner scroll-view wins
+      // the vertical gesture and the sheet never follows the finger.
+      const isDragging = ref(false);
+      const w = mount(SnCalendarView, {
+        props: {
+          minDate: new Date(2024, 5, 1).getTime(),
+          maxDate: new Date(2024, 5, 30).getTime(),
+        },
+        global: { provide: { [SN_POPUP_DRAG_KEY as symbol]: { isDragging } } },
+      });
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).not.toBe('false');
+
+      isDragging.value = true;
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).toBe('false');
+      expect(w.classes()).toContain('sn-calendar-view--scroll-locked');
+
+      isDragging.value = false;
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-y')).not.toBe('false');
+    });
   });
 
   describe('exposed API', () => {
     it('shiftMonth / shiftYear / jumpToToday do not throw', () => {
       const w = mountView({
         switchMode: 'year-month',
+        // 显式选中 2023-06-10：初始月由选中值决定
+        modelValue: new Date(2023, 5, 10).getTime(),
         minDate: new Date(2023, 0, 1).getTime(),
         maxDate: new Date(2025, 11, 31).getTime(),
       });
@@ -514,12 +609,65 @@ describe('sn-calendar-view', () => {
     it('targets the active month through scroll-into-view', async () => {
       const w = mountView({
         switchMode: 'month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
       expect(w.find('.sn-calendar-view__panel').attributes('scroll-into-view')).toBe(
         'sn-calendar-view-month-2024-05',
       );
+    });
+
+    it('opens on the selected month, not the first month of the range', () => {
+      const w = mountView({
+        switchMode: 'month',
+        modelValue: new Date(2024, 6, 10).getTime(),
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 7 月');
+    });
+
+    it('scrolls the flat panel to the selected month too', () => {
+      const w = mountView({
+        modelValue: new Date(2024, 6, 10).getTime(),
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      // `none` renders every month; the scroller still starts at the value's
+      // month instead of the top of the range.
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-into-view')).toBe(
+        'sn-calendar-view-month-2024-07',
+      );
+    });
+
+    it('clamps to the nearest month when the value falls outside the bounds', () => {
+      const before = mountView({
+        switchMode: 'month',
+        modelValue: new Date(2020, 0, 10).getTime(),
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      expect(before.find('.sn-calendar-view__month-title').text()).toBe('2024 年 5 月');
+
+      const after = mountView({
+        switchMode: 'month',
+        modelValue: new Date(2030, 0, 10).getTime(),
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      expect(after.find('.sn-calendar-view__month-title').text()).toBe('2024 年 7 月');
+    });
+
+    it('follows the active month after a next step', async () => {
+      const w = mountView({
+        switchMode: 'month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
       await w.find('.sn-calendar-view__control--next').trigger('tap');
       expect(w.find('.sn-calendar-view__panel').attributes('scroll-into-view')).toBe(
         'sn-calendar-view-month-2024-06',
@@ -529,6 +677,8 @@ describe('sn-calendar-view', () => {
     it('stays on the first month when prev is tapped at the boundary', async () => {
       const w = mountView({
         switchMode: 'month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
@@ -539,6 +689,8 @@ describe('sn-calendar-view', () => {
     it('returns to the previous month with the prev control', async () => {
       const w = mountView({
         switchMode: 'month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });
@@ -547,19 +699,24 @@ describe('sn-calendar-view', () => {
       expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 5 月');
     });
 
-    it('jumps a whole year with the next-year control', async () => {
+    it('jumps a whole year with the next-year control, keeping the month', async () => {
       const w = mountView({
         switchMode: 'year-month',
+        // 显式选中 2023-06-10：初始月由选中值决定
+        modelValue: new Date(2023, 5, 10).getTime(),
         minDate: new Date(2023, 0, 1).getTime(),
         maxDate: new Date(2025, 11, 31).getTime(),
       });
       await w.find('.sn-calendar-view__control--next-year').trigger('tap');
-      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 1 月');
+      // Same month, one year on — not the first month of the target year.
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 6 月');
     });
 
     it('keeps the current month when the next-year target is out of bounds', async () => {
       const w = mountView({
         switchMode: 'year-month',
+        // 显式选中 2024-05-10：初始月由选中值决定（不再恒为首月）
+        modelValue: new Date(2024, 4, 10).getTime(),
         minDate: new Date(2024, 4, 1).getTime(),
         maxDate: new Date(2024, 6, 31).getTime(),
       });

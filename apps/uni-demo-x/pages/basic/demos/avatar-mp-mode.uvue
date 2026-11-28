@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/avatar-mp-mode.vue sha256:c9e449cb17617a33 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-avatar (uni-end) — 图片裁切（mode）+ 根节点样式（customClass / customStyle）。
@@ -12,8 +13,7 @@ const demo = '/static/avatar-mode.png';
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__meta"
       >mode 透传给内部 &lt;image&gt;（aspectFill 裁切 / aspectFit 留白），素材
-      600×400 横图。</text
-    >
+      600×400 横图。</text>
     <view class="sn-demo__row">
       <view class="sn-demo__cell">
         <SnAvatar :src="demo" mode="aspectFill" size="large" />
@@ -26,8 +26,7 @@ const demo = '/static/avatar-mode.png';
     </view>
 
     <text class="sn-demo__meta"
-      >customClass 挂在根节点（描边），customStyle 追加到根节点 inline style。</text
-    >
+      >customClass 挂在根节点（描边），customStyle 追加到根节点 inline style。</text>
     <view class="sn-demo__row">
       <SnAvatar
         text="CC"

@@ -279,16 +279,33 @@ describe('sn-dialog', () => {
     expect(wrapper.find('.sn-dialog__confirm').exists()).toBe(false);
   });
 
-  it('applies the text theme to the action row and buttons', () => {
+  it('renders the text theme as plain buttons in the default horizontal row', () => {
+    // theme="text" maps to the wot-ui 朴素 `plain` variant (transparent fill +
+    // type-colored outline) and follows `actionLayout` like any other row —
+    // the theme must not force the cramped vertical stack (design review).
     const wrapper = mount(SnDialog, {
       props: { modelValue: true, type: 'confirm', theme: 'text' },
     });
-    expect(wrapper.find('.sn-dialog__actions').classes()).toContain('sn-dialog__actions--text');
+    expect(wrapper.find('.sn-dialog__actions').classes()).toContain(
+      'sn-dialog__actions--horizontal',
+    );
+    expect(wrapper.find('.sn-dialog__actions').classes()).not.toContain(
+      'sn-dialog__actions--text',
+    );
     const buttons = wrapper.findAllComponents({ name: 'SnButton' });
     expect(buttons).toHaveLength(2);
     for (const button of buttons) {
-      expect(button.props('variant')).toBe('text');
+      expect(button.props('variant')).toBe('plain');
     }
+  });
+
+  it('keeps vertical arrangement under the text theme when actionLayout is vertical', () => {
+    const wrapper = mount(SnDialog, {
+      props: { modelValue: true, type: 'confirm', theme: 'text', actionLayout: 'vertical' },
+    });
+    expect(wrapper.find('.sn-dialog__actions').classes()).toContain(
+      'sn-dialog__actions--vertical',
+    );
   });
 
   it('uses confirmButtonProps string as the confirm label', () => {

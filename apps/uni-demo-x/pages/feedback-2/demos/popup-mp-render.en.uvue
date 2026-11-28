@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/popup-mp-render.en.vue sha256:e520624398c096cd —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popup (uni-end) — English shadow of popup-mp-render.
@@ -10,8 +11,7 @@ const noSafeArea = ref(false);
 <template>
   <view class="sn-demo sn-demo--stack">
     <SnButton type="primary" block @click="eager = true"
-      ><text>lazy-render=false (renders up front)</text></SnButton
-    >
+      ><text>lazy-render=false (renders up front)</text></SnButton>
     <SnButton block @click="noSafeArea = true"><text>safe-area-inset-bottom (bottom safe area)</text></SnButton>
 
     <text class="sn-demo__meta">

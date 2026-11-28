@@ -21,6 +21,7 @@
     "@snui/style-packs": "workspace:*",
     "@snui/templates": "workspace:*",
     "@snui/tokens": "workspace:*",
+    "@snui/tokens-mp": "workspace:*",
     "@snui/uni": "workspace:*",
     "vue": "^3.5.43"
   },

@@ -2,14 +2,13 @@
 /**
  * Demo: sn-calendar — 区间约束（maxRange / allowSameDay / defaultTime）。
  *
- * 一张 cell 卡片承载入口：daterange 类型叠加 max-range=7、allow-same-day 与
+ * 一行 sn-cell 承载入口（无分组卡片，模块标题由页面外层承担）：daterange 类型叠加 max-range=7、allow-same-day 与
  * default-time=08:00:00，超跨度的选择会被 rangePrompt 提示拦下。
  */
 import { computed, ref } from 'vue';
 import { Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -34,17 +33,14 @@ const rangeText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="区间约束">
-      <SnCell
-        title="区间跨度"
-        label="max-range = 7 · allow-same-day · default-time = 08:00:00"
-        :value="rangeText"
-        placeholder="未选择"
-        :prefix-icon-data="Clock"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="区间跨度"
+      :value="rangeText"
+      placeholder="未选择"
+      :prefix-icon-data="Clock"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">区间：{{ rangeText || '未选择' }}</text>
 

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-rows.vue sha256:f670072691138a71 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — 滚筒几何：itemHeight 每行高度（px 设计值 → rpx）/ visibleItemCount 可见行数。 */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';

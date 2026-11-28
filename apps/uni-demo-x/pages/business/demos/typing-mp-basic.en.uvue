@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/typing-mp-basic.en.vue sha256:5750f6aed09c0fdc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-typing (uni-end) — Basic usage: default text and the chat-bubble
@@ -17,8 +18,7 @@ import SnTyping from '@snui/uni-x/components/sn-typing/sn-typing.uvue';
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Use the typing bubble while waiting; unmount it once the reply arrives</text
-    >
+      >Use the typing bubble while waiting; unmount it once the reply arrives</text>
   </view>
 </template>
 <style scoped>

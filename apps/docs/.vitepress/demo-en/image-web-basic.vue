@@ -5,18 +5,18 @@ import { SnImage } from '@snui/vue-web';
 
 <template>
   <div class="demo-row">
-    <SnImage width="120" src="https://picsum.photos/id/1015/400/300" />
+    <SnImage width="120" src="https://cdn.uviewui.com/uview/album/1.jpg" />
     <SnImage
       width="120"
       height="120"
       object-fit="cover"
-      src="https://picsum.photos/id/1016/400/300"
+      src="https://cdn.uviewui.com/uview/album/2.jpg"
     />
     <SnImage
       width="120"
       height="90"
       alt="A river in the mountains"
-      src="https://picsum.photos/id/1018/400/300"
+      src="https://cdn.uviewui.com/uview/album/3.jpg"
     />
   </div>
 </template>

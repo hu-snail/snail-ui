@@ -7,7 +7,7 @@ import { SnComment } from '@snui/vue-web';
   <div class="comment-demo">
     <SnComment
       author="苏格拉底"
-      avatar="https://picsum.photos/id/1005/64/64"
+      avatar="https://cdn.uviewui.com/uview/album/1.jpg"
       datetime="1 小时前"
       content="未经审视的人生不值得过。设计亦然：每一个界面决策都应该能回答「为什么这样」。"
     >

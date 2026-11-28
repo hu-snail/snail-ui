@@ -37,6 +37,7 @@
  */
 
 import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnResize' });
 
@@ -101,8 +102,7 @@ let timer: ReturnType<typeof setInterval> | null = null;
 
 /** `uni.createSelectorQuery` only exists on a uni runtime (H5 / MP / App). */
 function getUni(): Record<string, unknown> | null {
-  const g = globalThis as { uni?: Record<string, unknown> };
-  return g.uni ?? null;
+  return resolveUniHost<Record<string, unknown>>();
 }
 
 function sameRect(a: SnResizeRect, b: SnResizeRect): boolean {

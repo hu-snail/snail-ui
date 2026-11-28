@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/feedback-2/demos/overlay-mp-basic.en.vue sha256:2ba4909cff459138 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-overlay (uni-end) — basic scrim with a toggle.
@@ -21,8 +22,7 @@ function onScrimTap(): void {
     <SnOverlay :show="show" custom-class="sn-demo-contained" @click="onScrimTap">
       <view class="sn-overlay-demo__card" @click.stop>
         <text class="sn-overlay-demo__text"
-          >Content on the scrim (tapping the card keeps it open)</text
-        >
+          >Content on the scrim (tapping the card keeps it open)</text>
       </view>
     </SnOverlay>
   </view>

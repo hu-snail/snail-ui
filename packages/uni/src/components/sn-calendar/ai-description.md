@@ -43,6 +43,9 @@ import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 | `closeOnClickModal`                             | `boolean`                                                  | `true`                    | Mask tap closes.                                                                                         |
 | `zIndex`                                        | `number`                                                   | `15`                      | Stacking level.                                                                                          |
 | `showConfirm` / `confirmText`                   | `boolean` / `string`                                       | `true` / `'确定'`         | Confirm button.                                                                                          |
+| `showFooter`                                    | `boolean`                                                  | `true`                    | Render the whole footer (cancel / confirm + its top rule). Off = commit on pick. Additive (§112.3a).     |
+| `showCancel`                                    | `boolean`                                                  | `true`                    | Render the cancel button. Off leaves confirm spanning the row as a block button. Additive (§112.3a).     |
+| `confirmOnSelect`                               | `boolean`                                                  | `false`                   | Commit `v-model` and close on selection: one tap for single-value modes, both ends for ranges. Additive. |
 | `shortcuts`                                     | `Array<{ text, value?, days? }>`                           | `[]`                      | Preset chips.                                                                                            |
 | `safeAreaInsetBottom`                           | `boolean`                                                  | `true`                    | Safe-area padding.                                                                                       |
 | `beforeConfirm`                                 | `(value) => boolean \| Promise<boolean>`                   | `undefined`               | Veto hook.                                                                                               |
@@ -52,6 +55,8 @@ import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 | `showLunar`                                     | `boolean`                                                  | `false`                   | Lunar caption under each day cell; the month name on 初一, `formatter` overrides. Additive (AUI-OPT-11). |
 | `duration`                                      | `number`                                                   | `200`                     | Sheet animation duration.                                                                                |
 | `customClass` / `customStyle`                   | `string`                                                   | `''`                      | Root forwarding.                                                                                         |
+| `cancelType` / `cancelVariant`                  | `sn-button` `type` / `variant`                             | `'default'` / `'base'`    | Footer cancel button theme. Additive (AGENTS.md §112.3a).                                                |
+| `confirmType` / `confirmVariant`                | `sn-button` `type` / `variant`                             | `'primary'` / `'base'`    | Footer confirm button theme. Additive (AGENTS.md §112.3a).                                               |
 
 ## Events
 
@@ -92,7 +97,8 @@ import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 
 ## Accessibility
 
-- Cancel / confirm are `role="button"` with `aria-label`.
+- Cancel / confirm render as `sn-button` roots carrying `role="button"` with
+  `aria-label`; they split the footer row evenly (`flex: 1`).
 - Shortcut chips are `role="button"` with `aria-label`.
 - The `header` slot content owns the sheet's readable title when used — keep a
   text label inside it (the default branch renders `title` as plain text).

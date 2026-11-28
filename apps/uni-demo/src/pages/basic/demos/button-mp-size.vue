@@ -1,24 +1,115 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — three sizes (no tiny on mobile).
- * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
+ * Demo: sn-button (uni-end) — 尺寸 × 形态场景。
+ *
+ * 三档尺寸（small / medium / large，移动端无 tiny）分别叠加：实心主题色、
+ * 朴素描边、柔和填充、细边框（hairline，default 类型）、圆形图标按钮
+ * （图标随尺寸自适应：small 28 / medium 32 / large 40）。
+ *
+ * 布局说明：uni-app x 不支持 flex `gap`（README 真机清单），间距统一用
+ * SnButton 的内联 `custom-style` margin 兜底，显式 `flex-direction: row`
+ * 抵消 uni-app x 的 column 默认值。
  */
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+
+type SizeKey = 'small' | 'medium' | 'large';
+
+const sizes: Array<{ key: SizeKey; label: string }> = [
+  { key: 'small', label: '小号' },
+  { key: 'medium', label: '中号' },
+  { key: 'large', label: '大号' },
+];
+
+/** 圆形图标按钮各档位的内置图标名（图标随尺寸自适应）。 */
+const iconSizes: Array<{ key: SizeKey; icon: string }> = [
+  { key: 'small', icon: 'settings' },
+  { key: 'medium', icon: 'search' },
+  { key: 'large', icon: 'plus' },
+];
+
+/** 行内按钮间距（uni-app x 无 gap 兜底）。 */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 
 <template>
-  <view class="sn-demo">
-    <SnButton size="small">small</SnButton>
-    <SnButton size="medium">medium</SnButton>
-    <SnButton size="large">large</SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-label">实心（type=primary）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton
+        v-for="item in sizes"
+        :key="item.key"
+        :custom-style="rowGap"
+        type="primary"
+        :size="item.key"
+      >
+        {{ item.label }}按钮
+      </SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">朴素（plain）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton
+        v-for="item in sizes"
+        :key="item.key"
+        :custom-style="rowGap"
+        type="primary"
+        variant="plain"
+        :size="item.key"
+      >
+        {{ item.label }}按钮
+      </SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">柔和（soft）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton
+        v-for="item in sizes"
+        :key="item.key"
+        :custom-style="rowGap"
+        type="primary"
+        variant="soft"
+        :size="item.key"
+      >
+        {{ item.label }}按钮
+      </SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">细边框（hairline，default 类型）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton v-for="item in sizes" :key="item.key" :custom-style="rowGap" :size="item.key">
+        {{ item.label }}按钮
+      </SnButton>
+    </view>
+
+    <text class="sn-mp-btn-label">图标按钮（circle，图标随尺寸自适应）</text>
+    <view class="sn-mp-btn-row">
+      <SnButton
+        v-for="item in iconSizes"
+        :key="item.key"
+        :custom-style="rowGap"
+        circle
+        type="primary"
+        :size="item.key"
+        :icon-name="item.icon"
+      />
+    </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo {
+.sn-mp-btn-stack {
   display: flex;
+  flex-direction: column;
+}
+.sn-mp-btn-row {
+  display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 8px;
   align-items: center;
+}
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

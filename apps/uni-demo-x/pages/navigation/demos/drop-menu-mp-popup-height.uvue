@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/drop-menu-mp-popup-height.vue sha256:8f2780b91e24a7d4 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-drop-menu — 面板高度与样式：popup-height / custom-popup-class / custom-popup-style。

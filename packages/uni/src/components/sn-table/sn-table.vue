@@ -453,6 +453,10 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
 
 .sn-table__scroller {
   width: 100%;
+  /* uni-app x: scroller needs flex-direction row for the horizontal axis to
+   * size to content (content wrapper follows the component's flex-direction;
+   * official scroll-view example pattern). No-op on uni-app H5. */
+  flex-direction: row;
   /* `--sn-table-height` is written inline only when `height` was passed. */
   max-height: var(--sn-table-height, none);
 }

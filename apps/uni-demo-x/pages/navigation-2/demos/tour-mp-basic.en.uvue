@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tour-mp-basic.en.vue sha256:4cd53511094ca105 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tour — step-by-step guide. */
 import SnTour from '@snui/uni-x/components/sn-tour/sn-tour.uvue';

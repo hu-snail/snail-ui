@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-mp-state.en.vue sha256:ac618bc8720d9acf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img (uni-end) — loading / error / custom slots.
@@ -5,7 +6,7 @@
  */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
-const okSrc = 'https://picsum.photos/seed/snui-img-b/400/300';
+const okSrc = 'https://cdn.uviewui.com/uview/album/1.jpg';
 const brokenSrc = 'https://invalid.example/not-found.png';
 const src = ref(okSrc);
 </script>

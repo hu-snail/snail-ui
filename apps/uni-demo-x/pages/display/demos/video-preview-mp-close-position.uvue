@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/video-preview-mp-close-position.vue sha256:277e25e30ce61d19 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-video-preview (uni-end) — 关闭按钮位置（closePosition）。
@@ -12,7 +13,7 @@ const preview = ref<{
 
 const clip = {
   src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-  poster: 'https://picsum.photos/seed/snui-video-cfg/750/420',
+  poster: 'https://cdn.uviewui.com/uview/album/2.jpg',
   title: '关闭按钮在右上',
 };
 </script>

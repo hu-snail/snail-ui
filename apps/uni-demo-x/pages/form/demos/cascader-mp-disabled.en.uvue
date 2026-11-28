@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-disabled.en.vue sha256:e510e15b0b12e323 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — Disabled options: a row marked `disabled` is dimmed, does
@@ -39,8 +40,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >The whole Jiangsu branch and the Zhoushan leaf are disabled: the rows read dimmed and a tap
-      neither drills down nor confirms.</text
-    >
+      neither drills down nor confirms.</text>
     <view class="sn-demo__cards">
       <SnCell
         card

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-basic.en.vue sha256:6116ed23f53c6a85 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-calendar-view — Flat month grid: minDate / maxDate bound the month range; tapping a day writes its timestamp back. */
 import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';

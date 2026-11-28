@@ -43,6 +43,14 @@
  * drag runs the same drag core as touch; the wheel advances one committed row
  * per notch.
  *
+ * ## Wheel style + slide haptics (additive, AGENTS.md §112.3a)
+ *
+ * Same as `sn-picker-view`: `wheel` swaps the hairline indicator for a rounded
+ * pill selection band with an action-primary active row and a distance fade
+ * two rows out; `vibrateShort` fires `uni.vibrateShort({ type: 'light' })` on
+ * every detent the drag engine crosses — App / mini-program only, tap
+ * selection and programmatic commits stay silent.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -53,6 +61,7 @@
 import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types';
 import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from '../sn-picker-view/sn-picker-view-drag';
+import { vibrateShort as fireHaptic } from '../../utils/uni-haptics';
 import {
   type DateParts,
   type DateTimeColumnType,
@@ -92,6 +101,20 @@ interface RollerColumn {
   /** Display labels, index-aligned with `values`. */
   labels: string[];
 }
+
+defineSlots<{
+  /**
+   * Custom wheel band (additive) — replaces the pill's painted fill so a
+   * caller can draw a texture, border, dotted pattern or gradient the CSS
+   * vars cannot express. The band box stays with the component.
+   */
+  band?(scope: {
+    /** `shared` (one pill across columns) or `perColumn`. */
+    mode: 'shared' | 'perColumn';
+    /** Column index in perColumn mode; `-1` for the shared band. */
+    columnIndex: number;
+  }): unknown;
+}>();
 
 const props = withDefaults(
   defineProps<{
@@ -150,6 +173,30 @@ const props = withDefaults(
      * `minDate` / `maxDate` 在农历模式下只约束年列。
      */
     lunar?: boolean;
+    /**
+     * Wheel 风格（additive，AGENTS.md §112.3a）：选中行渲染圆角胶囊高亮带、
+     * 文字转主题色，两行外文字淡出（对齐 iOS 滚轮观感）。默认 false 保持
+     * hairline 指示线。
+     */
+    wheel?: boolean;
+    /**
+     * 高亮带形态（additive，`wheel` 开启时生效）：`shared`（默认）横跨全部
+     * 列一整条带；`perColumn` 每列一条。带漆 / 圆角 / 水平内边距经
+     * `--sn-datetime-picker-view-wheel-band` / `-wheel-radius` / `-wheel-inset`
+     * 变量自定义。
+     */
+    wheelBand?: 'shared' | 'perColumn';
+    /**
+     * 隐藏列内指示线（additive）：hairline 模式下插槽自带盒子描边时隐藏
+     * 默认 hairline，避免上下分割线；wheel 模式无此需求。
+     */
+    hideIndicator?: boolean;
+    /**
+     * 滑动短震动（additive，AGENTS.md §112.3a）：滑动经过每一行档位时触发
+     * `uni.vibrateShort({ type: 'light' })`。App / 小程序生效，H5 无电机
+     * 静默跳过；点选与程序赋值不震动。
+     */
+    vibrateShort?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -176,12 +223,15 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
     lunar: false,
+    wheel: false,
+    wheelBand: 'shared',
+    hideIndicator: false,
+    vibrateShort: false,
   },
 );
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number): void;
-  (e: 'change', payload: { value: string | number; columns: RollerColumn[] }): void;
+  (e: 'update:modelValue', value: string | number): void;  (e: 'change', payload: { value: string | number; columns: RollerColumn[] }): void;
   (e: 'pickstart'): void;
   (e: 'pickend'): void;
 }>();
@@ -383,6 +433,45 @@ function indexOf(columnIndex: number): number {
   return found < 0 ? 0 : found;
 }
 
+/** Rows between the item and the selection — drives the wheel-mode fade. */
+function distanceOf(columnIndex: number, rowIndex: number): number {
+  return Math.abs(rowIndex - indexOf(columnIndex));
+}
+
+/**
+ * Row-window rendering (AUI-MP overflow hardening) — same contract as
+ * sn-picker-view: mp-weixin fails to clip transformed roller rows inside
+ * overflow:hidden columns, so only rows that can be on screen (live center
+ * ± half a window plus one guard row) stay in the tree.
+ */
+function centerIndexOf(columnIndex: number): number {
+  const offset = columnOffsetRpx(columnIndex);
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  return (visibleCount.value - 1) / 2 - offset / item;
+}
+
+function isRowRenderable(columnIndex: number, rowIndex: number): boolean {
+  const center = Math.round(centerIndexOf(columnIndex));
+  // Exactly the visible window (no guard rows): rows are absolutely
+  // positioned at (row - selection + half) row-heights plus the live drag
+  // shift, so a window row can never sit outside the column box.
+  const half = Math.floor(visibleCount.value / 2);
+  return Math.abs(rowIndex - center) <= half;
+}
+
+/**
+ * Per-row absolute top in rpx — computed in script, no CSS vars / calc:
+ * mp-weixin + iOS render var()/calc() chains inconsistently, and a literal
+ * value is identical on every end. Same geometry as sn-picker-view.
+ */
+function itemStyle(columnIndex: number, rowIndex: number): string {
+  const item = Math.max(props.itemHeight, 1) * RATIO;
+  const selected = indexOf(columnIndex);
+  const half = Math.floor(visibleCount.value / 2) * item;
+  const shift = columnOffsetRpx(columnIndex) - ((visibleCount.value - 1) / 2 - selected) * item;
+  return `top: ${Math.round(half + shift - (selected - rowIndex) * item)}rpx`;
+}
+
 /** Emit a value derived from a full parts record. */
 function emitParts(next: DateParts, columnIndex: number): void {
   const value =
@@ -476,6 +565,9 @@ const drag = createRollerDrag({
   commit: (columnIndex, rowIndex) => selectRow(columnIndex, rowIndex),
   onStart: () => emit('pickstart'),
   onEnd: () => emit('pickend'),
+  onDetent: () => {
+    if (props.vibrateShort) fireHaptic('light');
+  },
 });
 
 const {
@@ -542,17 +634,64 @@ defineExpose({ getSelectedOptions, correctValue, getOriginColumns });
 const rootClass = computed(() => [
   'sn-datetime-picker-view',
   `sn-datetime-picker-view--${props.type}`,
-  { 'sn-datetime-picker-view--lunar': isLunarMode.value },
+  {
+    'sn-datetime-picker-view--lunar': isLunarMode.value,
+    'sn-datetime-picker-view--wheel': props.wheel,
+    'sn-datetime-picker-view--wheel-band-shared': showSharedBand.value,
+    'sn-datetime-picker-view--dragging': isDragging.value,
+  },
   props.customClass,
 ]);
+
+/**
+ * Shared-band mode: one pill spans every column from the root. The per-column
+ * indicators are not rendered at all — two bands would double-paint.
+ */
+const showSharedBand = computed(() => props.wheel && props.wheelBand === 'shared');
+
+/** Half the visible window — the selection row anchors the absolute stack. */
+const halfCount = computed(() => Math.floor(visibleCount.value / 2));
+
+/* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
+
+/** Native picker-view selection: value index per column. */
+const nativeIndexes = computed<number[]>(() =>
+  columns.value.map((column) => {
+    const index = column.values.indexOf(column.selected);
+    return index < 0 ? 0 : index;
+  }),
+);
+
+const nativeIndicatorStyle = computed(
+  () => `height: ${itemHeightRpx.value}; border-top-width: 0; border-bottom-width: 0;`,
+);
+
+/** Band top in rpx: the indicator row position as a literal (see sn-picker-view). */
+const bandTopRpx = computed(() => ((visibleCount.value - 1) / 2) * Math.max(props.itemHeight, 1) * RATIO);
+
+/** bindchange → diff the changed column → the same selectRow path. */
+function onNativeChange(event: unknown): void {
+  const detail = (event as { detail?: { value?: unknown } })?.detail;
+  const next = (detail?.value ?? []) as number[];
+  for (let ci = 0; ci < columns.value.length; ci += 1) {
+    const column = columns.value[ci];
+    if (!column) continue;
+    const rowIndex = next[ci] as number;
+    const current = column.values.indexOf(column.selected);
+    if (typeof rowIndex === 'number' && rowIndex !== current) {
+      selectRow(ci, rowIndex);
+    }
+  }
+}
 
 const rootStyle = computed(() => {
   const vars = [
     `--sn-datetime-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-datetime-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-datetime-picker-view-settle-duration: ${snapDurationMs.value}ms`,
-  ].join('; ');
-  return props.customStyle ? `${vars}; ${props.customStyle}` : vars;
+  ];
+  const joined = vars.join('; ');
+  return props.customStyle ? `${joined}; ${props.customStyle}` : joined;
 });
 
 /** Human-readable value echoed to assistive tech. */
@@ -577,6 +716,48 @@ const ariaValue = computed(() => {
     role="group"
     :aria-label="ariaValue"
   >
+    <!-- Shared wheel band (additive): one pill spanning every column, painted
+         behind the roller text (z0). The #band slot replaces the paint. -->
+    <view
+      v-if="showSharedBand"
+      class="sn-datetime-picker-view__wheel-band"
+      :style="{ top: bandTopRpx + 'rpx' }"
+      aria-hidden="true"
+      ><view class="sn-datetime-picker-view__fill"
+        ><slot name="band" :mode="'shared'" :column-index="-1"
+      /></view>
+    </view>
+    <!--
+      mp-weixin renders through the NATIVE picker-view (same rationale as
+      sn-picker-view): the native component owns clipping / centering /
+      inertia; the wheel band stays an overlay aligned to the indicator row.
+    -->
+    <!-- #ifdef MP-WEIXIN -->
+    <picker-view
+      class="sn-datetime-picker-view__native"
+      :value="nativeIndexes"
+      :indicator-style="nativeIndicatorStyle"
+      :mask-style="'background-color: rgba(0, 0, 0, 0)'"
+      :style="{ height: columnHeightRpx }"
+      @change="onNativeChange"
+    >
+      <picker-view-column
+        v-for="(column, columnIndex) in columns"
+        :key="column.type"
+      >
+        <view
+          v-for="(value, rowIndex) in column.values"
+          :key="value"
+          class="sn-datetime-picker-view__item"
+          :style="{ height: itemHeightRpx }"
+          @tap="selectRow(columnIndex, rowIndex)"
+        >
+          <text>{{ column.labels[rowIndex] }}</text>
+        </view>
+      </picker-view-column>
+    </picker-view>
+    <!-- #endif -->
+    <!-- #ifndef MP-WEIXIN -->
     <view
       v-for="(column, columnIndex) in columns"
       :key="column.type"
@@ -588,17 +769,17 @@ const ariaValue = computed(() => {
       @touchend="onTouchEnd($event, columnIndex)"
       @touchcancel="onTouchCancel(columnIndex)"
     >
-      <view
-        class="sn-datetime-picker-view__roller"
-        :class="{ 'sn-datetime-picker-view__roller--dragging': isDragging }"
-        :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
-      >
+      <view class="sn-datetime-picker-view__roller">
+        <template v-for="(value, rowIndex) in column.values" :key="value">
         <view
-          v-for="(value, rowIndex) in column.values"
-          :key="value"
+          v-if="isRowRenderable(columnIndex, rowIndex)"
           :class="[
             'sn-datetime-picker-view__item',
-            { 'sn-datetime-picker-view__item--active': column.selected === value },
+            {
+              'sn-datetime-picker-view__item--active': column.selected === value,
+              'sn-datetime-picker-view__item--far':
+                props.wheel && distanceOf(columnIndex, rowIndex) >= 2,
+            },
           ]"
           :style="{ height: itemHeightRpx }"
           role="button"
@@ -606,6 +787,7 @@ const ariaValue = computed(() => {
           @tap="onItemTap(columnIndex, rowIndex)"
           ><text>{{ column.labels[rowIndex] }}</text></view
         >
+        </template>
       </view>
       <view
         class="sn-datetime-picker-view__mask sn-datetime-picker-view__mask--top"
@@ -615,8 +797,18 @@ const ariaValue = computed(() => {
         class="sn-datetime-picker-view__mask sn-datetime-picker-view__mask--bottom"
         aria-hidden="true"
       />
-      <view class="sn-datetime-picker-view__indicator" aria-hidden="true" />
+      <!-- Per-column indicator: hairline default, pill in perColumn wheel mode.
+           Hidden entirely in shared-band mode (the root band takes over). -->
+      <view
+        v-if="!showSharedBand && !props.hideIndicator"
+        class="sn-datetime-picker-view__indicator"
+        aria-hidden="true"
+      ><view v-if="props.wheel" class="sn-datetime-picker-view__fill"
+          ><slot name="band" :mode="'perColumn'" :column-index="columnIndex"
+        /></view>
+      </view>
     </view>
+    <!-- #endif -->
     <text class="sn-datetime-picker-view__sr" aria-live="polite">{{ ariaValue }}</text>
   </view>
 </template>
@@ -629,7 +821,10 @@ const ariaValue = computed(() => {
   align-items: stretch;
   justify-content: center;
   width: 100%;
-  padding: var(--sn-mp-spacing-3) 0;
+  /* No vertical padding: the column is exactly visibleItemCount rows, and
+     mp-weixin stretches the flex column past the padding box, leaking a
+     sixth row outside the clip. Callers own any outer spacing. */
+  padding: 0;
   box-sizing: border-box;
   background-color: var(--sn-mp-color-background-elevated);
   color: var(--sn-mp-color-text-primary);
@@ -639,7 +834,9 @@ const ariaValue = computed(() => {
 
 .sn-datetime-picker-view__column {
   position: relative;
-  flex: 1 1 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
   min-width: 0;
   overflow: hidden;
   /* H5 / App webview: a roller drag must never become a page scroll.
@@ -650,10 +847,12 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__roller {
-  /* Settle only — the length scales with the distance to the snapped row. */
-  transition: transform var(--sn-datetime-picker-view-settle-duration, 180ms)
-    cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
+  /* Pure container: rows position themselves (selection-anchored absolute
+     top + live drag shift) — no roller-level transform, so a broken
+     overflow clip can never leak translated rows across the page. */
+  position: relative;
+  z-index: 1;
+  height: 100%;
 }
 
 /* While a finger is down the roller tracks it 1:1: any transition here makes
@@ -663,6 +862,11 @@ const ariaValue = computed(() => {
 }
 
 .sn-datetime-picker-view__item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  transition: top var(--sn-datetime-picker-view-settle-duration, 180ms)
+    cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -673,6 +877,10 @@ const ariaValue = computed(() => {
   white-space: nowrap;
 }
 
+.sn-datetime-picker-view--dragging .sn-datetime-picker-view__item {
+  transition: none;
+}
+
 .sn-datetime-picker-view__item--active {
   color: var(--sn-mp-color-text-primary);
   font-weight: var(--sn-mp-font-weight-semibold);
@@ -680,15 +888,48 @@ const ariaValue = computed(() => {
 
 .sn-datetime-picker-view__indicator {
   position: absolute;
-  left: var(--sn-mp-spacing-2);
-  right: var(--sn-mp-spacing-2);
+  /* Same inset variable as the shared band — one knob controls both. */
+  left: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  right: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
   top: 50%;
   height: var(--sn-datetime-picker-view-item-height);
   margin-top: calc(var(--sn-datetime-picker-view-item-height) / -2);
   border-top: 2rpx solid var(--sn-mp-color-border-subtle);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   pointer-events: none;
-  z-index: 2;
+  /* Behind the roller text: the wheel band is an opaque fill and would
+     otherwise hide the selected label. */
+  z-index: 0;
+}
+
+/* Slot fill — mp-weixin wraps injected slot content in a compiler view
+   (.uni__inherit_flex_box_style) that shrinks to content size, breaking
+   width/height:100% inside the slot. A column-direction stretch wrapper
+   forces that layer to span the full band box on every end. */
+.sn-datetime-picker-view__fill {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+/* Shared wheel band — one pill spanning every column (additive). */
+.sn-datetime-picker-view__wheel-band {
+  position: absolute;
+  left: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  right: var(--sn-datetime-picker-view-wheel-inset, var(--sn-mp-spacing-2));
+  /* top comes from the inline literal (bandTopRpx) — see above. */
+  height: var(--sn-datetime-picker-view-item-height);
+  background: var(--sn-datetime-picker-view-wheel-band, var(--sn-mp-color-background-subtle));
+  border-radius: var(--sn-datetime-picker-view-wheel-radius, 16rpx);
+  pointer-events: none;
+  z-index: 0;
+  /* #band slot content fills the pill and is clipped by its radius. */
+  overflow: hidden;
 }
 
 .sn-datetime-picker-view__mask {
@@ -697,7 +938,8 @@ const ariaValue = computed(() => {
   right: 0;
   height: var(--sn-datetime-picker-view-mask-height);
   pointer-events: none;
-  z-index: 1;
+  /* Over the text — these gradients are what fade the far rows out. */
+  z-index: 2;
 }
 
 .sn-datetime-picker-view__mask--top {
@@ -726,6 +968,31 @@ const ariaValue = computed(() => {
 .snui-skin-doodle .sn-datetime-picker-view__indicator {
   border-top-width: 4rpx;
   border-bottom-width: 4rpx;
+  border-top-color: var(--sn-mp-color-text-primary);
+  border-bottom-color: var(--sn-mp-color-text-primary);
+}
+
+/* Wheel 风格（additive）— hairline 指示线换成圆角胶囊高亮带，选中行文字转
+   主题色，两行外淡出。规则放在 doodle 之后以赢下同特异性优先级。 */
+.sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator {
+  border-top-width: 0;
+  border-bottom-width: 0;
+  background-color: var(--sn-mp-color-background-subtle);
+  border-radius: var(--sn-datetime-picker-view-wheel-radius, 16rpx);
+}
+
+.sn-datetime-picker-view--wheel .sn-datetime-picker-view__item--active {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-datetime-picker-view--wheel .sn-datetime-picker-view__item--far {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+/* Doodle skin 下胶囊带保留手绘描边。 */
+.snui-skin-doodle .sn-datetime-picker-view--wheel .sn-datetime-picker-view__indicator {
+  border-top-width: 2rpx;
+  border-bottom-width: 2rpx;
   border-top-color: var(--sn-mp-color-text-primary);
   border-bottom-color: var(--sn-mp-color-text-primary);
 }

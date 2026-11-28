@@ -2,7 +2,8 @@
 /**
  * Demo: sn-collapse — viewmore 模式下的 `more` 插槽与 `custom-more-slot-class`。
  *
- * - `more` 插槽在 viewmore 模式下替换底部展开 / 收起区域，作用域 `{ expanded }`
+ * - `more` 插槽在 viewmore 模式下替换底部展开 / 收起区域，作用域 `{ expanded }`；
+ *   需要同时打开 `use-more-slot`
  * - `custom-more-slot-class` 给该区域追加类名
  */
 import { ref } from 'vue';
@@ -16,7 +17,13 @@ const viewmore = ref(false);
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnCollapse v-model="viewmore" viewmore :line-num="2" custom-more-slot-class="sn-demo__more">
+    <SnCollapse
+      v-model="viewmore"
+      viewmore
+      use-more-slot
+      :line-num="2"
+      custom-more-slot-class="sn-demo__more"
+    >
       <SnCollapseItem name="intro" title="框架介绍">
         <text class="sn-demo__body">
           这一段用来验证 line-num 收起效果：展开前只显示两行，点击下方的自定义按钮才会完全展开。 AUI

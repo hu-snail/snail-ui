@@ -2,7 +2,7 @@
 /**
  * Demo: sn-calendar — parity placeholder props (timeFilter / hideSecond etc.).
  *
- * One cell card carries the entry: innerDisplayFormat / ellipsis /
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): innerDisplayFormat / ellipsis /
  * showTypeSwitch / hideSecond / timeFilter are parity props — this build has
  * no time roller and no range tabs, so they carry no visual effect and exist
  * only so a config written against the reference surface type-checks unchanged.
@@ -11,7 +11,6 @@ import { ref } from 'vue';
 import { Settings } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -28,17 +27,14 @@ const innerFormat = 'Custom range echo';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Parity placeholder props">
-      <SnCell
-        title="Parity props"
-        label="inner-display-format / ellipsis / show-type-switch / hide-second / time-filter"
-        :value="Array.isArray(value) ? `${value.length} dates` : ''"
-        placeholder="Not selected"
-        :prefix-icon-data="Settings"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Parity props"
+      :value="Array.isArray(value) ? `${value.length} dates` : ''"
+      placeholder="Not selected"
+      :prefix-icon-data="Settings"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">
       innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter are parity props:

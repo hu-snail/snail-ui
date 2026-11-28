@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/image-preview-mp-close-position.en.vue sha256:6141455c9d57b34f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-image-preview (uni-end) — close button position (`closeIconPosition`).
@@ -12,8 +13,8 @@ const preview = ref<{
 } | null>(null);
 
 const images = [
-  'https://picsum.photos/seed/snui-cap-a/900/1200',
-  'https://picsum.photos/seed/snui-cap-b/900/1200',
+  'https://cdn.uviewui.com/uview/album/5.jpg',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
 ];
 </script>
 <template>

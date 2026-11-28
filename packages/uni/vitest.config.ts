@@ -5,8 +5,34 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const vueEsmEntry = require.resolve('vue/dist/vue.esm-bundler.js');
 
+/**
+ * Unit tests run against plain SFC sources outside the uni compiler, so the
+ * `#ifdef` conditional-compilation comments are inert comments there. When a
+ * template carries BOTH an MP-WEIXIN branch and its #ifndef complement, both
+ * render and every node-count / class assertion double-counts. Tests take the
+ * H5 perspective: MP-WEIXIN-only branches are stripped and #ifndef MP-WEIXIN
+ * wrappers unwrap. (#ifdef MP blocks stay — they are inside v-else-if chains
+ * and mutually exclusive with the H5 branch by construction.)
+ */
+function stripMpWeixinBranches(): {
+  name: string;
+  transform(code: string, id: string): { code: string; map: null } | undefined;
+} {
+  return {
+    name: 'strip-mp-weixin-ifdef',
+    transform(code, id) {
+      if (!id.endsWith('.vue') || !code.includes('#ifdef MP-WEIXIN')) return undefined;
+      const stripped = code
+        .replace(/<!--\s*#ifdef MP-WEIXIN\s*-->[\s\S]*?<!--\s*#endif\s*-->/g, '')
+        .replace(/<!--\s*#ifndef MP-WEIXIN\s*-->/g, '')
+        .replace(/<!--\s*#endif\s*-->/g, '');
+      return { code: stripped, map: null };
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [stripMpWeixinBranches(), vue()],
   resolve: {
     alias: {
       vue: vueEsmEntry,

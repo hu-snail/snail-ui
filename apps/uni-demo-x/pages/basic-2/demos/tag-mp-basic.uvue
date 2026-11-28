@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-basic.vue sha256:87e4541428ae18a0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — 基础用法：十种语义色覆盖任务状态与内容分类。 */
 import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';

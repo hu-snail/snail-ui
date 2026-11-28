@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/more/demos/paging-mp-app.vue sha256:fabc6f35a6b950e0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-paging (uni-end) — 应用案例：整页信息流 App（紧凑预览 + 全屏场景）。
@@ -220,6 +221,7 @@ function exitFull(): void {
               left-text="演示"
               safe-area-inset-top
               bordered
+              :auto-back="false"
               @back="exitFull"
             />
             <SnTabs :model-value="activeChannel" @change="switchChannel($event.index)">
@@ -261,6 +263,7 @@ function exitFull(): void {
               left-text="返回"
               safe-area-inset-top
               bordered
+              :auto-back="false"
               @back="backToFeed"
             />
           </template>

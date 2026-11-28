@@ -1,10 +1,11 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-mp-custom.vue sha256:a5483829af72cc4d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img (uni-end) — custom-class / custom-style / custom-image。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-img from its SFC source.
  */
 import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
-const demo = 'https://picsum.photos/seed/snui-img-custom/600/400';
+const demo = 'https://cdn.uviewui.com/uview/album/8.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

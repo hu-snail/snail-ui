@@ -19,17 +19,19 @@ export const tooltipDocPage: SnDocPageData = {
     { label: 'AI-Token Ready', tone: 'warn', icon: 'ai' },
   ],
   description: [
-    { t: 'text', s: '气泡默认是「普通表面」配色：底色取 ' },
-    { t: 'code', s: '--sn-mp-color-background-elevated' },
-    { t: 'text', s: '（亮色主题即白色）、文字取 ' },
-    { t: 'code', s: '--sn-mp-color-text-primary' },
-    { t: 'text', s: '。这两个 token 都在 ' },
-    { t: 'code', s: '@snui/tokens-mp/styles' },
-    { t: 'text', s: ' 的 ' },
-    { t: 'code', s: '.sn-theme-dark' },
-    { t: 'text', s: ' 块里覆盖，因此暗色下自动变成深底浅字，无需额外处理。需要自定义配色时，用 ' },
-    { t: 'code', s: 'custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"' },
-    { t: 'text', s: ' 覆盖（对齐 wot-u' },
+    {
+      t: 'text',
+      s: 'tooltip 只承载纯文字提示：深色底盘（toast 同款 ',
+    },
+    { t: 'code', s: '--sn-mp-color-background-inverse' },
+    { t: 'text', s: ' / ' },
+    { t: 'code', s: '--sn-mp-color-text-on-primary' },
+    {
+      t: 'text',
+      s: ' token 对），与 sn-popover 的富卡片明确分层——图标 / 标题 / 描述 / 操作按钮请用 sn-popover。content 支持 string 或 string[]（每条一行）；面板定宽 ',
+    },
+    { t: 'code', s: '--sn-tooltip-width' },
+    { t: 'text', s: '（uni-app x App 不支持 max-content），文字在盘内换行。' },
   ],
   quickActions: [
     {
@@ -86,30 +88,35 @@ import { Tooltip } from '@snui/uni';
       blurb: 'show-close 显示关闭按钮；offset 调整与触发器的间距。',
     },
     {
+      name: 'tooltip-mp-theme',
+      title: '深色 / 浅色（theme）',
+      blurb: 'theme=light 切换白色底盘（AUI 扩展，wd-tooltip 仅深色）；箭头与底盘同色换肤。',
+    },
+    {
       name: 'tooltip-mp-disabled',
       title: '禁用（disabled）',
       blurb: 'disabled 禁用触发器，点击不打开气泡。',
     },
     {
       name: 'tooltip-mp-content',
-      title: '多行内容与 content 插槽',
+      title: '多行纯文字内容',
       blurb:
-        '数组 content 渲染多行；content 插槽自定义气泡结构；offset 的 [x, y] 与 { x, y } 两种写法。',
+        '数组 content 每条一行；深色底盘纯文字提示，富气泡请用 sn-popover；offset 的 [x, y] 与 { x, y } 两种写法。',
     },
   ],
   props: {
     hint: [],
     rows: [
       { name: 'modelValue', type: 'boolean', default: 'false', desc: '是否显示（`v-model`）' },
-      {
-        name: 'content',
-        type: 'string | TooltipContentRow[]',
-        default: "''",
-        desc: 'Bubble text; an array renders one line per entry.',
-      },
       { name: 'placement', type: 'TooltipPlacement', default: "'bottom'", desc: 'Bubble anchor.' },
       { name: 'offset', type: 'PopoverOffset', default: '0', desc: '{ x?, y? }`' },
       { name: 'visibleArrow', type: 'boolean', default: 'true', desc: '是否显示箭头' },
+      {
+        name: 'theme',
+        type: "'dark' | 'light'",
+        default: "'dark'",
+        desc: '底盘外观（AUI 扩展）：dark 半透明深色底盘；light 白色底盘 + 阴影，箭头同色换肤。',
+      },
       { name: 'disabled', type: 'boolean', default: 'false', desc: '是否禁用' },
       { name: 'showClose', type: 'boolean', default: 'false', desc: '是否显示关闭按钮' },
       {

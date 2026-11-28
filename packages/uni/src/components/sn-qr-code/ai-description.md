@@ -18,6 +18,13 @@ Per AGENTS.md §112, this component's API surface mirrors wot-ui `wd-qr-code`
 (https://wot-ui.cn/component/qr-code.html). New props added here MUST also be
 added to the wd-qr-code parity list.
 
+## Extensions beyond the reference library
+
+- **`cornerRadius`** is an AUI extension, not a `wd-qr-code` prop. It rounds
+  the four structural corner blocks (see below). Default `6` design px, `0`
+  restores the standard square corners. It is recorded here so the parity list
+  stays explicit instead of silently drifting.
+
 ## Not implemented (documented divergences)
 
 - **`logo` / `logo-width` / `logo-height` / `logo-background-color` /
@@ -28,14 +35,47 @@ added to the wd-qr-code parity list.
   the error-correction budget the code was sized for.
 - **`background-image`** is NOT declared, for the same reason.
 
+## Corner blocks
+
+`cornerRadius` rounds the three 7×7 finder patterns and, on version ≥ 2, the
+5×5 bottom-right alignment pattern. Each block is repainted as a rounded 回
+(dark outer ring → light ring → dark 3×3 / 1×1 centre) with the original module
+footprint, so no data module changes, the plate stays square and the code stays
+scannable. Version 1 has no alignment pattern, hence only three corner blocks.
+The radius is a design-px value scaled into device pixels and capped at 1.5
+modules; the rounded-square filler degrades `roundRect` → an `arc` path → a
+plain `fillRect` for canvas hosts with fewer path APIs.
+
 ## Painting
 
-1. `uni.createCanvasContext(canvasId, instance)` — WeChat / Alipay / App.
-2. Falls back to the `<canvas>` element's own `getContext('2d')` — H5 / docs.
-3. Neither available (unit tests, SSR) → the grid stays unpainted; rendering
+The host is detected first, because `uni.createCanvasContext` is a deprecated
+shim on uni-app x (it paints into a detached surface and leaves the QR blank):
+
+1. **uni-app x App / Web**: `uni.getElementById(id).getContext('2d')`. The
+   bitmap is sized from the element box × devicePixelRatio and modules are
+   drawn directly in device pixels — no `scale()` transform.
+2. **uni-app x mini-programs** (WeChat / Alipay / …): `uni.getElementById` is
+   App/Web-only, so the canvas is resolved **only** through
+   `uni.createCanvasContextAsync({ id, component })` → `CanvasContext.getContext('2d')`.
+   The resolved surface is cached and reused by every repaint. If the host
+   exposes no resizable bitmap, coordinates stay in **logical px** (multiplying
+   by DPR there pushed the whole matrix off-screen and produced a blank QR).
+3. **Classic uni-app**: `uni.createCanvasContext(canvasId, instance.proxy)` —
+   WeChat / Alipay / App, with a `draw()` flush; mini-programs also stay in
+   logical px. The DOM `<canvas>` `getContext('2d')` is the H5 / docs fallback.
+4. Neither available (unit tests, SSR) → the grid stays unpainted; rendering
    never throws.
 
-The `draw()` flush call is issued only on the uni path.
+First paint is retried a bounded number of times on uni-app x and mini-programs
+(and on the `<canvas>` `@ready` callback): the element box is only measurable
+after layout, and a mini-program native canvas can hand out a context long
+before it is drawable, so a short repaint tail runs even after a "successful"
+first paint. `draw()` is issued for legacy and asynchronously resolved
+contexts; synchronously resolved W3C canvases do not need it.
+
+The rounded corner blocks degrade `roundRect` → `arc` path → square `fillRect`;
+if a host throws on every path call, the skipped finder / alignment modules are
+repainted square so the code stays complete and scannable.
 
 ## Colors
 
@@ -67,6 +107,7 @@ import { SnQrCode } from '@snui/uni';
 | `margin`            | `number`                                             | `0`          | no       | Quiet zone in design px, painted inside the canvas.  |
 | `dotType`           | `'square' \| 'dots' \| 'rounded' \| 'liquid'`        | `'square'`   | no       | Module shape.                                        |
 | `dotScale`          | `number`                                             | `1`          | no       | Module fill ratio (clamped 0.4-1).                   |
+| `cornerRadius`      | `number`                                             | `6`          | no       | AUI extension: corner-block radius in design px; `0` = square. |
 | `enableGradient`    | `boolean`                                            | `false`      | no       | Paint dark modules with a linear gradient.           |
 | `gradientColor`     | `string`                                             | `''`         | no       | Gradient end color; `''` falls back to `colorDark`.  |
 | `gradientColors`    | `string[]`                                           | `[]`         | no       | Multi-stop gradient (2+); wins over `gradientColor`. |
@@ -86,7 +127,7 @@ import { SnQrCode } from '@snui/uni';
 
 | Name            | Returns           | Description                                                                                                                                                                                 |
 | --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `exportImage()` | `Promise<string>` | Temp file path of the canvas. Rejects with `{ code: 'CAPABILITY_UNSUPPORTED' }` when `uni.canvasToTempFilePath` is absent, `{ code: 'EXPORT_FAILED' }` when the platform reports a failure. |
+| `exportImage()` | `Promise<string>` | `data:image/...` URL on uni-app x / H5 (canvas `toDataURL()`), temp file path on classic uni-app (`uni.canvasToTempFilePath`). Rejects with `{ code: 'CAPABILITY_UNSUPPORTED' }` when no export capability exists, `{ code: 'EXPORT_FAILED' }` on a platform failure. |
 
 ## Slots
 
@@ -112,8 +153,9 @@ None.
 
 ## Dispose
 
-One canvas context + one deferred first-paint timer, both released in
-`onBeforeUnmount` (AGENTS.md §41). No listener, no interval.
+One cached legacy context, one cached async mini-program surface, bounded
+first-paint retry timers and at most one pending async context request — all
+released in `onBeforeUnmount` (AGENTS.md §41). No listener, no interval.
 
 ## Versioning
 

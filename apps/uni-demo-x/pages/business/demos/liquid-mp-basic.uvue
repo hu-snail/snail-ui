@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/liquid-mp-basic.vue sha256:d5fb0e9a2b2b3e27 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-liquid (uni-end) — 基础用法：percent 驱动水位，v-model:current

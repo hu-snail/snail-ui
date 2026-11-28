@@ -2,8 +2,38 @@
 /**
  * Demo: sn-qr-code (uni-end) — custom colours (`colorDark` / `colorLight`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
+ *
+ * The swatches at the bottom of the card switch colorDark / colorLight live.
+ * A canvas resolves concrete colour values only, so the swatches and the code
+ * share one dataset rather than CSS variables. The four corner blocks (three
+ * finders + the bottom-right alignment pattern) are rounded by default; see
+ * `cornerRadius`.
  */
+import { computed, ref } from 'vue';
 import SnQrCode from '@snui/uni-src/components/sn-qr-code/sn-qr-code.vue';
+
+/** One dark-module / light-quiet-zone pair — dark on light stays scannable. */
+interface DemoPalette {
+  label: string;
+  dark: string;
+  light: string;
+}
+
+const palettes: DemoPalette[] = [
+  { label: 'Midnight', dark: '#191970', light: '#f0ffff' },
+  { label: 'Forest', dark: '#14532d', light: '#ecfdf5' },
+  { label: 'Wine', dark: '#7f1d1d', light: '#fff1f2' },
+  { label: 'Indigo', dark: '#312e81', light: '#eef2ff' },
+  { label: 'Cocoa', dark: '#4c2a1a', light: '#fff7ed' },
+  { label: 'Ink', dark: '#111111', light: '#ffffff' },
+];
+
+const activeIndex = ref(0);
+const active = computed(() => palettes[activeIndex.value] as DemoPalette);
+
+function pick(index: number): void {
+  activeIndex.value = index;
+}
 </script>
 
 <template>
@@ -12,13 +42,31 @@ import SnQrCode from '@snui/uni-src/components/sn-qr-code/sn-qr-code.vue';
       <SnQrCode
         text="https://snui.dev"
         :size="150"
-        color-dark="midnightblue"
-        color-light="azure"
+        :color-dark="active.dark"
+        :color-light="active.light"
         :margin="10"
       />
     </view>
     <text class="sn-demo__meta"
-      >color-dark recolours the modules; color-light recolours the quiet zone.</text
+      >color-dark recolours the modules; color-light the quiet zone. The four corner blocks are
+      rounded by default.</text
+    >
+    <view class="sn-demo__swatches" aria-label="QR colour palettes">
+      <view
+        v-for="(option, index) in palettes"
+        :key="option.label"
+        class="sn-demo__swatch"
+        :class="{ 'sn-demo__swatch--picked': index === activeIndex }"
+        :style="{ backgroundColor: option.light }"
+        role="button"
+        :aria-label="`Palette ${option.label}`"
+        @tap="pick(index)"
+      >
+        <view class="sn-demo__swatch-dot" :style="{ backgroundColor: option.dark }" />
+      </view>
+    </view>
+    <text class="sn-demo__meta"
+      >Selected: {{ active.label }} ({{ active.dark }} / {{ active.light }})</text
     >
   </view>
 </template>
@@ -35,6 +83,36 @@ import SnQrCode from '@snui/uni-src/components/sn-qr-code/sn-qr-code.vue';
   flex-wrap: wrap;
   gap: 16rpx;
   align-items: flex-start;
+}
+.sn-demo__swatches {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+  margin-top: var(--sn-mp-spacing-1);
+}
+.sn-demo__swatch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 56rpx;
+  height: 56rpx;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-sm);
+  opacity: 0.55;
+}
+.sn-demo__swatch--picked {
+  opacity: 1;
+  border: 4rpx solid var(--sn-mp-color-action-primary);
+  box-shadow: var(--sn-mp-shadow-sm);
+}
+.sn-demo__swatch-dot {
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: var(--sn-mp-radius-full);
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

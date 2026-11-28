@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-view-mp-roller-geometry.en.vue sha256:509b44a2f4d9eae3 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — roller geometry: itemHeight (52px rows) + visibleItemCount (5 visible). */
 import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';

@@ -7,7 +7,7 @@
  * exists, e.g. after the container enters the viewport). The buttons only change
  * the stage width so the re-flow is visible.
  *
- * Images come from a real network source (picsum.photos); the `seed` is fixed so
+ * Images come from a stable China-hosted library (uview CDN); the `seed` digits map
  * the same photo is reproduced every time.
  */
 import { ref } from 'vue';
@@ -33,7 +33,7 @@ const tiles: Tile[] = [
 /** Request the image at the tile's aspect ratio; `object-fit` crops the rest. */
 function photo(seed: string, height: number, width = 300): string {
   const w = 600;
-  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+  return `https://cdn.uviewui.com/uview/album/${([...String(seed)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`;
 }
 
 const stageWidths = [

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.en.vue sha256:34c2d0278c53e2b6 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-index-bar — full-page contacts (compact preview + fullscreen page
@@ -337,6 +338,7 @@ function exitFull(): void {
           left-text="Demo"
           safe-area-inset-top
           bordered
+          :auto-back="false"
           @back="exitFull"
         />
         <view class="icx__searchbar">
@@ -385,6 +387,7 @@ function exitFull(): void {
           left-text="Back"
           safe-area-inset-top
           bordered
+          :auto-back="false"
           @back="backToPage"
         />
         <view class="icd">

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/drop-menu-mp-icon.en.vue sha256:9966c2543d4282f9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-drop-menu — the three option-icon sources, precedence and selection.
@@ -53,7 +54,7 @@ const urlOptions = [
   {
     label: 'Brand zone',
     value: 'brand',
-    iconUrl: 'https://picsum.photos/seed/snui-drop-menu/96',
+    iconUrl: 'https://cdn.uviewui.com/uview/album/9.jpg',
   },
   { label: 'Plain text row', value: 'plain' },
 ];
@@ -64,7 +65,7 @@ const precedenceOptions = [
     label: 'Object wins',
     value: 'all',
     iconData: Star,
-    iconUrl: 'https://picsum.photos/seed/snui-drop-menu-priority/96',
+    iconUrl: 'https://cdn.uviewui.com/uview/album/10.jpg',
     icon: 'clock',
   },
 ];
@@ -99,8 +100,7 @@ const precedenceOptions = [
     />
 
     <text class="sn-demo__meta"
-      >Object: {{ byData }} / Name: {{ byName }} / Image: {{ byUrl }}</text
-    >
+      >Object: {{ byData }} / Name: {{ byName }} / Image: {{ byUrl }}</text>
   </view>
 </template>
 <style scoped>

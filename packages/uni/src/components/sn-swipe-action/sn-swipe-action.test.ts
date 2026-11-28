@@ -2,14 +2,20 @@
  * sn-swipe-action unit tests — uni-end swipe-to-reveal row (wd-swipe-action parity).
  *
  * Behaviour only (AGENTS.md §46):
- *   - a horizontal swipe opens the matching side; a vertical gesture is ignored
+ *   - a horizontal swipe past the settle threshold opens the matching side;
+ *     a small drag springs back closed; a fast flick settles below the threshold
+ *   - the row drags from where it sits: touching an open row does not snap it
+ *     shut, and a back-drag closes before a side flip can happen
+ *   - a vertical gesture is ignored
  *   - `v-model` reports the new status; `disabled` blocks every gesture
  *   - `before-close` returning false blocks the close (sync and async)
  *   - `touchcancel` settles the row closed
  *   - tapping the open content area closes it and emits `click`
  *   - slot presence decides which sides can open
  *   - the settle timer is cleared on unmount (§41)
- *   - while closed the action areas sit translated outside the root clip
+ *   - while closed the action areas sit translated outside the root clip and
+ *     additionally hidden (uni-app x mp does not clip translated absolute
+ *     children reliably — device-verified leak)
  *     (deterministic closed state — no reliance on the content covering them);
  *     they come back inside while dragging, animating, or open
  *   - content offsets are applied in px (the unit measurements and touch
@@ -19,11 +25,19 @@
  */
 
 import { afterEach, describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnSwipeAction from './sn-swipe-action.vue';
 
 const slots = {
   default: '<text class="row-content">内容</text>',
+  right: '<view class="row-delete">删除</view>',
+};
+
+const bothSlots = {
+  default: '<text class="row-content">内容</text>',
+  left: '<view class="row-star">收藏</view>',
   right: '<view class="row-delete">删除</view>',
 };
 
@@ -138,6 +152,58 @@ describe('sn-swipe-action', () => {
       await swipe(w, 60);
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['close']);
     });
+
+    it('closes on a back-drag before flipping sides when both slots exist', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots: bothSlots });
+      await swipe(w, 60);
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['close']);
+    });
+
+    it('flips to the other side when the drag crosses the centre', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots: bothSlots });
+      await swipe(w, 220);
+      expect(w.emitted('update:modelValue')?.[0]).toEqual(['left']);
+    });
+
+    it('springs back closed when the drag stays under the open threshold', async () => {
+      const w = mount(SnSwipeAction, { slots });
+      await swipe(w, -12);
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.classes()).not.toContain('sn-swipe-action--open');
+    });
+
+    it('keeps an open row under the finger while it is touched', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 203, clientY: 100 }] });
+      // Base −88px (fallback distance) + 3px of drag — not snapped to the delta.
+      expect(w.find('.sn-swipe-action__content').attributes('style') ?? '').toContain(
+        'translateX(-85px)',
+      );
+    });
+
+    it('stays open when released while stretched past the open distance', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      await swipe(w, -60);
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('opens on a fast flick below the open threshold', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnSwipeAction, { slots });
+        const root = w.find('.sn-swipe-action');
+        await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+        await root.trigger('touchmove', { touches: [{ clientX: 180, clientY: 100 }] });
+        vi.advanceTimersByTime(40); // 20px / 40ms = 0.5 px/ms
+        await root.trigger('touchend');
+        await flushPromises();
+        expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 
   describe('before-close guard', () => {
@@ -228,18 +294,36 @@ describe('sn-swipe-action', () => {
 
     it('uses uni.createSelectorQuery when the runtime provides it', async () => {
       const exec = vi.fn();
+      const selectors: string[] = [];
       const boundingClientRect = vi.fn((cb: (rect: { width: number }) => void) => {
         cb({ width: 140 });
         return { exec };
       });
       (globalThis as { uni?: unknown }).uni = {
-        createSelectorQuery: () => ({ select: () => ({ boundingClientRect }) }),
+        createSelectorQuery: () => ({
+          select: (selector: string) => {
+            selectors.push(selector);
+            return { boundingClientRect };
+          },
+        }),
       };
       const w = mount(SnSwipeAction, { slots });
       await swipe(w, -200);
       expect(boundingClientRect).toHaveBeenCalled();
       expect(exec).toHaveBeenCalled();
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
+      // The measurement targets a per-instance id, never a class — class
+      // selectors cross scopes on mp and matched a foreign (wider) row.
+      expect(selectors[0]).toMatch(/^#sn-swipe-action-\d+-right$/);
+    });
+
+    it('gives every instance its own action-area ids', () => {
+      const first = mount(SnSwipeAction, { slots });
+      const second = mount(SnSwipeAction, { slots });
+      const idOf = (wrapper: ReturnType<typeof mount>) =>
+        wrapper.find('.sn-swipe-action__actions--right').attributes('id');
+      expect(idOf(first)).toMatch(/^sn-swipe-action-\d+-right$/);
+      expect(idOf(second)).not.toBe(idOf(first));
     });
 
     it('survives a throwing selector query', async () => {
@@ -252,21 +336,82 @@ describe('sn-swipe-action', () => {
       await swipe(w, -120);
       expect(w.emitted('update:modelValue')?.[0]).toEqual(['right']);
     });
+
+    it('measures the action area through the mounted element on H5', async () => {
+      /* Device-verified regression: the template ref is the uni-view
+       * component instance on H5, so the old DOM path read
+       * `getBoundingClientRect` off the instance and silently skipped it —
+       * H5 lived on the 88px fallback too, and a two-pill action area
+       * (139px) opened half-way with the far pill still covered. The element
+       * itself is on `$el`. */
+      const w = mount(SnSwipeAction, { slots });
+      const setupState = (w.vm.$ as unknown as { setupState: Record<string, unknown> })
+        .setupState;
+      setupState.rightActionsRef = {
+        $el: { getBoundingClientRect: () => ({ width: 139 }) },
+      };
+      await swipe(w, -120);
+      await flushPromises();
+      expect(w.find('.sn-swipe-action__content').attributes('style') ?? '').toContain(
+        'translateX(-139px)',
+      );
+    });
+
+    it('scopes the uni query to the component on mp', async () => {
+      /* Device-verified regression: measureSide called `getCurrentInstance()`
+       * inside the touch handler, where it returns null — every `.in()`-scoped
+       * variant was skipped and classic mp kept only the page-level query,
+       * which cannot see inside a custom component. The row then slid to the
+       * 88px fallback and a two-pill row never revealed its far button. */
+      let scopedTo: unknown;
+      (globalThis as { uni?: unknown }).uni = {
+        createSelectorQuery: () => {
+          const query = {
+            in(scope: unknown) {
+              scopedTo = scope;
+              return query;
+            },
+            select(_selector: string) {
+              return {
+                boundingClientRect(cb: (rect: { width?: number } | null) => void) {
+                  cb({ width: 139 });
+                  return query;
+                },
+              };
+            },
+            exec() {},
+          };
+          return query;
+        },
+      };
+      const w = mount(SnSwipeAction, { slots });
+      await swipe(w, -120);
+      await flushPromises();
+      // Measured 139px, not the 88px fallback.
+      expect(w.find('.sn-swipe-action__content').attributes('style') ?? '').toContain(
+        'translateX(-139px)',
+      );
+      // The query ran through `.in(<component proxy>)` — the scoped variant,
+      // not the scope-less page-level query classic mp cannot match with.
+      expect(scopedTo).toBe((w.vm.$ as unknown as { proxy: unknown }).proxy);
+    });
   });
 
   describe('closed-state action hiding', () => {
     it('keeps the right action area translated out of the row while closed', () => {
       const w = mount(SnSwipeAction, { slots });
-      expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
-        'transform: translateX(100%)',
-      );
+      const style = w.find('.sn-swipe-action__actions--right').attributes('style') ?? '';
+      expect(style).toContain('transform: translateX(100%)');
+      // uni-app x mp does not reliably clip translated absolute children —
+      // the park also hides the area outright (device-verified leak).
+      expect(style).toContain('visibility: hidden');
     });
 
     it('keeps the left action area translated out of the row while closed', () => {
       const w = mount(SnSwipeAction, { slots: { default: 'x', left: '<view>收藏</view>' } });
-      expect(w.find('.sn-swipe-action__actions--left').attributes('style') ?? '').toContain(
-        'transform: translateX(-100%)',
-      );
+      const style = w.find('.sn-swipe-action__actions--left').attributes('style') ?? '';
+      expect(style).toContain('transform: translateX(-100%)');
+      expect(style).toContain('visibility: hidden');
     });
 
     it('brings the action areas back inside while the row is open', () => {
@@ -299,15 +444,15 @@ describe('sn-swipe-action', () => {
       try {
         const w = mount(SnSwipeAction, { slots });
         await swipe(w, -120);
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(300); // settle duration elapsed — parked again
         await swipe(w, 60);
         // Still animating closed — the area must stay inside to be covered.
         expect(w.find('.sn-swipe-action__actions--right').attributes('style')).toBeUndefined();
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(300);
         await w.vm.$nextTick();
-        expect(w.find('.sn-swipe-action__actions--right').attributes('style') ?? '').toContain(
-          'transform: translateX(100%)',
-        );
+        const parked = w.find('.sn-swipe-action__actions--right').attributes('style') ?? '';
+        expect(parked).toContain('transform: translateX(100%)');
+        expect(parked).toContain('visibility: hidden');
       } finally {
         vi.useRealTimers();
       }
@@ -353,12 +498,94 @@ describe('sn-swipe-action', () => {
         await root.trigger('touchend');
         await flushPromises();
         expect(w.classes()).toContain('sn-swipe-action--animating');
-        vi.advanceTimersByTime(200);
+        vi.advanceTimersByTime(300);
         await w.vm.$nextTick();
         expect(w.classes()).not.toContain('sn-swipe-action--animating');
       } finally {
         vi.useRealTimers();
       }
+    });
+  });
+
+  describe('reveal fade vars', () => {
+    it('publishes zero progress on both sides while closed', () => {
+      const w = mount(SnSwipeAction, { slots });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-swipe-action-reveal-left: 0.000');
+      expect(style).toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+
+    it('publishes full progress for the open side', () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-swipe-action-reveal-right: 1.000');
+      expect(style).toContain('--sn-swipe-action-reveal-left: 0.000');
+    });
+
+    it('tracks the occluded fraction while dragging', async () => {
+      const w = mount(SnSwipeAction, { slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 160, clientY: 100 }] });
+      // 40px of the 88px fallback distance revealed.
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.455');
+    });
+
+    it('tracks the left side while dragging rightwards', async () => {
+      const leftSlots = { default: 'x', left: '<view class="row-star">收藏</view>' };
+      const w = mount(SnSwipeAction, { slots: leftSlots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 240, clientY: 100 }] });
+      // Left pull grows the left progress and keeps the right at zero.
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-left: 0.455');
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+
+    it('fades back out as the drag re-covers an open row', async () => {
+      const w = mount(SnSwipeAction, { props: { modelValue: 'right' }, slots });
+      const root = w.find('.sn-swipe-action');
+      await root.trigger('touchstart', { touches: [{ clientX: 200, clientY: 100 }] });
+      await root.trigger('touchmove', { touches: [{ clientX: 260, clientY: 100 }] });
+      // Open at −88px, dragged 60px back → 28px still revealed.
+      expect(root.attributes('style') ?? '').toContain('--sn-swipe-action-reveal-right: 0.318');
+    });
+
+    it('merges the consumer custom-style with the reveal vars', () => {
+      const w = mount(SnSwipeAction, { props: { customStyle: 'border-radius: 8px;' }, slots });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('border-radius: 8px;');
+      expect(style).toContain('--sn-swipe-action-reveal-right: 0.000');
+    });
+  });
+
+  describe('mp wrapper node', () => {
+    it('declares a virtual host so the row owns the container width', () => {
+      /* Device-verified regression: on mp-weixin the custom-component host
+       * node shrink-wraps to its content, so the row rendered at max-content
+       * width — right-anchored pills sat mid-screen with a dead zone to the
+       * screen edge and opened cards slid under it. The fix is the MP-only
+       * `virtualHost` option (wot-ui components flip the same switch) —
+       * invisible to happy-dom, hence source-anchored like the steps suite. */
+      const source = readFileSync(resolve(__dirname, 'sn-swipe-action.vue'), 'utf8');
+      expect(source).toMatch(
+        /\/\/\s*#ifdef MP-WEIXIN\s*\n\s*options:\s*\{\s*virtualHost:\s*true\s*\}\s*,?\s*\n\s*\/\/\s*#endif/,
+      );
+    });
+  });
+
+  describe('root clip', () => {
+    it('stays clipped when the host page forces every view visible', () => {
+      /* Device-verified regression: the demo shell resets every view with
+       * `view { overflow: visible !important }` (it unclips uni-app x web
+       * popover demos). The root's plain `overflow: hidden` lost to that
+       * reset, so the parked (translateX ±100%) action area widened the page:
+       * document scrollWidth 552px on a 390px viewport, and swiping a row
+       * dragged the whole page sideways — the demo read as overflowing.
+       * happy-dom does not apply SFC styles, so the invariant is
+       * source-anchored like the virtual-host check above. */
+      const source = readFileSync(resolve(__dirname, 'sn-swipe-action.vue'), 'utf8');
+      expect(source).toMatch(/\.sn-swipe-action\s*\{[^}]*overflow:\s*hidden\s*!important;/);
     });
   });
 

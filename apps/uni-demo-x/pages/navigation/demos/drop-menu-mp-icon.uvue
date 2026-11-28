@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/drop-menu-mp-icon.vue sha256:92ca3c38df49df06 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-drop-menu — 选项图标三种来源、优先级与选中态。
@@ -46,7 +47,7 @@ const nameOptions = [
 ];
 
 const urlOptions = [
-  { label: '品牌专区', value: 'brand', iconUrl: 'https://picsum.photos/seed/snui-drop-menu/96' },
+  { label: '品牌专区', value: 'brand', iconUrl: 'https://cdn.uviewui.com/uview/album/10.jpg' },
   { label: '纯文本项', value: 'plain' },
 ];
 
@@ -56,7 +57,7 @@ const precedenceOptions = [
     label: '对象优先',
     value: 'all',
     iconData: Star,
-    iconUrl: 'https://picsum.photos/seed/snui-drop-menu-priority/96',
+    iconUrl: 'https://cdn.uviewui.com/uview/album/1.jpg',
     icon: 'clock',
   },
 ];

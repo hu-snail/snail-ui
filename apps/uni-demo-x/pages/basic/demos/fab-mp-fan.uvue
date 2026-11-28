@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/fab-mp-fan.vue sha256:09604cba5d378616 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-fab (uni-end) — 扇形展开形态（AUI-OPT-19 additive）。
@@ -70,7 +71,6 @@ const topActions: SnFabAction[] = [
       fan-motion="fan"
       position="bottom-center"
       :actions="centerActions"
-      custom-class="sn-demo-contained"
       custom-style="position: absolute;"
       @action="(_action: SnFabAction, index: number) => pick(centerLabels[index])"
     />
@@ -81,7 +81,6 @@ const topActions: SnFabAction[] = [
       fan-motion="fan"
       position="right-bottom"
       :actions="cornerActions"
-      custom-class="sn-demo-contained"
       custom-style="position: absolute;"
       @action="() => pick('右下角')"
     />
@@ -92,7 +91,6 @@ const topActions: SnFabAction[] = [
       fan-motion="fan"
       position="left-top"
       :actions="topActions"
-      custom-class="sn-demo-contained"
       custom-style="position: absolute;"
       @action="() => pick('左上角')"
     />

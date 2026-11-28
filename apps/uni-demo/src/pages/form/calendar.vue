@@ -4,15 +4,16 @@ import Demo0 from './demos/calendar-mp-basic.vue';
 import Demo1 from './demos/calendar-mp-card.vue';
 import Demo2 from './demos/calendar-mp-declared-props.vue';
 import Demo3 from './demos/calendar-mp-first-day-of-week.vue';
-import Demo4 from './demos/calendar-mp-formatter.vue';
-import Demo5 from './demos/calendar-mp-header.vue';
-import Demo6 from './demos/calendar-mp-immediate-change.vue';
-import Demo7 from './demos/calendar-mp-lunar.vue';
-import Demo8 from './demos/calendar-mp-panel.vue';
-import Demo9 from './demos/calendar-mp-range-constraints.vue';
-import Demo10 from './demos/calendar-mp-sheet-chrome.vue';
-import Demo11 from './demos/calendar-mp-shortcuts-events.vue';
-import Demo12 from './demos/calendar-mp-shortcuts-range.vue';
+import Demo4 from './demos/calendar-mp-footer.vue';
+import Demo5 from './demos/calendar-mp-formatter.vue';
+import Demo6 from './demos/calendar-mp-header.vue';
+import Demo7 from './demos/calendar-mp-immediate-change.vue';
+import Demo8 from './demos/calendar-mp-lunar.vue';
+import Demo9 from './demos/calendar-mp-panel.vue';
+import Demo10 from './demos/calendar-mp-range-constraints.vue';
+import Demo11 from './demos/calendar-mp-sheet-chrome.vue';
+import Demo12 from './demos/calendar-mp-shortcuts-events.vue';
+import Demo13 from './demos/calendar-mp-shortcuts-range.vue';
 import DemoModuleHead from '../../components/DemoModuleHead.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -23,6 +24,7 @@ const { t } = useDemoUi();
 
 <template>
   <DemoPageShell
+    class="demo-host"
     :title-zh="'日历选择器'"
     :title-en="'Calendar'"
     :desc="'日期区间选择弹层'"
@@ -30,19 +32,25 @@ const { t } = useDemoUi();
   >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('基础用法', 'Basic usage')"
+          badge="basic"
+          inset
+        />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('卡片', 'Card')" badge="card" />
+        <DemoModuleHead class="demo-host" :title="t('卡片', 'Card')" badge="card" inset />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '声明对齐参数（timeFilter / hideSecond 等）',
@@ -50,52 +58,76 @@ const { t } = useDemoUi();
             )
           "
           badge="declared-props"
+          inset
         />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('周起始日（firstDayOfWeek）', 'First day of week (firstDayOfWeek)')"
           badge="first-day-of-week"
+          inset
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('底栏形态（取消开关 / 无底栏）', 'Footer shapes (cancel toggle / no footer)')"
+          badge="footer"
+          inset
+        />
+        <view class="module__body">
+          <Demo4 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('单元格格式化（formatter）', 'Cell formatting (formatter)')"
           badge="formatter"
+          inset
         />
         <view class="module__body">
-          <Demo4 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('标题与描述', 'Title & description')" badge="header" />
-        <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('标题与描述', 'Title & description')"
+          badge="header"
+          inset
+        />
+        <view class="module__body">
+          <Demo6 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="t('即时写回（immediateChange）', 'Immediate write-back (immediateChange)')"
           badge="immediate-change"
+          inset
         />
         <view class="module__body">
-          <Demo6 />
+          <Demo7 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('农历', 'Lunar')" badge="lunar" />
+        <DemoModuleHead class="demo-host" :title="t('农历', 'Lunar')" badge="lunar" inset />
         <view class="module__body">
-          <Demo7 />
+          <Demo8 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '面板尺寸与切换（panelHeight / switchMode）',
@@ -103,13 +135,15 @@ const { t } = useDemoUi();
             )
           "
           badge="panel"
+          inset
         />
         <view class="module__body">
-          <Demo8 />
+          <Demo9 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '区间约束（maxRange / allowSameDay / defaultTime）',
@@ -117,22 +151,26 @@ const { t } = useDemoUi();
             )
           "
           badge="range-constraints"
+          inset
         />
         <view class="module__body">
-          <Demo9 />
+          <Demo10 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('弹层外观与底栏插槽', 'Sheet chrome & footer slot')"
           badge="sheet-chrome"
+          inset
         />
         <view class="module__body">
-          <Demo10 />
+          <Demo11 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="
             t(
               '快捷回调与确认拦截（onShortcutsClick / beforeConfirm）',
@@ -140,15 +178,21 @@ const { t } = useDemoUi();
             )
           "
           badge="shortcuts-events"
+          inset
         />
         <view class="module__body">
-          <Demo11 />
+          <Demo12 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('shortcuts-range', 'Shortcuts Range')" badge="shortcuts-range" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('shortcuts-range', 'Shortcuts Range')"
+          badge="shortcuts-range"
+          inset
+        />
         <view class="module__body">
-          <Demo12 />
+          <Demo13 class="demo-host" />
         </view>
       </view>
     </view>
@@ -157,7 +201,7 @@ const { t } = useDemoUi();
 
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
 /* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
@@ -173,7 +217,33 @@ const { t } = useDemoUi();
   box-shadow: var(--demo-card-shadow);
 }
 
+/* calendar：场景模块透明变体——入口行直接使用 sn-cell（无分组卡片，模块标题由
+ * 外层场景标题行承担），cell 自带 surface 背景，即组件的真实形态；白卡底
+ * 会与组件背景双重叠加。去掉卡底与描边，入口行直接浮在页面画布上，层级由
+ * cell 自身的圆角 / 描边 / 分隔线承担。 */
+.module {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.module {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

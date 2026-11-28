@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-status.en.vue sha256:ecf71e20cd22c9f7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-steps — English shadow of steps-mp-status.
@@ -7,7 +8,7 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnSteps :active="1">
+    <SnSteps :active="1" align-center>
       <SnStep title="Approved" description="Passed" status="finished" />
       <SnStep title="Manual review" description="In progress" status="process" />
       <SnStep title="Auto-passed" description="Skipped" status="wait" />
@@ -22,9 +23,11 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__meta {
+  margin-top: var(--sn-mp-spacing-3);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);

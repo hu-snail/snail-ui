@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/img-mp-preview.en.vue sha256:56b73497e5b55f43 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-img (uni-end) — tap-to-preview (`enablePreview`).
@@ -5,9 +6,9 @@
  */
 import SnImg from '@snui/uni-x/components/sn-img/sn-img.uvue';
 /** The thumbnail and the full-size image opened on tap are different: previewSrc overrides src. */
-const thumb = 'https://picsum.photos/seed/snui-img-thumb/300/300';
-const full = 'https://picsum.photos/seed/snui-img-full/1400/1400';
-const plain = 'https://picsum.photos/seed/snui-img-plain/600/400';
+const thumb = 'https://cdn.uviewui.com/uview/album/2.jpg';
+const full = 'https://cdn.uviewui.com/uview/album/3.jpg';
+const plain = 'https://cdn.uviewui.com/uview/album/4.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">

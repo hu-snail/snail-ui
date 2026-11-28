@@ -12,7 +12,7 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--column">
+  <view class="sn-demo sn-demo--column sn-demo--card">
     <text class="sn-demo__label">Card group (sn-cell-group card — one card, inner hairlines)</text>
     <SnCellGroup title="Quick actions" card>
       <SnCell title="Scan" :prefix-icon-data="Camera" is-link />
@@ -29,6 +29,13 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 </template>
 
 <style scoped>
+/* Full-bleed page: only the card form keeps horizontal gutters — plain rows
+ * span the screen, cards float on the canvas. */
+.sn-demo--card {
+  padding: 0 var(--sn-mp-spacing-4);
+  box-sizing: border-box;
+}
+
 .sn-demo--column {
   display: flex;
   flex-direction: column;

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/text-mp-typography.en.vue sha256:32a97f52d2904b8c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — typography overrides (`size` / `lineHeight` / `color`). */
 import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';

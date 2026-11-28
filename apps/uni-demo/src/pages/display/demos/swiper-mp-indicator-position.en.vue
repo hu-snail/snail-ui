@@ -6,9 +6,9 @@
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  'https://picsum.photos/seed/snui-sw-i1/750/400',
-  'https://picsum.photos/seed/snui-sw-i2/750/400',
-  'https://picsum.photos/seed/snui-sw-i3/750/400',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
+  'https://cdn.uviewui.com/uview/album/7.jpg',
+  'https://cdn.uviewui.com/uview/album/8.jpg',
 ];
 
 const two = list.slice(0, 2);

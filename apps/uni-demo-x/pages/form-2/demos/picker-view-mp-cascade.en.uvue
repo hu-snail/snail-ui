@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.en.vue sha256:f108aafce96ae76c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — With `cascade`, `columns` is a tree and the following columns are derived from the path. */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/plate-input-mp-disabled.vue sha256:4b5c323b583b59fe —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-plate-input — 禁用态：disabled 时点击不再弹键盘。 */
 import SnPlateInput from '@snui/uni-x/components/sn-plate-input/sn-plate-input.uvue';

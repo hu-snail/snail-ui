@@ -3,7 +3,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { formatLunar } from '@snui/uni-src/utils/sn-lunar';
 import { Calendar, Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
@@ -26,26 +25,22 @@ const clockText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="农历日期"
-        label="lunar：年干支 / 月含闰月 / 日初一三十"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="lunarText"
-        is-link
-        @click="openDate = true"
-      />
-      <SnCell
-        title="农历 + 时间"
-        label="datetime + lunar：保留时分滚筒"
-        :prefix-icon-data="Clock"
-        placeholder="请选择"
-        :value="clockText"
-        is-link
-        @click="openClock = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="农历日期"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="lunarText"
+      is-link
+      @click="openDate = true"
+    />
+    <SnCell
+      title="农历 + 时间"
+      :prefix-icon-data="Clock"
+      placeholder="请选择"
+      :value="clockText"
+      is-link
+      @click="openClock = true"
+    />
 
     <SnDatetimePicker
       v-model="lunarDate"

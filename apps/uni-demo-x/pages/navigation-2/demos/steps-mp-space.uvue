@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/steps-mp-space.vue sha256:0132889089cfa7b8 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-steps — 间距与对齐（space / align-center）。
@@ -17,17 +18,18 @@ import SnStep from '@snui/uni-x/components/sn-steps/sn-step.uvue';
     </SnSteps>
 
     <text class="sn-demo__meta"
-      >space="120rpx" 拉开间距；align-center 让步骤条整体居中（仅横向）。</text
-    >
+      >space="120rpx" 拉开间距；align-center 让步骤条整体居中（仅横向）。</text>
   </view>
 </template>
 <style scoped>
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
+/* MP / App drop flex gap: spacing rides on margins (§116). */
 .sn-demo__meta {
+  margin-top: var(--sn-mp-spacing-3);
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);

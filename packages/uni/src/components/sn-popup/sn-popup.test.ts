@@ -31,10 +31,28 @@ describe('sn-popup', () => {
     expect(wrapper.text()).toContain('panel body');
   });
 
-  it('defaults to the center anchor with the fade animation', () => {
-    const wrapper = mount(SnPopup, { props: { modelValue: true } });
+  /**
+   * Mount closed, then open — the enter leg is what carries the animation
+   * (an already-open first paint renders at rest, matching the onMounted
+   * contract). The leg is transition-driven: the first frame parks the panel
+   * at its off-screen start, the next tick drops it to rest.
+   */
+  async function mountOpened(props: Record<string, unknown> = {}) {
+    const wrapper = mount(SnPopup, { props: { modelValue: false, ...props } });
+    await wrapper.setProps({ modelValue: true });
+    await wrapper.vm.$nextTick();
+    return wrapper;
+  }
+
+  /** The panel's style attribute ('' when unset). */
+  const panelStyle = (w: ReturnType<typeof mount>): string =>
+    w.find('.sn-popup__panel').attributes('style') ?? '';
+
+  it('defaults to the center anchor and fades the panel in', async () => {
+    const wrapper = await mountOpened();
     expect(wrapper.classes()).toContain('sn-popup--center');
-    expect(wrapper.classes()).toContain('sn-popup--anim-fade');
+    // A fade parks on opacity only — no transform offset.
+    expect(panelStyle(wrapper)).toContain('opacity: 0');
   });
 
   it('applies the anchor-specific class for each position', () => {
@@ -44,20 +62,18 @@ describe('sn-popup', () => {
     }
   });
 
-  it('picks a slide animation that matches the anchor by default', () => {
-    const bottom = mount(SnPopup, { props: { modelValue: true, position: 'bottom' } });
-    expect(bottom.classes()).toContain('sn-popup--anim-slide-up');
+  it('slides the panel in from the edge its anchor implies', async () => {
+    const bottom = await mountOpened({ position: 'bottom' });
+    expect(panelStyle(bottom)).toContain('translateY(100%)');
 
-    const right = mount(SnPopup, { props: { modelValue: true, position: 'right' } });
-    expect(right.classes()).toContain('sn-popup--anim-slide-left');
+    const right = await mountOpened({ position: 'right' });
+    expect(panelStyle(right)).toContain('translateX(100%)');
   });
 
-  it('lets `transition` override the anchor default', () => {
-    const wrapper = mount(SnPopup, {
-      props: { modelValue: true, position: 'bottom', transition: 'zoom-in' },
-    });
-    expect(wrapper.classes()).toContain('sn-popup--anim-zoom-in');
-    expect(wrapper.classes()).not.toContain('sn-popup--anim-slide-up');
+  it('lets `transition` override the anchor default', async () => {
+    const wrapper = await mountOpened({ position: 'bottom', transition: 'zoom-in' });
+    expect(panelStyle(wrapper)).toContain('scale(0.8)');
+    expect(panelStyle(wrapper)).not.toContain('translateY(100%)');
   });
 
   it('renders the close button only when closable', () => {
@@ -213,6 +229,45 @@ describe('sn-popup', () => {
     expect(event.defaultPrevented).toBe(false);
   });
 
+  it('stops a panel touchmove from reaching the page when lockScroll is on', () => {
+    // The sheet's own content often does not scroll (the calendar hands that to
+    // an inner scroll-view), so without this the PAGE scrolled behind a frozen
+    // sheet. The handler stops propagation but does not preventDefault — an
+    // inner scroll-view must still be able to consume the gesture.
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, lockScroll: true },
+      attachTo: document.body,
+    });
+    const pageListener = vi.fn();
+    document.addEventListener('touchmove', pageListener);
+    try {
+      const event = new Event('touchmove', { cancelable: true, bubbles: true });
+      wrapper.find('.sn-popup__panel').element.dispatchEvent(event);
+      expect(pageListener).not.toHaveBeenCalled();
+      expect(event.defaultPrevented).toBe(false);
+    } finally {
+      document.removeEventListener('touchmove', pageListener);
+      wrapper.unmount();
+    }
+  });
+
+  it('lets a panel touchmove bubble when lockScroll is off', () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, lockScroll: false },
+      attachTo: document.body,
+    });
+    const pageListener = vi.fn();
+    document.addEventListener('touchmove', pageListener);
+    try {
+      const event = new Event('touchmove', { cancelable: true, bubbles: true });
+      wrapper.find('.sn-popup__panel').element.dispatchEvent(event);
+      expect(pageListener).toHaveBeenCalled();
+    } finally {
+      document.removeEventListener('touchmove', pageListener);
+      wrapper.unmount();
+    }
+  });
+
   it('marks the panel as a modal dialog for assistive tech', () => {
     const wrapper = mount(SnPopup, { props: { modelValue: true } });
     const panel = wrapper.find('.sn-popup__panel');
@@ -307,31 +362,175 @@ describe('sn-popup', () => {
     expect(wrapper.attributes('data-snui-component')).toBe('popup');
   });
 
-  it('maps the top and left anchors to their default slide animations', () => {
-    const top = mount(SnPopup, { props: { modelValue: true, position: 'top' } });
-    expect(top.classes()).toContain('sn-popup--anim-slide-down');
+  it('maps the top and left anchors to their own slide directions', async () => {
+    const top = await mountOpened({ position: 'top' });
+    expect(panelStyle(top)).toContain('translateY(-100%)');
 
-    const left = mount(SnPopup, { props: { modelValue: true, position: 'left' } });
-    expect(left.classes()).toContain('sn-popup--anim-slide-right');
+    const left = await mountOpened({ position: 'left' });
+    expect(panelStyle(left)).toContain('translateX(-100%)');
   });
 
-  it('applies the anim class for every supported transition name', () => {
-    const names = [
-      'fade',
-      'fade-up',
-      'fade-down',
-      'fade-left',
-      'fade-right',
-      'slide-up',
-      'slide-down',
-      'slide-left',
-      'slide-right',
-      'zoom-in',
-      'zoom-out',
-    ] as const;
-    for (const name of names) {
-      const wrapper = mount(SnPopup, { props: { modelValue: true, transition: name } });
-      expect(wrapper.classes()).toContain(`sn-popup--anim-${name}`);
+  it('parks the panel for every supported transition name', async () => {
+    const expected: Record<string, string> = {
+      fade: 'opacity: 0',
+      'fade-up': 'translateY(24rpx)',
+      'fade-down': 'translateY(-24rpx)',
+      'fade-left': 'translateX(24rpx)',
+      'fade-right': 'translateX(-24rpx)',
+      'slide-up': 'translateY(100%)',
+      'slide-down': 'translateY(-100%)',
+      'slide-left': 'translateX(100%)',
+      'slide-right': 'translateX(-100%)',
+      'zoom-in': 'scale(0.8)',
+      'zoom-out': 'scale(1.2)',
+    };
+    for (const [name, parked] of Object.entries(expected)) {
+      const wrapper = await mountOpened({ transition: name });
+      expect(panelStyle(wrapper)).toContain(parked);
+    }
+  });
+
+  it('settles at rest once the enter leg ends', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnPopup, { props: { modelValue: false, duration: 100 } });
+      await wrapper.setProps({ modelValue: true });
+      // enter() paints the parked frame, then flips on the following tick —
+      // the leg timer starts after that second tick.
+      await wrapper.vm.$nextTick();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.classes()).toContain('sn-popup--animating');
+      vi.advanceTimersByTime(100);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.classes()).not.toContain('sn-popup--animating');
+      expect(panelStyle(wrapper)).toContain('opacity: 1');
+      expect(panelStyle(wrapper)).not.toContain('scale(');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe('sn-popup draggable', () => {
+  /** Simulate a grabber drag: start at `from`, move to `to`, release. */
+  async function dragGrabber(
+    wrapper: ReturnType<typeof mount>,
+    from: number,
+    to: number,
+  ): Promise<void> {
+    const grabber = wrapper.find('.sn-popup__grabber');
+    await grabber.trigger('touchstart', { touches: [{ clientY: from }] });
+    await grabber.trigger('touchmove', { touches: [{ clientY: to }] });
+    await grabber.trigger('touchend');
+  }
+
+  it('renders the grabber on bottom sheets by default and honours draggable=false', () => {
+    const bottom = mount(SnPopup, { props: { modelValue: true, position: 'bottom' } });
+    expect(bottom.find('.sn-popup__grabber').exists()).toBe(true);
+    expect(bottom.find('.sn-popup__grabber-bar').attributes('aria-hidden')).toBe('true');
+
+    const off = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: false },
+    });
+    expect(off.find('.sn-popup__grabber').exists()).toBe(false);
+
+    const center = mount(SnPopup, { props: { modelValue: true } });
+    expect(center.find('.sn-popup__grabber').exists()).toBe(false);
+  });
+
+  it('closes when the drag passes the distance threshold', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+    });
+    await dragGrabber(wrapper, 100, 200);
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+    expect(wrapper.emitted('close')).toHaveLength(1);
+    expect(wrapper.emitted('after-leave')).toHaveLength(1);
+    expect(wrapper.find('.sn-popup').exists()).toBe(false);
+  });
+
+  it('closes on a fast fling even under the distance threshold', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(0);
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+      });
+      const grabber = wrapper.find('.sn-popup__grabber');
+      await grabber.trigger('touchstart', { touches: [{ clientY: 0 }] });
+      vi.setSystemTime(50);
+      // 60px over 50ms = 1.2px/ms — a fling, though under the 80px distance.
+      await grabber.trigger('touchmove', { touches: [{ clientY: 60 }] });
+      await grabber.trigger('touchend');
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('springs back without closing under the threshold', async () => {
+    vi.useFakeTimers();
+    try {
+      vi.setSystemTime(0);
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+      });
+      const grabber = wrapper.find('.sn-popup__grabber');
+      await grabber.trigger('touchstart', { touches: [{ clientY: 100 }] });
+      // A slow 40px drag (300ms) — under both the distance and the fling.
+      vi.setSystemTime(300);
+      await grabber.trigger('touchmove', { touches: [{ clientY: 140 }] });
+      await grabber.trigger('touchend');
+      expect(wrapper.emitted('close')).toBeUndefined();
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+      expect(wrapper.find('.sn-popup').exists()).toBe(true);
+      // The settle leg finished instantly (duration=false) — back at rest.
+      expect(wrapper.find('.sn-popup__panel').attributes('style') ?? '').not.toContain(
+        'translateY',
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('keeps the dragged offset while the finger is down', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+    });
+    const grabber = wrapper.find('.sn-popup__grabber');
+    await grabber.trigger('touchstart', { touches: [{ clientY: 0 }] });
+    await grabber.trigger('touchmove', { touches: [{ clientY: 120 }] });
+    expect(wrapper.find('.sn-popup__panel').attributes('style')).toContain('translateY(120px)');
+    await grabber.trigger('touchend');
+  });
+
+  it('does not run a second leave leg when the controlled sync arrives (regression)', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, position: 'bottom', draggable: true, duration: false },
+    });
+    await dragGrabber(wrapper, 0, 200);
+    expect(wrapper.emitted('before-leave')).toHaveLength(1);
+    // The parent applies the close after the drag already finished the leg.
+    await wrapper.setProps({ modelValue: false });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('before-leave')).toHaveLength(1);
+    expect(wrapper.emitted('after-leave')).toHaveLength(1);
+  });
+
+  it('unmounts after the drag-close leg when animated', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, position: 'bottom', draggable: true, duration: 200 },
+      });
+      await dragGrabber(wrapper, 0, 200);
+      expect(wrapper.find('.sn-popup').exists()).toBe(true);
+      vi.advanceTimersByTime(200);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toHaveLength(1);
+      expect(wrapper.find('.sn-popup').exists()).toBe(false);
+    } finally {
+      vi.useRealTimers();
     }
   });
 });

@@ -1,34 +1,158 @@
 <script setup lang="ts">
 // 首页 —— 组件目录（手写页面；目录数据由 scripts/gen-pages.mjs 生成到
 // home-data.ts，含中英双字段）。
-// 版式：页面根节点 sn-paging —— 品牌区（标题 + 风格包/语言/主题按钮）+ 搜索框
-// + 分类 chips 固定在 #top 插槽（不随列表滚动、承担状态栏通栏），双列图标卡
-// 在默认插槽滚动（目录为静态数据，禁用下拉刷新与加载更多；图标卡见
-// home-icons.ts）。
-// 微信小程序：状态栏与胶囊几何由 getCapsuleMetrics() 给出（`--status-bar-height`
-// 在 WXSS 中不存在）——顶部留真实状态栏高度，有胶囊时操作区换行到第二行，
-// 避免与右上角胶囊重叠。
+// 版式：页面根节点 sn-paging —— 品牌区（logo + 标题 + 风格包/语言/主题按钮）
+// + 搜索框 + 分类 chips 固定在 #top 插槽（不随列表滚动、承担状态栏通栏，
+// 头部铺主题色 radial 光斑弥散背景、chips 选中态同取主题色，见 haloStyle /
+// chipActiveStyle），双列图标卡在默认插槽滚动（目录为静态数据，禁用下拉
+// 刷新与加载更多；图标卡见 home-icons.ts）。
+// 微信小程序：`--status-bar-height` 在 WXSS 中不存在，顶部用 sn-navbar
+// （fixed + placeholder + safe-area-inset-top）占出状态栏 + 导航带；品牌行
+// （logo + 标题）以负 margin 拉入导航带与系统胶囊平行，副标题 + 切换按钮
+// 组成下方 meta 行（留在带内会撞胶囊）。H5 / App 不渲染占位，品牌行含副
+// 标题保持原紧凑头部。
 // 分类按分组标签合并（basic / basic-2 同为「基础组件」），点 chip 切换分组；
 // 搜索时跨全部分组平铺结果。
+// 磨砂玻璃：组件卡 / 搜索框 / chips 半透明底 + backdrop blur；浅色底色由
+// inline 绑定提供（MP 页面样式选不到 shell 根的 dark 类，主题差异只能
+// inline，见 cardStyle / searchStyle / chipStyleFor）。
 import { computed, ref, watch } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
-import { Search as SearchIcon, X as CloseIcon } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import SnPopup from '@snui/uni-src/components/sn-popup/sn-popup.vue';
+import {
+  Check as CheckIcon,
+  Search as SearchIcon,
+  X as CloseIcon,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import { getCapsuleMetrics } from '@snui/uni-src/utils/capsule';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { getCapsuleMetrics } from '@snui/uni-src/utils/capsule';
 import { useDemoUi } from '../../state/demo-ui';
 import { HOME_GROUPS } from './home-data';
 import type { DemoHomeComp } from './home-data';
 import { homeIcon } from './home-icons';
 
-const { lang, isDark, stylePack, stylePackLabel, t, toggleLang, toggleTheme, chooseStylePack } =
-  useDemoUi();
+const {
+  lang,
+  isDark,
+  stylePack,
+  stylePackLabel,
+  stylePackOptions,
+  t,
+  toggleLang,
+  toggleTheme,
+  setStylePack,
+  primaryColor,
+} = useDemoUi();
 
-/** 状态栏 / 胶囊几何（H5 全为 0，保持原版式）。 */
-const capsule = getCapsuleMetrics();
-/** #top 状态栏留白：MP 用真实 px（WXSS 没有 `--status-bar-height`）。 */
-const topStyle = { paddingTop: `${capsule.statusBarHeight}px` };
+/* ── 主题色工具：弥散头部 / chips 高亮从 primaryColor 现算字面色（渐变里的
+ * var() 在 MP WXSS 与 uvue 内联样式不可靠，见 demo-ui primaryColor 注） ── */
+
+/** 解析 #rrggbb / #rgb 为 rgb 三元组；非 hex 形态（rgba() 等）返回 null。 */
+function parseHexColor(color: string): [number, number, number] | null {
+  let hex = color.trim().replace('#', '');
+  if (hex.length === 3) {
+    // charAt 而非下标访问：与 uvue 端写法保持一致（两页同步维护）
+    hex =
+      hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
+  }
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+  return [
+    parseInt(hex.slice(0, 2), 16),
+    parseInt(hex.slice(2, 4), 16),
+    parseInt(hex.slice(4, 6), 16),
+  ];
+}
+
+/** 主题色 + alpha → rgba()；非 hex 色原样返回（无透明度，仍可作渐变端点）。 */
+function primaryAlpha(alpha: number): string {
+  const rgb = parseHexColor(primaryColor.value);
+  if (rgb === null) return primaryColor.value;
+  return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+}
+
+/** 主题色向白混合（ratio = 白占比）→ 高光档。 */
+function primaryTint(ratio: number): string {
+  const rgb = parseHexColor(primaryColor.value);
+  if (rgb === null) return primaryColor.value;
+  const r = Math.round(rgb[0] + (255 - rgb[0]) * ratio);
+  const g = Math.round(rgb[1] + (255 - rgb[1]) * ratio);
+  const b = Math.round(rgb[2] + (255 - rgb[2]) * ratio);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/**
+ * 弥散头部：主题色三层 radial 光斑（右上主光斑 + 左上辅光斑 + 顶部弱光斑），
+ * 同色 alpha 逐档衰减到 0 形成弥散过渡；深色下整体提档补偿暗底。
+ */
+function haloBlob(cx: number, cy: number, rx: string, ry: string, alpha: number): string {
+  return (
+    `radial-gradient(${rx} ${ry} at ${cx}% ${cy}%, ` +
+    `${primaryAlpha(alpha)} 0%, ${primaryAlpha(alpha * 0.45)} 40%, ` +
+    `${primaryAlpha(alpha * 0.16)} 62%, ${primaryAlpha(0)} 80%)`
+  );
+}
+
+/** 头部弥散背景（inline 绑定在 .home__top 的 backgroundImage 上）。 */
+const haloStyle = computed<Record<string, string>>(() => {
+  const k = isDark.value ? 1.6 : 1;
+  return {
+    backgroundImage: [
+      haloBlob(88, 0, '110%', '85%', 0.3 * k),
+      haloBlob(6, 2, '85%', '70%', 0.18 * k),
+      haloBlob(48, 0, '55%', '45%', 0.1 * k),
+    ].join(', '),
+  };
+});
+
+/** 分类 chip 选中态：主题色渐变（→ 混白高光）+ 主题色投影。 */
+const chipActiveStyle = computed<Record<string, string>>(() => ({
+  backgroundImage: `linear-gradient(135deg, ${primaryColor.value} 0%, ${primaryTint(0.4)} 100%)`,
+  boxShadow: `0 6rpx 16rpx ${primaryAlpha(0.28)}`,
+}));
+
+/**
+ * 组件卡磨砂玻璃底（浅色）：灰白弥散渐变 + 半透明白，盖在画布与弥散头部
+ * 上呈磨砂质感；深色走 --demo-card-bg 暗玻璃 inline 变量（demo-ui），留空。
+ * MP 页面样式选不到 shell 根的 dark 类，主题差异只能 inline（与 haloStyle 同理）。
+ */
+const cardStyle = computed<Record<string, string>>(() =>
+  isDark.value
+    ? {}
+    : {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        backgroundImage:
+          'linear-gradient(155deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.55) 48%, rgba(238, 243, 250, 0.62) 100%)',
+      },
+);
+
+/** 搜索框磨砂透明底（浅色）；深色 --demo-search-bg 已是半透明，留空。 */
+const searchStyle = computed<Record<string, string>>(() =>
+  isDark.value ? {} : { backgroundColor: 'rgba(255, 255, 255, 0.45)' },
+);
+
+/**
+ * MP 品牌行几何：直接取 sn-navbar 同源的胶囊度量（状态栏高 + 导航带高），
+ * 绝对定位到导航带内、与系统胶囊垂直居中平行。不用「占位高度 + 负 margin」
+ * 推算 —— 那依赖 placeholder 与 88rpx 行高的换算，跨端/跨基库易漂移。
+ * H5 / App 无胶囊：度量全 0，返回空对象（走普通文档流）。
+ */
+const capsuleMetrics = getCapsuleMetrics();
+const mpBarStyle: Record<string, string> =
+  capsuleMetrics.statusBarHeight > 0
+    ? { top: `${capsuleMetrics.statusBarHeight}px`, height: `${capsuleMetrics.navBarHeight}px` }
+    : {};
+
+/**
+ * chip 样式：选中 → 主题色渐变；未选中浅色 → 磨砂透明白（盖在弥散头部上）；
+ * 未选中深色 → --demo-chip-bg 已是半透明，留空。
+ */
+function chipStyleFor(index: number): Record<string, string> {
+  if (index === activeIndex.value) return chipActiveStyle.value;
+  return isDark.value ? {} : { backgroundColor: 'rgba(255, 255, 255, 0.42)' };
+}
 
 interface HomeComp extends DemoHomeComp {
   /** 当前语言下的组件名。 */
@@ -154,6 +278,22 @@ const themeLabel = computed(() =>
   isDark.value ? t('切换到浅色', 'Switch to light') : t('切换到深色', 'Switch to dark'),
 );
 
+/* ── 风格包选择弹层（sn-popup 底部面板；替代 uni.showActionSheet —— 首页
+ * 调色板按钮此前解构到未导出的 chooseStylePack，点击静默失效） ── */
+
+/** 风格包选择弹层可见性。 */
+const showStylePack = ref(false);
+const stylePackTitle = computed(() => t('选择风格包', 'Style pack'));
+
+function openStylePack(): void {
+  showStylePack.value = true;
+}
+
+function pickStylePack(name: string): void {
+  setStylePack(name);
+  showStylePack.value = false;
+}
+
 /* ── sn-paging 数据流：目录是静态数据，查询即时以当前可见全集应答 ── */
 
 /** sn-paging v-model 列表（query 应答 + 搜索/切类的直接同步共同驱动）。 */
@@ -198,22 +338,71 @@ function open(comp: HomeComp): void {
         :load-more-enabled="false"
         @query="onQuery"
       >
-        <!-- 图1区块（品牌 + 切换按钮 + 搜索 + 分类 chips）：固定区，不随列表滚动 -->
+        <!-- 图1区块（品牌 + 切换按钮 + 搜索 + 分类 chips）：固定区，不随列表滚动；
+             弥散头部 = 主题色 radial 光斑随风格包/主题联动（haloStyle） -->
         <template #top>
-          <view class="home__top" :style="topStyle">
-            <view class="home__bar" :class="{ 'home__bar--capsule': capsule.hasCapsule }">
+          <view class="home__top" :style="haloStyle">
+            <!-- 小程序：sn-navbar 占位（状态栏 + 胶囊导航带），品牌区从胶囊下方开始。
+                 H5 / App 不占位，保留原来的紧凑头部。 -->
+            <!-- #ifdef MP -->
+            <SnNavbar
+              fixed
+              placeholder
+              safe-area-inset-top
+              custom-style="background-color: transparent;"
+              :mp-capsule="false"
+            />
+            <!-- #endif -->
+            <view class="home__bar" :style="mpBarStyle">
               <view class="home__brand">
-                <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
-                <text class="home__brand-sub">
-                  {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
-                </text>
+                <!-- 文档站同源 logo（apps/docs/public/logo.webp 转 PNG，MP 兼容） -->
+                <image class="home__brand-logo" src="/static/logo.png" mode="aspectFit" />
+                <view class="home__brand-text">
+                  <text class="home__brand-title">{{ t('snui 组件演示', 'snui Components') }}</text>
+                  <!-- #ifndef MP -->
+                  <text class="home__brand-sub">
+                    {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
+                  </text>
+                  <!-- #endif -->
+                </view>
               </view>
+              <!-- #ifndef MP -->
               <view class="home__actions">
                 <view
                   class="home__btn"
                   role="button"
                   :aria-label="t('切换风格', 'Switch style pack')"
-                  @tap="chooseStylePack"
+                  @tap="openStylePack"
+                >
+                  <SnIcon :icon="PaletteIcon" :size="16" />
+                  <text v-if="stylePack !== 'default'" class="home__btn-text">
+                    {{ stylePackLabel }}
+                  </text>
+                </view>
+                <view class="home__btn" role="button" :aria-label="langLabel" @tap="toggleLang">
+                  <SnIcon :icon="GlobeIcon" :size="16" />
+                  <text class="home__btn-text">{{ lang === 'zh' ? 'EN' : '中' }}</text>
+                </view>
+                <view class="home__btn" role="button" :aria-label="themeLabel" @tap="toggleTheme">
+                  <SnIcon :icon="isDark ? SunIcon : MoonIcon" :size="16" />
+                </view>
+              </view>
+              <!-- #endif -->
+            </view>
+
+            <!-- #ifdef MP -->
+            <!-- MP：品牌行拉入导航带与胶囊平行后，副标题 + 操作按钮单独成行
+                 （操作按钮留在导航带会撞系统胶囊）。 -->
+            <view class="home__meta">
+              <text class="home__brand-sub home__meta-sub">
+                {{ t('真实 uni 运行时 · H5 / 小程序', 'Real uni runtime · H5 / Mini Program') }}
+              </text>
+              <view class="home__actions">
+                <view
+                  class="home__btn"
+                  role="button"
+                  :aria-label="t('切换风格', 'Switch style pack')"
+                  @tap="openStylePack"
                 >
                   <SnIcon :icon="PaletteIcon" :size="16" />
                   <text v-if="stylePack !== 'default'" class="home__btn-text">
@@ -229,9 +418,10 @@ function open(comp: HomeComp): void {
                 </view>
               </view>
             </view>
+            <!-- #endif -->
 
-            <!-- 搜索框 -->
-            <view class="home__search">
+            <!-- 搜索框（磨砂透明） -->
+            <view class="home__search" :style="searchStyle">
               <SnIcon class="home__search-icon" :icon="SearchIcon" :size="16" />
               <input
                 v-model="keyword"
@@ -259,6 +449,7 @@ function open(comp: HomeComp): void {
                   :key="category.id"
                   class="home__chip"
                   :class="{ 'home__chip--active': index === activeIndex }"
+                  :style="chipStyleFor(index)"
                   @tap="pickCategory(index)"
                 >
                   <text class="home__chip-text">{{ category.label }}</text>
@@ -283,6 +474,7 @@ function open(comp: HomeComp): void {
               v-for="comp in list"
               :key="`${comp.group}-${comp.key}`"
               class="home__card"
+              :style="cardStyle"
               @tap="open(comp)"
             >
               <view class="home__card-head">
@@ -310,6 +502,42 @@ function open(comp: HomeComp): void {
           <text class="home__empty-text">{{ t('没有匹配的组件', 'No matching components') }}</text>
         </template>
       </SnPaging>
+
+      <!-- 风格包选择：sn-popup 底部面板（closable + 点遮罩关闭 + 底部安全区） -->
+      <SnPopup
+        v-model="showStylePack"
+        position="bottom"
+        round
+        closable
+        safe-area-inset-bottom
+        :z-index="99"
+      >
+        <view class="home__packs">
+          <text class="home__packs-title">{{ stylePackTitle }}</text>
+          <view
+            v-for="option in stylePackOptions"
+            :key="option.name"
+            class="home__pack"
+            :class="{ 'home__pack--active': option.name === stylePack }"
+            role="button"
+            :aria-label="option.label"
+            @tap="pickStylePack(option.name)"
+          >
+            <view class="home__pack-info">
+              <text class="home__pack-label">{{ option.label }}</text>
+              <text v-if="option.description !== ''" class="home__pack-desc">
+                {{ option.description }}
+              </text>
+            </view>
+            <SnIcon
+              v-if="option.name === stylePack"
+              class="home__pack-check"
+              :icon="CheckIcon"
+              :size="16"
+            />
+          </view>
+        </view>
+      </SnPopup>
     </view>
   </DemoPageShell>
 </template>
@@ -320,30 +548,75 @@ function open(comp: HomeComp): void {
   animation: demo-fade-in 0.7s ease both;
 }
 
-/* ── #top 固定区：状态栏通栏（px 由胶囊几何注入）+ 品牌条 + 搜索 + chips ── */
+/* ── #top 固定区：状态栏通栏 + 品牌条 + 搜索 + chips（不随列表滚动） ──── */
 .home__top {
+  /* relative：MP 品牌行绝对定位以本区为锚（见下方 MP 段） */
+  position: relative;
   padding: 0 24rpx 0;
 }
+
+/* H5 / App 的紧凑头部：状态栏高度走运行时变量；MP 由 sn-navbar 占位。 */
+/* #ifndef MP */
+.home__top {
+  padding-top: var(--status-bar-height, 0px);
+}
+/* #endif */
 
 .home__bar {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  box-sizing: border-box;
-  row-gap: 12rpx;
   /* 页面左右 24rpx 之上再补 8rpx：与旧版全幅壳（32rpx）的品牌位对齐 */
   padding: 32rpx 8rpx 8rpx;
 }
 
-/* 微信小程序胶囊占据导航行右上角：品牌独占第一行，操作区换行到胶囊下方
- * （第二行可回到页面右边缘，不被胶囊宽度截断）。 */
-.home__bar--capsule .home__brand {
-  flex: 1 0 100%;
+/* #ifdef MP */
+/* MP：品牌行绝对定位到导航带内（top / height 由 mpBarStyle 以胶囊度量给出），
+ * 与系统胶囊垂直居中平行；占位元素仍在文档流里占住导航带，副标题 + 切换
+ * 按钮的 meta 行紧随其后（留在带内会撞胶囊）。 */
+.home__bar {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  z-index: 11;
+  padding: 0 8rpx;
 }
 
+.home__meta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 8rpx 0;
+}
+
+.home__meta-sub {
+  flex: 1;
+  overflow: hidden;
+  margin-top: 0;
+  margin-right: 16rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* #endif */
+
 .home__brand {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 0;
+}
+
+/* 文档站同源 logo：330×200 透明底，行高对齐品牌双行文本 */
+.home__brand-logo {
+  width: 92rpx;
+  height: 56rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.home__brand-text {
   display: flex;
   flex-direction: column;
 }
@@ -365,8 +638,6 @@ function open(comp: HomeComp): void {
   flex-direction: row;
   align-items: center;
   gap: 16rpx;
-  /* 换行后贴右（与 space-between 的单行行为一致）。 */
-  margin-left: auto;
 }
 
 .home__btn {
@@ -394,7 +665,7 @@ function open(comp: HomeComp): void {
   font-weight: 600;
 }
 
-/* ── 搜索框 ───────────────────────────────────────────────────────────── */
+/* ── 搜索框（磨砂透明：半透明白 + backdrop blur，盖在弥散头部上） ─────── */
 .home__search {
   display: flex;
   flex-direction: row;
@@ -407,6 +678,8 @@ function open(comp: HomeComp): void {
   background: var(--demo-search-bg);
   border: 1px solid var(--demo-card-border);
   box-shadow: 0 10rpx 30rpx rgba(60, 52, 120, 0.07);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
 }
 
 .home__search-icon {
@@ -437,21 +710,30 @@ function open(comp: HomeComp): void {
 }
 
 /* ── 分类 chips ───────────────────────────────────────────────────────── */
+/* 横滚条布局与 sn-tabs / sn-table 同款：内层 flex + min-width: 100% 让内容
+ * 撑开滚动宽度。不能用 inline-flex（uni-app x 布局引擎不支持，落回 flex 后
+ * 容器恒为视口宽，溢出的 chips 不产生滚动区 → 横向滑不动）。
+ * scroll-view 自身必须显式 flex-direction: row：uni-app x 的内容包装层跟随
+ * 组件的 flex 方向（官方示例同款），列向默认会把内层钳在视口宽；uni-app H5
+ * 的滚动层是块级盒，此声明无副作用。 */
 .home__chips {
   width: 100%;
-  white-space: nowrap;
+  flex-direction: row;
   margin-bottom: 6rpx;
 }
 
 .home__chips-inner {
-  display: inline-flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
+  min-width: 100%;
+  box-sizing: border-box;
   padding: 4rpx 2rpx 10rpx;
 }
 
 .home__chip {
-  display: inline-flex;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   height: 64rpx;
@@ -461,9 +743,10 @@ function open(comp: HomeComp): void {
   background: var(--demo-chip-bg);
   border: 1px solid var(--demo-chip-border);
   color: var(--demo-text);
-  flex-shrink: 0;
+  flex: 0 0 auto;
   transition: opacity 0.15s ease;
-  flex-direction: row;
+  backdrop-filter: blur(16rpx);
+  -webkit-backdrop-filter: blur(16rpx);
 }
 
 .home__chip:active {
@@ -476,10 +759,10 @@ function open(comp: HomeComp): void {
   font-weight: 500;
 }
 
+/* 选中态底色/投影由 inline 主题色渐变承担（chipActiveStyle，随风格包/主题
+ * 联动）；class 只负责描边隐藏与文字反白。 */
 .home__chip--active {
-  background: linear-gradient(135deg, #7c5cfc, #a78bfa);
   border-color: transparent;
-  box-shadow: 0 10rpx 24rpx rgba(124, 92, 252, 0.32);
 }
 
 .home__chip--active .home__chip-text {
@@ -531,6 +814,9 @@ function open(comp: HomeComp): void {
   border: 1px solid var(--demo-card-border);
   box-shadow: var(--demo-card-shadow);
   transition: transform 0.15s ease;
+  /* 磨砂玻璃：浅色底由 inline cardStyle 提供灰白弥散渐变，blur 对画布取景 */
+  backdrop-filter: blur(24rpx);
+  -webkit-backdrop-filter: blur(24rpx);
 }
 
 .home__card:active {
@@ -600,5 +886,62 @@ function open(comp: HomeComp): void {
 .home__foot-text {
   font-size: 22rpx;
   color: var(--demo-text-3);
+}
+
+/* ── 风格包选择弹层（sn-popup 底部面板内容） ──────────────────────────── */
+.home__packs {
+  display: flex;
+  flex-direction: column;
+  padding: 12rpx 12rpx 24rpx;
+}
+
+.home__packs-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--demo-title);
+  padding: 16rpx 20rpx 8rpx;
+}
+
+.home__pack {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+  margin-top: 12rpx;
+  border-radius: 24rpx;
+  background: var(--demo-chip-bg);
+  border: 1px solid var(--demo-chip-border);
+  transition: opacity 0.15s ease;
+}
+
+.home__pack--active {
+  background: var(--demo-icon-bg);
+  border-color: rgba(124, 92, 252, 0.45);
+}
+
+.home__pack-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.home__pack-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--demo-title);
+}
+
+.home__pack-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: var(--demo-text-3);
+}
+
+.home__pack-check {
+  color: #7c5cfc;
+  flex-shrink: 0;
 }
 </style>

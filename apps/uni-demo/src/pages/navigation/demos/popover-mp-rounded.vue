@@ -1,0 +1,59 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover (uni-end) — arrow tip shapes. Per AUI-DOCS-016: imports
+ * the real @snui/uni sn-popover.
+ *
+ * Side-by-side comparison: the default sharp border triangle vs the rounded
+ * square tip (arrowShape="rounded"). Both bubbles open downward into the
+ * reserved spacer.
+ */
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-popover-demo__pair">
+      <SnPopover placement="bottom" content="尖角箭头（默认）" custom-class="sn-popover-demo__cell">
+        <SnButton size="small">尖角</SnButton>
+      </SnPopover>
+      <SnPopover placement="bottom" content="圆角箭头" arrow-shape="rounded" custom-class="sn-popover-demo__cell">
+        <SnButton size="small">圆角</SnButton>
+      </SnPopover>
+    </view>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">arrow-shape：sharp（默认）/ rounded</text>
+    <text class="sn-demo__hint">圆角模式为带圆角的方形箭头，与气泡连为一体；两种模式都跟随气泡底色。</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__pair {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
+}
+/* uni-app x 的 view 默认 overflow: hidden——包装类全链放开（AGENTS.md §103）。 */
+.sn-popover-demo__pair,
+.sn-popover-demo__space {
+  overflow: visible;
+}
+</style>

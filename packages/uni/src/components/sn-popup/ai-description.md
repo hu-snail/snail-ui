@@ -36,6 +36,7 @@ import { SnPopup } from '@snui/uni';
 | `modelValue`          | `boolean`                                                                                                                                                     | `false`    | no       | Visibility (`v-model`).                                                       |
 | `transition`          | `'fade' \| 'fade-up' \| 'fade-down' \| 'fade-left' \| 'fade-right' \| 'slide-up' \| 'slide-down' \| 'slide-left' \| 'slide-right' \| 'zoom-in' \| 'zoom-out'` | `''`       | no       | Animation name; empty derives one from `position`.                            |
 | `closable`            | `boolean`                                                                                                                                                     | `false`    | no       | Show the close button in the panel's top-right corner.                        |
+| `draggable`           | `boolean`                                                                                                                                                     | `true`     | no       | **AUI 追加** — bottom sheets render a grabber bar at the top center by default; dragging it down past the threshold (80px) or flinging it closes the popup. Inert for other positions; set `false` to remove the handle. |
 | `position`            | `'center' \| 'top' \| 'right' \| 'bottom' \| 'left'`                                                                                                          | `'center'` | no       | Panel anchor.                                                                 |
 | `closeOnClickModal`   | `boolean`                                                                                                                                                     | `true`     | no       | Scrim tap closes the popup (`click-modal` fires regardless).                  |
 | `duration`            | `number \| boolean \| Record<string, number>`                                                                                                                 | `300`      | no       | Animation duration; `false` disables, a record sets enter / leave separately. |
@@ -49,6 +50,11 @@ import { SnPopup } from '@snui/uni';
 | `round`               | `boolean`                                                                                                                                                     | `false`    | no       | Rounded corners, adapted to `position`.                                       |
 | `customClass`         | `string`                                                                                                                                                      | `''`       | no       | Custom class for the root node.                                               |
 | `customStyle`         | `string`                                                                                                                                                      | `''`       | no       | Custom inline style for the panel.                                            |
+
+**Animation mechanism:** the enter / leave legs animate an inline `transform` +
+`opacity` through a CSS transition (not keyframes — the uni-app x transformer
+rewrites `animation-name` into an unset CSS-variable indirection, which left
+the sheet mounting with no animation on that pipeline).
 
 **Not implemented (documented divergence):** `root-portal` — uni-app
 miniprogram has no portal host, so a popup inside a transformed ancestor

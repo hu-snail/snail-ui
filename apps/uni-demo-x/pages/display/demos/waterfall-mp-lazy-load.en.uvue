@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/waterfall-mp-lazy-load.en.vue sha256:217f3cc3fecc731f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-waterfall (uni-end) — English shadow of waterfall-mp-lazy-load.
@@ -29,7 +30,7 @@ const photos: Photo[] = [
     <SnWaterfall :columns="2" lazy-load>
       <view v-for="photo in photos" :key="photo.id" class="lazy-card">
         <SnImg
-          :src="`https://picsum.photos/seed/snui-waterfall-lazy-${photo.id}/${photo.width}/${photo.height}`"
+          :src="`https://cdn.uviewui.com/uview/album/${([...String(photo.id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`"
           mode="widthFix"
           width="100%"
         />
@@ -38,8 +39,7 @@ const photos: Photo[] = [
     </SnWaterfall>
     <text class="sn-demo__caption"
       >Container lazy-load on once — nested sn-img inherits it; an image passing its own lazy-load
-      wins</text
-    >
+      wins</text>
   </view>
 </template>
 <style scoped>

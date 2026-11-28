@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-basic.en.vue sha256:e3a5a07b11809849 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-picker-view — Single-column roller: pass a string array as `columns` and tap a row to select it. */
 import SnPickerView from '@snui/uni-x/components/sn-picker-view/sn-picker-view.uvue';

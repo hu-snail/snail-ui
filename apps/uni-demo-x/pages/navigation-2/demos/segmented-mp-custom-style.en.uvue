@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/segmented-mp-custom-style.en.vue sha256:55b8352babe272ee —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-segmented — English shadow of segmented-mp-custom-style.
@@ -33,8 +34,7 @@ const styledValue = ref('month');
     />
 
     <text class="sn-demo__meta"
-      >Both together: customClass adds the frame, customStyle changes the fill</text
-    >
+      >Both together: customClass adds the frame, customStyle changes the fill</text>
     <SnSegmented
       v-model="styledValue"
       :options="options"

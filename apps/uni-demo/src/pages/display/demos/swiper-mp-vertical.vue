@@ -6,9 +6,9 @@
 import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-v1/750/400', text: '竖向第 1 屏' },
-  { value: 'https://picsum.photos/seed/snui-sw-v2/750/400', text: '竖向第 2 屏' },
-  { value: 'https://picsum.photos/seed/snui-sw-v3/750/400', text: '竖向第 3 屏' },
+  { value: 'https://cdn.uviewui.com/uview/album/10.jpg', text: '竖向第 1 屏' },
+  { value: 'https://cdn.uviewui.com/uview/album/1.jpg', text: '竖向第 2 屏' },
+  { value: 'https://cdn.uviewui.com/uview/album/2.jpg', text: '竖向第 3 屏' },
 ];
 </script>
 

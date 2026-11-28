@@ -8,10 +8,10 @@ import { Mail, Plus } from 'lucide-vue-next';
   <div class="sn-demo">
     <SnButton circle type="primary" :icon="Mail" />
     <SnButton circle type="success" :icon="Plus" />
-    <SnButton strong type="primary">Strong primary</SnButton>
-    <SnButton secondary>secondary</SnButton>
-    <SnButton tertiary type="primary">tertiary</SnButton>
-    <SnButton quaternary>quaternary</SnButton>
+    <SnButton strong type="primary">加重阴影按钮</SnButton>
+    <SnButton secondary>次级按钮</SnButton>
+    <SnButton tertiary type="primary">三级按钮</SnButton>
+    <SnButton quaternary>四级按钮</SnButton>
   </div>
 </template>
 

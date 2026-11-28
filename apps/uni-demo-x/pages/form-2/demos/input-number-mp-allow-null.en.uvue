@@ -1,0 +1,19 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.en.vue sha256:22b0cddbd7e2efdf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input-number — nullable input (allowNull): the field may stay empty; placeholder covers it. */
+import SnInputNumber from '@snui/uni-x/components/sn-input-number/sn-input-number.uvue';
+const nullable = ref<string | number>('');
+</script>
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <text class="sn-demo__title">allowNull + placeholder (the field may stay empty)</text>
+    <SnInputNumber v-model="nullable" :min="0" :max="99" allow-null placeholder="May be empty" />
+  </view>
+</template>
+<style scoped>
+.sn-demo__title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: var(--sn-mp-color-text-secondary);
+}
+</style>

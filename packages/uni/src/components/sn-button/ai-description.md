@@ -23,13 +23,14 @@ packages/uni/src/components/sn-button/sn-button.vue
 
 | Name       | Type                                                           | Default     | Description                               |
 | ---------- | -------------------------------------------------------------- | ----------- | ----------------------------------------- |
-| `type`     | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Visual variant.                           |
+| `type`     | `'primary' \| 'default' \| 'success' \| 'info' \| 'warning' \| 'danger'` | `'default'` | Visual variant.                           |
 | `size`     | `'small' \| 'medium' \| 'large'`                               | `'medium'`  | Size preset.                              |
 | `block`    | `boolean`                                                      | `false`     | Full-width layout.                        |
 | `round`    | `boolean`                                                      | `false`     | Pill-shaped.                              |
 | `disabled` | `boolean`                                                      | `false`     | Disabled state.                           |
 | `loading`  | `boolean`                                                      | `false`     | Loading state with spinner.               |
-| `hairline` | `boolean`                                                      | `true`      | Show hairline border (default type only). |
+| `hairline` | `boolean`                                                      | `true`      | Border toggle — `false` strips the stroke on every type; colored types stroke in their semantic hue. |
+| `iconPlacement` | `'left' \| 'right'`                                            | `'left'`    | Icon position relative to the label; `right` flips the row. |
 | `feedback` | `boolean`                                                      | `true`      | Tap feedback (active opacity).            |
 
 ## Events

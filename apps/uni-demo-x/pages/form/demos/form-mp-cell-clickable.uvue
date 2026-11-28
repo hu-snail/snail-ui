@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/form-mp-cell-clickable.vue sha256:00c34443c762078b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-form-item — 可点击行（clickable / isLink）：整行可点并显示箭头。 */
 import SnForm from '@snui/uni-x/components/sn-form/sn-form.uvue';

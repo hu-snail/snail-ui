@@ -80,6 +80,15 @@ import { ChevronRight } from './icons/chevron-right';
 </template>
 ```
 
+## 字体图标（registerFontIcon，AUI 追加）
+
+`registerFontIcon({ prefix, fontFamily, icons, fontUrl })` 注册 name→unicode 映射：
+`name` 以 `<prefix>:<name>` 或裸 name 命中 → 渲染 `<text>` unicode 字面量 +
+`fontFamily`（三端一致，颜色 CSS 继承，不经过 data-URL 光栅化）。字体加载：
+web 注入 `@font-face`；MP / App 端 `uni.loadFontFace({ global: true })`；
+`fontUrl` 缺省 = 字体由宿主样式表提供。未命中的 `name` 回落既有解析链
+（registry → 内置目录 → Provider）。未命中即 null，不抛错。
+
 ## 跨端渲染
 
 | 端                  | 行为                                      |

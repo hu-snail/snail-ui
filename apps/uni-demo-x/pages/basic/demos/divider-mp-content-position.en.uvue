@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/divider-mp-content-position.en.vue sha256:df0307081dbb9332 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-divider (uni-end) — content-position, three steps.
@@ -21,8 +22,7 @@ import SnDivider from '@snui/uni-x/components/sn-divider/sn-divider.uvue';
       <SnDivider content-position="right" margin-size="small" dashed><text>dashed + right</text></SnDivider>
     </view>
     <text class="sn-demo__meta"
-      >contentPosition is independent of dashed / marginSize and stacks with them.</text
-    >
+      >contentPosition is independent of dashed / marginSize and stacks with them.</text>
   </view>
 </template>
 <style scoped>

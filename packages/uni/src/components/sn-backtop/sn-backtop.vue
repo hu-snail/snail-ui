@@ -52,6 +52,7 @@
 import { computed } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { ArrowRight } from '../sn-icon/sn-icon-set';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnBacktop' });
 
@@ -149,14 +150,10 @@ const iconSize = computed(() => ICON_SIZE_TOKEN[props.size]);
  */
 function scrollToTop(): void {
   if (!isVisible.value) return;
-  const uni = (
-    globalThis as {
-      uni?: { pageScrollTo?: (opts: { scrollTop: number; duration: number }) => unknown };
-    }
-  ).uni;
-  if (typeof uni?.pageScrollTo !== 'function') return;
+  const host = resolveUniHost<{ pageScrollTo?: (opts: { scrollTop: number; duration: number }) => unknown }>();
+  if (typeof host?.pageScrollTo !== 'function') return;
   try {
-    uni.pageScrollTo({ scrollTop: 0, duration: props.duration });
+    host.pageScrollTo({ scrollTop: 0, duration: props.duration });
   } catch {
     /* A host that rejects the API must not break the tap handler. */
   }

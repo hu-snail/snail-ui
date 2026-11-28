@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.vue sha256:e094451d5ba15ef7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — 弹层配置（遮罩 / 层级 / 自定义）。
@@ -30,8 +31,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
       >弹层配置：遮罩不关闭（closeOnClickModal=false）、不补安全区、zIndex 提升，customStyle
-      改圆角。</text
-    >
+      改圆角。</text>
     <view class="sn-demo__cards">
       <SnCell
         card

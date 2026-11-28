@@ -7,11 +7,11 @@ import { SnImage } from '@snui/vue-web';
   <div class="demo-row">
     <SnImage
       width="120"
-      src="https://picsum.photos/id/1035/400/300"
+      src="https://cdn.uviewui.com/uview/album/2.jpg"
       preview-disabled
       alt="Preview disabled"
     />
-    <SnImage width="120" src="https://picsum.photos/id/1036/400/300" alt="Previewable" />
+    <SnImage width="120" src="https://cdn.uviewui.com/uview/album/3.jpg" alt="Previewable" />
   </div>
 </template>
 

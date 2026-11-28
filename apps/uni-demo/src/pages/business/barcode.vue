@@ -14,36 +14,50 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'" :desc="'EAN-13 条码渲染'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'条形码'"
+    :title-en="'Barcode'"
+    :desc="'EAN-13 条码渲染'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('条码格式（format）', 'Barcode formats')" badge="format" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('条码格式（format）', 'Barcode formats')"
+          badge="format"
+        />
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('布局方向（layout）', 'Layout direction')" badge="layout" />
+        <DemoModuleHead
+          class="demo-host"
+          :title="t('布局方向（layout）', 'Layout direction')"
+          badge="layout"
+        />
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('状态', 'State')" badge="states" />
+        <DemoModuleHead class="demo-host" :title="t('状态', 'State')" badge="states" />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('样式属性', 'Style props')" badge="style" />
+        <DemoModuleHead class="demo-host" :title="t('样式属性', 'Style props')" badge="style" />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
     </view>
@@ -71,4 +85,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

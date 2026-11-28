@@ -1,3 +1,4 @@
+// gen-x: source packages/templates/src/shared/icons.ts sha256:9577c62ab88a0603 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen
 /**
  * Built-in template icons — framework-neutral SVG path data.
  *

@@ -18,7 +18,7 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--column">
+  <view class="sn-demo sn-demo--column sn-demo--card">
     <text class="sn-demo__label">分组卡片（sn-cell-group card，整组一张卡，行间内嵌分割线）</text>
     <SnCellGroup title="快捷入口" card>
       <SnCell title="扫一扫" :prefix-icon-data="Camera" is-link />
@@ -35,6 +35,12 @@ import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 </template>
 
 <style scoped>
+/* 通栏页里只有卡片形态保留左右外间距：信息行贴边铺满整行，卡片浮在画布上。 */
+.sn-demo--card {
+  padding: 0 var(--sn-mp-spacing-4);
+  box-sizing: border-box;
+}
+
 .sn-demo--column {
   display: flex;
   flex-direction: column;

@@ -3,7 +3,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const immediate = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
@@ -19,16 +18,13 @@ const immediateText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="即时写回"
-        label="immediateChange：滚动即写 v-model，不必确认"
-        :prefix-icon-data="Clock"
-        :value="immediateText"
-        is-link
-        @click="openImmediate = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="即时写回"
+      :prefix-icon-data="Clock"
+      :value="immediateText"
+      is-link
+      @click="openImmediate = true"
+    />
 
     <SnDatetimePicker
       v-model="immediate"

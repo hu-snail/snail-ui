@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-uncheck.en.vue sha256:6f9d0372724afc1c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio — uncheck on re-tap: `allowUncheck` clears the selection back to undefined. */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';

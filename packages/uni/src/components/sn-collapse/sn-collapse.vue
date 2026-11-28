@@ -42,8 +42,9 @@
  *
  * ## Icon colour / size standard
  *
- * Chevron: `--sn-mp-color-text-tertiary` at rest → `--sn-mp-color-action-primary`
- * while open. Title icons: `--sn-mp-color-text-secondary` → action-primary.
+ * Icons keep the same neutral colour in both states — no open-state highlight:
+ * chevrons use `--sn-mp-color-text-tertiary`, title icons use
+ * `--sn-mp-color-text-secondary`. The 180° chevron rotation signals expansion.
  * Geometry: one `--sn-mp-icon-size-*` length per panel (medium by default).
  * Stroke: `--sn-mp-icon-stroke-width` (2) unless an item overrides it.
  *
@@ -312,7 +313,8 @@ const moreIconStyle = computed(() =>
       hover-class="sn-collapse__more--pressed"
       @tap="toggleViewmore"
     >
-      <slot name="more" :expanded="viewmoreExpanded">
+      <slot v-if="useMoreSlot" name="more" :expanded="viewmoreExpanded" />
+      <view v-else class="sn-collapse__more-default">
         <text class="sn-collapse__more-text">{{ viewmoreExpanded ? '收起' : '展开' }}</text>
         <view
           :class="['sn-collapse__more-arrow', { 'sn-collapse__more-arrow--up': viewmoreExpanded }]"
@@ -325,7 +327,7 @@ const moreIconStyle = computed(() =>
             :style="moreIconStyle"
           />
         </view>
-      </slot>
+      </view>
     </view>
   </view>
 </template>
@@ -358,6 +360,14 @@ const moreIconStyle = computed(() =>
   opacity: 0.7;
 }
 
+/* Built-in control (when `useMoreSlot` is off): one flex row, so the wrapper
+   lays out exactly like the bare slot content it replaces. */
+.sn-collapse__more-default {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .sn-collapse__more-text {
   margin-right: var(--sn-mp-spacing-1);
   color: var(--sn-mp-color-action-primary);
@@ -377,6 +387,6 @@ const moreIconStyle = computed(() =>
 }
 
 .sn-collapse__more-chevron {
-  color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-tertiary);
 }
 </style>

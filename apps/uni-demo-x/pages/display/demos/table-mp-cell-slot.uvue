@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/table-mp-cell-slot.vue sha256:8d2dafcbdcc1a321 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-table (uni-end) — 自定义单元格（value 插槽）。

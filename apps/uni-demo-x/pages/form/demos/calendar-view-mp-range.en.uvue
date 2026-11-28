@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-range.en.vue sha256:6dc7b04284e3427e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-calendar-view — `type="daterange"` selects a span; `maxRange` caps it and shows the prompt. */
 import SnCalendarView from '@snui/uni-x/components/sn-calendar-view/sn-calendar-view.uvue';

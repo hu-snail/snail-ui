@@ -45,10 +45,9 @@ const multiText = computed(() => {
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--column">
+  <view class="sn-demo sn-demo--column sn-demo--card">
     <SnCell
       title="单日"
-      label="type=date · 卡片形态的入口行"
       :value="dateText"
       placeholder="未选择"
       :prefix-icon-data="Calendar"
@@ -58,7 +57,6 @@ const multiText = computed(() => {
     />
     <SnCell
       title="日期区间"
-      label="type=daterange · 确认后写回 v-model"
       :value="rangeText"
       placeholder="未选择"
       :prefix-icon-data="Filter"
@@ -68,7 +66,6 @@ const multiText = computed(() => {
     />
     <SnCell
       title="多个日期"
-      label="type=dates · 可多次点选"
       :value="multiText"
       placeholder="未选择"
       :prefix-icon-data="Check"
@@ -114,6 +111,12 @@ const multiText = computed(() => {
 </template>
 
 <style scoped>
+/* 通栏页里只有卡片形态保留左右外间距：cell 入口行贴边，卡片浮在画布上。 */
+.sn-demo--card {
+  padding: 0 var(--sn-mp-spacing-4);
+  box-sizing: border-box;
+}
+
 .sn-demo--column {
   display: flex;
   flex-direction: column;

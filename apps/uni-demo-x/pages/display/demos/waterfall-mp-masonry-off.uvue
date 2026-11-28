@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/waterfall-mp-masonry-off.vue sha256:efe1aa85ab3f1186 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-waterfall (uni-end) — masonry=false 退化为单列垂直堆叠。
@@ -24,7 +25,7 @@ const photos: Photo[] = [
     <SnWaterfall :masonry="false" :row-gap="16">
       <view v-for="photo in photos" :key="photo.id" class="stack-card">
         <SnImg
-          :src="`https://picsum.photos/seed/snui-waterfall-off-${photo.id}/${photo.width}/${photo.height}`"
+          :src="`https://cdn.uviewui.com/uview/album/${([...String(photo.id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`"
           mode="widthFix"
           width="100%"
           :radius="12"
@@ -33,8 +34,7 @@ const photos: Photo[] = [
       </view>
     </SnWaterfall>
     <text class="sn-demo__caption"
-      >masonry=false — 同样的内容退化为单列垂直堆叠（项恢复 margin-bottom）</text
-    >
+      >masonry=false — 同样的内容退化为单列垂直堆叠（项恢复 margin-bottom）</text>
   </view>
 </template>
 <style scoped>

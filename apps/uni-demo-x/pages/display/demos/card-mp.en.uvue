@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/card-mp.en.vue sha256:ab9985bddcf956be —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-card (uni) — live render of the new uni card component
@@ -29,8 +30,7 @@ function handleOk(): void {
       <view class="body">
         <text
           >Record of Yueyang Tower — In the mild spring light and clear air, the waves lie calm; sky
-          and water merge into one boundless expanse of blue.</text
-        >
+          and water merge into one boundless expanse of blue.</text>
       </view>
       <template #footer>
         <SnButton size="small" plain @click="handleOk">

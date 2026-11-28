@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/tag-mp-size.en.vue sha256:88fb287ed3da80fc —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-tag (uni-end) — the five size steps. */
 import SnTag from '@snui/uni-x/components/sn-tag/sn-tag.uvue';

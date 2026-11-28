@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.vue sha256:c76a2b0fa2f70677 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-datetime-picker-view — 时间类型写回（type="time"）：只出时分列并写回 "HH:mm" 字符串。 */
 import SnDatetimePickerView from '@snui/uni-x/components/sn-datetime-picker-view/sn-datetime-picker-view.uvue';

@@ -15,50 +15,62 @@ const { t } = useDemoUi();
 </script>
 
 <template>
-  <DemoPageShell :title-zh="'徽标'" :title-en="'Badge'" :desc="'角标 / 红点提示'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'徽标'"
+    :title-en="'Badge'"
+    :desc="'角标 / 红点提示'"
+    :bg="''"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('自定义', 'Custom')" badge="custom" />
+        <DemoModuleHead class="demo-host" :title="t('自定义', 'Custom')" badge="custom" />
         <view class="module__body">
-          <Demo1 />
-        </view>
-      </view>
-      <view class="module">
-        <DemoModuleHead :title="t('红点（is-dot）', 'Dot badge (`is-dot`)')" badge="dot" />
-        <view class="module__body">
-          <Demo2 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
+          :title="t('红点（is-dot）', 'Dot badge (`is-dot`)')"
+          badge="dot"
+        />
+        <view class="module__body">
+          <Demo2 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <DemoModuleHead
+          class="demo-host"
           :title="
             t('偏移与颜色（top / right / bgColor）', 'Offset & color (`top` / `right` / `bgColor`)')
           "
           badge="offset"
         />
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
         <DemoModuleHead
+          class="demo-host"
           :title="t('形状与描边（shape / border）', 'Shape & border (`shape` / `border`)')"
           badge="shape"
         />
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('可见性', 'Visibility')" badge="visibility" />
+        <DemoModuleHead class="demo-host" :title="t('可见性', 'Visibility')" badge="visibility" />
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
         </view>
       </view>
     </view>
@@ -86,4 +98,15 @@ const { t } = useDemoUi();
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

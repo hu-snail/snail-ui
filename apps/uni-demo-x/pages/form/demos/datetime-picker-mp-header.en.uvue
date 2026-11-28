@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue sha256:28f8eb9494b73277 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-datetime-picker — sheet header contract (cancel left / title centre / confirm right).
@@ -10,7 +11,6 @@
  */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
 import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
-import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 import { Calendar } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const stamp = new Date(2026, 9, 29).getTime();
@@ -37,35 +37,30 @@ const customText = computed(() => textOf(custom.value));
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="With a title"
-        label="title: centred heading, cancel / confirm on the two edges"
-        :prefix-icon-data="Calendar"
-        placeholder="Select"
-        :value="titledText"
-        is-link
-        @click="openTitled = true"
-      />
-      <SnCell
-        title="Without a title"
-        label="no title: confirm stays flush right"
-        :prefix-icon-data="Calendar"
-        placeholder="Select"
-        :value="bareText"
-        is-link
-        @click="openBare = true"
-      />
-      <SnCell
-        title="Custom labels"
-        label="cancelButtonText / confirmButtonText: wording only, layout unchanged"
-        :prefix-icon-data="Calendar"
-        placeholder="Select"
-        :value="customText"
-        is-link
-        @click="openCustom = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="With a title"
+      :prefix-icon-data="Calendar"
+      placeholder="Select"
+      :value="titledText"
+      is-link
+      @click="openTitled = true"
+    />
+    <SnCell
+      title="Without a title"
+      :prefix-icon-data="Calendar"
+      placeholder="Select"
+      :value="bareText"
+      is-link
+      @click="openBare = true"
+    />
+    <SnCell
+      title="Custom labels"
+      :prefix-icon-data="Calendar"
+      placeholder="Select"
+      :value="customText"
+      is-link
+      @click="openCustom = true"
+    />
 
     <SnDatetimePicker
       v-model="titled"

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/rate-mp-color.en.vue sha256:9c7c783b6ce6427d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-rate — rating colors: `activeColor` accepts a per-icon array. */
 import SnRate from '@snui/uni-x/components/sn-rate/sn-rate.uvue';
@@ -10,8 +11,7 @@ const colored = ref<number | null>(3);
       :active-color="['var(--sn-mp-color-feedback-danger)', 'var(--sn-mp-color-feedback-warning)']"
     />
     <text class="sn-demo__meta"
-      >activeColor as an array: one color per icon (red → orange → …)</text
-    >
+      >activeColor as an array: one color per icon (red → orange → …)</text>
   </view>
 </template>
 <style scoped>

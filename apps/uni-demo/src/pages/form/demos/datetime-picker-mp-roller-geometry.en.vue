@@ -3,7 +3,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const min = new Date(2024, 0, 1).getTime();
@@ -22,16 +21,13 @@ const dateText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="Tall rows"
-        label="itemHeight 44 / 6 visible rows, range limited to 2024"
-        :prefix-icon-data="Calendar"
-        :value="dateText"
-        is-link
-        @click="openBig = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Tall rows"
+      :prefix-icon-data="Calendar"
+      :value="dateText"
+      is-link
+      @click="openBig = true"
+    />
 
     <SnDatetimePicker
       v-model="bigRows"

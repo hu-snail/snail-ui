@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/qr-code-mp-dot-type.en.vue sha256:e2e43322b9db85a1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-qr-code (uni-end) — module shapes (`dotType` / `dotScale`).
@@ -14,8 +15,7 @@ import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
       <SnQrCode text="https://snui.dev" :size="130" dot-type="liquid" />
     </view>
     <text class="sn-demo__meta"
-      >dot-type: square / dots / rounded / liquid; dot-scale shrinks the modules.</text
-    >
+      >dot-type: square / dots / rounded / liquid; dot-scale shrinks the modules.</text>
   </view>
 </template>
 <style scoped>

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/text-mp-mode.en.vue sha256:75dba70b01f8ac72 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-text (uni-end) — mode transforms: phone / name / price / date. */
 import SnText from '@snui/uni-x/components/sn-text/sn-text.uvue';

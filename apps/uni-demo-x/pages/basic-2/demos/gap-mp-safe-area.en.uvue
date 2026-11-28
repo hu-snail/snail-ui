@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/gap-mp-safe-area.en.vue sha256:acc8c4ddeacf62b5 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-gap (uni-end) — bottom safe-area adaptation. */
 import SnGap from '@snui/uni-x/components/sn-gap/sn-gap.uvue';

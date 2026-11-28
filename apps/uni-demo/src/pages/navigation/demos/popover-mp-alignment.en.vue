@@ -1,0 +1,61 @@
+<script setup lang="ts">
+/**
+ * Demo: sn-popover (uni-end) — -start / centred / -end alignment. Per
+ * AUI-DOCS-016: imports the real @snui/uni sn-popover.
+ */
+import { ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
+
+const options = ['bottom-start', 'bottom', 'bottom-end'] as const;
+</script>
+
+<template>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-popover-demo__grid">
+      <SnPopover
+        v-for="item in options"
+        :key="item"
+        :placement="item"
+        content="A text hint"
+        custom-class="sn-popover-demo__cell"
+      >
+        <SnButton size="small">{{ item }}</SnButton>
+      </SnPopover>
+    </view>
+
+    <view class="sn-popover-demo__space" />
+
+    <text class="sn-demo__meta">Three alignments on the bottom side</text>
+    <text class="sn-demo__hint">-start flush to the start edge, centred, -end flush to the end edge; the same applies to top / left / right.</text>
+  </view>
+</template>
+
+<style scoped>
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.sn-demo__meta {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
+}
+.sn-popover-demo__grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.sn-popover-demo__space {
+  height: 220rpx;
+}
+/* uni-app x 的 view 默认 overflow: hidden——包装类全链放开（AGENTS.md §103）。 */
+.sn-popover-demo__grid,
+.sn-popover-demo__space {
+  overflow: visible;
+}
+</style>

@@ -31,7 +31,7 @@ const photos: Photo[] = [
     <SnWaterfall :columns="2" lazy-load>
       <view v-for="photo in photos" :key="photo.id" class="lazy-card">
         <SnImg
-          :src="`https://picsum.photos/seed/snui-waterfall-lazy-${photo.id}/${photo.width}/${photo.height}`"
+          :src="`https://cdn.uviewui.com/uview/album/${([...String(photo.id)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 0) % 10) + 1}.jpg`"
           mode="widthFix"
           width="100%"
         />

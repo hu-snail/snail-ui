@@ -11,8 +11,8 @@ import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
 import { Gift, Truck } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 /** 位图图标：与矢量图标共用同一组尺寸档位。 */
-const brandLogo = 'https://picsum.photos/seed/snui-tag-brand/48/48';
-const badgeShot = 'https://picsum.photos/seed/snui-tag-shot/48/48';
+const brandLogo = 'https://cdn.uviewui.com/uview/album/10.jpg';
+const badgeShot = 'https://cdn.uviewui.com/uview/album/1.jpg';
 </script>
 
 <template>

@@ -9,9 +9,9 @@ import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 
 /** 自定义字段名：图片地址在 `url`，标题在 `title`。 */
 const list = [
-  { url: 'https://picsum.photos/seed/snui-sw-d1/750/400', title: '自定义字段 1' },
-  { url: 'https://picsum.photos/seed/snui-sw-d2/750/400', title: '自定义字段 2' },
-  { url: 'https://picsum.photos/seed/snui-sw-d3/750/400', title: '自定义字段 3' },
+  { url: 'https://cdn.uviewui.com/uview/album/3.jpg', title: '自定义字段 1' },
+  { url: 'https://cdn.uviewui.com/uview/album/4.jpg', title: '自定义字段 2' },
+  { url: 'https://cdn.uviewui.com/uview/album/5.jpg', title: '自定义字段 3' },
 ];
 
 const current = ref(0);

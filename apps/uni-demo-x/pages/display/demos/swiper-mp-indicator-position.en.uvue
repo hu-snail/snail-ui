@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-indicator-position.en.vue sha256:a7c0ba6c64bed40d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — indicator-position anchors + minShowNum threshold.
@@ -5,9 +6,9 @@
  */
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  'https://picsum.photos/seed/snui-sw-i1/750/400',
-  'https://picsum.photos/seed/snui-sw-i2/750/400',
-  'https://picsum.photos/seed/snui-sw-i3/750/400',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
+  'https://cdn.uviewui.com/uview/album/7.jpg',
+  'https://cdn.uviewui.com/uview/album/8.jpg',
 ];
 
 const two = list.slice(0, 2);
@@ -25,8 +26,7 @@ const two = list.slice(0, 2);
 
     <SnSwiper :list="two" :height="200" :indicator="{ minShowNum: 3 }" :autoplay="false" />
     <text class="sn-demo__meta"
-      >minShowNum=3 with only 2 slides: the indicator is hidden entirely.</text
-    >
+      >minShowNum=3 with only 2 slides: the indicator is hidden entirely.</text>
   </view>
 </template>
 <style scoped>

@@ -62,6 +62,17 @@
  *   - 离场 key 的高度与池化条目在放置重建时剪除，长生命周期 feed 不会积累
  *     死数据。
  *
+ * ## MP 渲染形态（AUI-UNI-FB-016）
+ *
+ * MP 编译器不支持函数式/动态组件（ADR-0005：sn-table 先例）——本组件模板里
+ * 的 `<ItemNode :node="entry.node">` 编译产物没有对应子组件定义
+ * （`usingComponents` 为空），WXML 引用 `<item-node>` 直接整树丢弃，插槽
+ * 内容在小程序端从未渲染过。修复：MP 用 `#ifdef MP` 切到 CSS multi-column
+ * 降级（`column-count` 原生分列 + `break-inside: avoid`），DOM 顺序即渲染
+ * 顺序，不需要把 VNode 搬进变量；H5 / App 维持 JS 放置（最短列优先、懒加载
+ * 不抖动）。降级差异是显式且登记过的（AGENTS.md §85）：CSS columns 纵向
+ * 填充、不感知条目高度，首列可能先满；无 JS 测量开销。
+ *
  * ## refresh()
  *
  * 增量策略对每项最多测两次，足够自愈；图片解析更晚（占位图 → 真图）的宿主
@@ -104,6 +115,7 @@ import {
   resolveResponsiveColumnCount,
 } from './waterfall-assign';
 import { SN_WATERFALL_KEY, type SnWaterfallContext } from './sn-waterfall-types';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnWaterfall' });
 
@@ -311,7 +323,7 @@ interface UniHost {
 }
 
 function readUniHost(): UniHost | undefined {
-  return (globalThis as { uni?: UniHost }).uni;
+  return resolveUniHost<UniHost>() ?? undefined;
 }
 
 /**
@@ -754,10 +766,21 @@ const rootStyle = computed(() => {
   if (props.customStyle) parts.push(props.customStyle);
   return parts.join('; ');
 });
+
+/**
+ * MP-only: the native CSS multi-column flow that replaces JS placement
+ * (AUI-UNI-FB-016 — function components are not compilable to WXML).
+ * `masonry: false` keeps the single-column stacked form.
+ */
+const cssColumnsStyle = computed(() => {
+  const count = props.masonry ? columnCount.value : 1;
+  return `column-count: ${count}; column-gap: ${formatLength(props.columnGap)}`;
+});
 </script>
 
 <template>
   <view data-snui-component="waterfall" :class="rootClass" :style="rootStyle">
+    <!-- #ifndef MP -->
     <view
       v-for="(column, columnIndex) in resolveColumns(collectEntries())"
       :key="columnIndex"
@@ -772,6 +795,16 @@ const rootStyle = computed(() => {
         <ItemNode :node="entry.node" />
       </view>
     </view>
+    <!-- #endif -->
+    <!-- #ifdef MP -->
+    <!-- MP: the JS-placed branch compiles to an unregistered <item-node>
+         (function components are not compilable to WXML — AUI-UNI-FB-016),
+         so the default slot renders as-is inside a native CSS multi-column
+         flow: DOM order = source order, no VNode capturing. -->
+    <view class="sn-waterfall__css-columns" :style="cssColumnsStyle">
+      <slot />
+    </view>
+    <!-- #endif -->
   </view>
 </template>
 
@@ -796,6 +829,19 @@ const rootStyle = computed(() => {
 /* Masonry mode: a flex row of columns. Items keep their order inside a column
  * and columns only grow at the bottom, so a late image reflows its own column
  * and nothing else. */
+/* MP-only CSS-columns degradation (AUI-UNI-FB-016): items keep their own
+ * flow and the platform splits them across columns. break-inside avoids
+ * slicing a card across two columns. */
+.sn-waterfall__css-columns {
+  column-gap: var(--sn-waterfall-column-gap, 16rpx);
+}
+
+.sn-waterfall__css-columns .sn-waterfall__item {
+  break-inside: avoid;
+  margin-bottom: var(--sn-waterfall-row-gap, 16rpx);
+  width: 100%;
+}
+
 .sn-waterfall--masonry {
   display: flex;
   align-items: flex-start;

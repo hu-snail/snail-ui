@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/dialer-mp-spin.vue sha256:9a70106d857c930d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-dialer (uni-end) — 旋转参数：turns 圈数 / duration 时长。

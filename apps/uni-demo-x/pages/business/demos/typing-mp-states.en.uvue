@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/typing-mp-states.en.vue sha256:3ea2d3ab74069f8c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-typing (uni-end) — States and events: a conversation simulation —
@@ -70,8 +71,7 @@ onBeforeUnmount(() => {
       </view>
     </view>
     <text class="sn-demo__meta"
-      >Reply arrives after 1.8s; the typing bubble holds the slot until then</text
-    >
+      >Reply arrives after 1.8s; the typing bubble holds the slot until then</text>
   </view>
 </template>
 <style scoped>

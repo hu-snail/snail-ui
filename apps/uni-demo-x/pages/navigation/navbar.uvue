@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/navbar.vue sha256:df317dba5d81703f —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— navbar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/navbar-mp-basic.uvue';
@@ -6,6 +7,8 @@ import Demo2 from './demos/navbar-mp-disabled.uvue';
 import Demo3 from './demos/navbar-mp-fixed.uvue';
 import Demo4 from './demos/navbar-mp-safe-area.uvue';
 import Demo5 from './demos/navbar-mp-slots.uvue';
+import Demo6 from './demos/navbar-mp-capsule.uvue';
+import Demo7 from './demos/navbar-mp-mp-capsule.uvue';
 import DemoModuleHead from '../../components/DemoModuleHead.uvue';
 import DemoPageShell from '../../components/DemoPageShell.uvue';
 import { useDemoUi } from '../../state/demo-ui';
@@ -14,50 +17,107 @@ import { useDemoUi } from '../../state/demo-ui';
 const { t } = useDemoUi();
 </script>
 <template>
-  <DemoPageShell :title-zh="'导航栏'" :title-en="'Navbar'" :desc="'页面顶部标题栏'" :bg="''">
+  <DemoPageShell
+    class="demo-host"
+    :title-zh="'导航栏'"
+    :title-en="'Navbar'"
+    :desc="'页面顶部标题栏'"
+    :bg="''"
+    nav-style="native"
+  >
     <view class="page">
       <view class="module">
-        <DemoModuleHead :title="t('基础用法', 'Basic usage')" badge="basic" />
+        <view class="module__head">
+          <DemoModuleHead class="demo-host" :title="t('基础用法', 'Basic usage')" badge="basic" />
+        </view>
         <view class="module__body">
-          <Demo0 />
+          <Demo0 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('胶囊插槽', 'Capsule slot')" badge="capsule-slot" />
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="t('胶囊插槽', 'Capsule slot')"
+            badge="capsule-slot"
+          />
+        </view>
         <view class="module__body">
-          <Demo1 />
+          <Demo1 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="t('禁用侧按钮（left-disabled）', 'Disabled sides (`left-disabled`)')"
-          badge="disabled"
-        />
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="t('禁用侧按钮（left-disabled）', 'Disabled sides (`left-disabled`)')"
+            badge="disabled"
+          />
+        </view>
         <view class="module__body">
-          <Demo2 />
+          <Demo2 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead
-          :title="
-            t('固定定位（fixed / placeholder）', 'Fixed positioning (`fixed` / `placeholder`)')
-          "
-          badge="fixed"
-        />
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="
+              t('固定定位（fixed / placeholder）', 'Fixed positioning (`fixed` / `placeholder`)')
+            "
+            badge="fixed"
+          />
+        </view>
         <view class="module__body">
-          <Demo3 />
+          <Demo3 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('安全区与层级', 'Safe area & stacking')" badge="safe-area" />
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="t('安全区与层级', 'Safe area & stacking')"
+            badge="safe-area"
+          />
+        </view>
         <view class="module__body">
-          <Demo4 />
+          <Demo4 class="demo-host" />
         </view>
       </view>
       <view class="module">
-        <DemoModuleHead :title="t('左右插槽', 'Left & right slots')" badge="slots" />
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="t('左右插槽', 'Left & right slots')"
+            badge="slots"
+          />
+        </view>
         <view class="module__body">
-          <Demo5 />
+          <Demo5 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="t('胶囊样式 / 带搜索栏', 'Capsule style / search bar')"
+            badge="capsule"
+          />
+        </view>
+        <view class="module__body">
+          <Demo6 class="demo-host" />
+        </view>
+      </view>
+      <view class="module">
+        <view class="module__head">
+          <DemoModuleHead
+            class="demo-host"
+            :title="t('微信小程序胶囊适配', 'WeChat mini-program capsule')"
+            badge="mp-capsule"
+          />
+        </view>
+        <view class="module__body">
+          <Demo7 class="demo-host" />
         </view>
       </view>
     </view>
@@ -65,23 +125,38 @@ const { t } = useDemoUi();
 </template>
 <style scoped>
 .page {
-  padding: 24rpx 24rpx 48rpx;
+  padding: 0 0 48rpx;
 }
 
-/* 场景模块：白底圆角卡片（组件规范视觉稿：浅灰渐变画布上的浮起分区卡）。
- * 刻意不设 overflow / transform / backdrop-filter——它们会把 position: fixed
- * 的后代变成卡片坐标系，弹窗类 demo（calendar / popup / dialog …）会被困在
- * 卡片内裁切显示不全；层级感由描边 + 柔影承担。 */
+/* navbar：按参考稿完整展开——场景模块去掉白底 / 圆角 / 描边 / 柔影 /
+ * 内边距，导航栏示例通栏铺满整行；标题行单独留白铺底。刻意不设 overflow /
+ * transform / backdrop-filter——它们会把 position: fixed 的后代变成卡片坐标系。 */
 .module {
   margin-bottom: 24rpx;
-  padding: 32rpx;
-  border-radius: 24rpx;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.module__head {
+  padding: 24rpx 32rpx 16rpx;
   background: var(--demo-card-bg);
-  border: 1px solid var(--demo-card-border);
-  box-shadow: var(--demo-card-shadow);
 }
 
 .module__body {
   padding: 0;
 }
+
+/* #ifdef MP-WEIXIN */
+/* mp 自定义组件外壳节点按内容收缩（inline 语义）：宿主转 block 铺满列宽，
+ * 否则 demo 列宽 = 各宿主 max-content —— 右锚定元素（swipe 操作钮等）不贴
+ * 屏幕右缘、模块徽标行停在内容宽度处（设备实测回归，同 sn-step 的
+ * virtualHost 修复；H5 上不能加 display，会盖掉 demo 根的 flex）。 */
+.demo-host {
+  display: block;
+  width: 100%;
+}
+/* #endif */
 </style>

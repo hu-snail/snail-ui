@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-scroll.en.vue sha256:9b2246ad47fade3b —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tabs — scroll navigation and auto scroll-into-view
@@ -27,8 +28,7 @@ function jumpToLast(): void {
 <template>
   <view class="sn-demo sn-demo--stack">
     <text class="sn-demo__label"
-      >slidable-num=4 with 8 tabs → the strip scrolls and keeps the selection in view</text
-    >
+      >slidable-num=4 with 8 tabs → the strip scrolls and keeps the selection in view</text>
     <SnTabs
       v-model="activeScroll"
       :slidable-num="4"

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/cascader-mp-basic.en.vue sha256:1902be018900a992 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-cascader — Basic usage: drill level by level in static mode; a leaf
@@ -36,8 +37,7 @@ const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >Static mode: drill level by level; tapping a leaf confirms and closes.</text
-    >
+      >Static mode: drill level by level; tapping a leaf confirms and closes.</text>
     <view class="sn-demo__cards">
       <SnCell
         card

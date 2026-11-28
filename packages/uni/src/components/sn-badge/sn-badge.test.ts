@@ -214,6 +214,20 @@ describe('sn-badge', () => {
       expect(rule).toContain('margin-right: 8rpx');
     });
 
+    it('keeps a contentless badge marker inside the root box via host min sizes', () => {
+      // 回归：cell 行尾的纯计数徽标（<sn-badge :value="8" /> 不裹任何内容）
+      // 宿主盒为 0，root 收缩到只剩余量（16×16），32×32 的 marker 一半溢出
+      // root 盒，真机上被裁掉半截。host 的 min 尺寸让 root 在空内容时仍
+      // ≥ marker 盒——「marker 永不出 root 盒」的契约对无内容徽标同样成立。
+      const style = badgeSource.slice(badgeSource.indexOf('<style'));
+      const host = /\.sn-badge__host \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(host).toContain('min-width: 16rpx');
+      expect(host).toContain('min-height: 16rpx');
+      const dotHost = /\.sn-badge--dot \.sn-badge__host \{([^}]*)\}/.exec(style)?.[1] ?? '';
+      expect(dotHost).toContain('min-width: 8rpx');
+      expect(dotHost).toContain('min-height: 8rpx');
+    });
+
     it('anchors the marker at the root corner with no riding transform', () => {
       const style = badgeSource.slice(badgeSource.indexOf('<style'));
       const rule = /\.sn-badge__marker \{([^}]*)\}/.exec(style)?.[1] ?? '';

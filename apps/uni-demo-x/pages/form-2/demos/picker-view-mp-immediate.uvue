@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.vue sha256:38e2a66cf9c60a1c —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-picker-view — 拖动即时回写（immediateChange）。
@@ -18,8 +19,7 @@ function onChange(): void {
   <view class="sn-demo sn-demo--stack">
     <SnPickerView v-model="value" :columns="[seconds]" immediate-change @change="onChange" />
     <text class="sn-demo__meta"
-      >immediateChange：拖动中持续触发 change（已触发 {{ changes }} 次）</text
-    >
+      >immediateChange：拖动中持续触发 change（已触发 {{ changes }} 次）</text>
   </view>
 </template>
 <style scoped>

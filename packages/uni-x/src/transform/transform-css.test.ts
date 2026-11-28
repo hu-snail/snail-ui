@@ -117,6 +117,141 @@ describe('transformCss (component mode)', () => {
     expect(r.issues).toHaveLength(0);
   });
 
+  it('should expand a border-radius shorthand in a descendant rule into per-corner vars', () => {
+    // Bug (real-world, dialog panel): the round+center theme rule declared the
+    // `border-radius` shorthand while the round+bottom rule declared per-corner
+    // longhands. Flattening emitted the shorthand var() followed by four
+    // longhand var()s that no center container defined — per CSS an undefined
+    // var() is invalid at computed-value time (→ initial 0), and the trailing
+    // longhands reset every corner of the shorthand: the dialog rendered square.
+    const css =
+      '.round.center .t {\n' +
+      '  border-radius: var(--sn-mp-radius-xl);\n' +
+      '}\n' +
+      '.round.bottom .t {\n' +
+      '  border-top-left-radius: var(--sn-mp-radius-xl);\n' +
+      '  border-top-right-radius: var(--sn-mp-radius-xl);\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    // The shorthand became per-corner var slots — no shorthand slot remains.
+    expect(r.css).not.toContain('border-radius: var(--snx-');
+    expect(r.css).toContain('--snx-t-border-top-left-radius: var(--sn-mp-radius-xl);');
+    expect(r.css).toContain('--snx-t-border-bottom-right-radius: var(--sn-mp-radius-xl);');
+    expect(r.css).toContain(
+      'border-top-left-radius: var(--snx-t-border-top-left-radius)',
+    );
+    expect(r.css).toContain(
+      'border-bottom-right-radius: var(--snx-t-border-bottom-right-radius)',
+    );
+    expect(r.issues).toHaveLength(0);
+  });
+
+  it('should expand a 4-value border-radius shorthand carrying var() per the TL-TR-BR-BL cycle', () => {
+    // Bug (real-world, sn-input-number round theme): splitTopLevel skipped the
+    // char right after a paren group (the loop's i++ ran past the space that
+    // follows `var(...)`), so `var(--full) 0 0 var(--full)` split into three
+    // parts and the per-corner cycle came out shifted — top-left got the
+    // elliptical `var(--full) 0` and top-right got an invalid 3-value longhand
+    // (`var(--full) var(--full) 0`, dropped by every CSS parser). The round
+    // theme rendered giant clipped corner arcs on uni-app x.
+    const css =
+      '.round .minus {\n' +
+      '  border-radius: var(--sn-mp-radius-full) 0 0 var(--sn-mp-radius-full);\n' +
+      '}\n' +
+      '.round .plus {\n' +
+      '  border-radius: 0 var(--sn-mp-radius-full) var(--sn-mp-radius-full) 0;\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain(
+      '--snx-minus-border-top-left-radius: var(--sn-mp-radius-full);',
+    );
+    expect(r.css).toContain('--snx-minus-border-top-right-radius: 0;');
+    expect(r.css).toContain('--snx-minus-border-bottom-right-radius: 0;');
+    expect(r.css).toContain(
+      '--snx-minus-border-bottom-left-radius: var(--sn-mp-radius-full);',
+    );
+    expect(r.css).toContain('--snx-plus-border-top-left-radius: 0;');
+    expect(r.css).toContain(
+      '--snx-plus-border-top-right-radius: var(--sn-mp-radius-full);',
+    );
+    expect(r.css).toContain('--snx-plus-border-bottom-right-radius: var(--sn-mp-radius-full)');
+    expect(r.css).toContain('--snx-plus-border-bottom-left-radius: 0');
+    // No corner slot may carry a multi-value or elliptical expansion.
+    expect(r.css).not.toMatch(/--snx-(minus|plus)-border-\w+-radius: [^;]+ [^;]+/);
+    expect(r.issues).toHaveLength(0);
+  });
+
+  it('should keep base padding values as flatten fallbacks when a theme overrides padding-bottom', () => {
+    // Bug (real-world, popup safe-area): the position rules declared the
+    // `padding` shorthand and the safe-area rule overrode `padding-bottom` —
+    // the flattened longhand var() came after the shorthand with no fallback,
+    // so every panel without the safe-area class lost its bottom padding
+    // (undefined var → initial 0).
+    const css =
+      '.t {\n' +
+      '  padding: 16rpx;\n' +
+      '}\n' +
+      '.center .t {\n' +
+      '  padding: 40rpx 32rpx;\n' +
+      '}\n' +
+      '.safe .t {\n' +
+      '  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    // The shorthand expanded into four per-side vars on the container (TRBL cycle).
+    expect(r.css).toContain('--snx-t-padding-top: 40rpx;');
+    expect(r.css).toContain('--snx-t-padding-right: 32rpx;');
+    expect(r.css).toContain('--snx-t-padding-bottom: 40rpx;');
+    expect(r.css).toContain('--snx-t-padding-left: 32rpx');
+    // The base longhands carry the shorthand's own values as fallbacks.
+    expect(r.css).toContain('padding-top: var(--snx-t-padding-top, 16rpx);');
+    expect(r.css).toContain('padding-right: var(--snx-t-padding-right, 16rpx);');
+    expect(r.css).toContain('padding-bottom: var(--snx-t-padding-bottom, 16rpx);');
+    expect(r.css).not.toContain('padding: var(--snx-');
+    expect(r.issues).toHaveLength(0);
+  });
+
+  it('should flatten `animation: none` as animation-name so sibling animation longhands survive', () => {
+    // Bug (real-world, popup layers): `.hidden .panel { animation: none }`
+    // flattened to a fallback-less `animation: var(--undefined)` appended after
+    // the panel's own animation longhands — with the hidden class absent the
+    // var() was invalid at computed-value time and reset the whole shorthand,
+    // silencing every popup enter/leave animation on uni-app x.
+    const css =
+      '.anim .p {\n' +
+      '  animation-name: fade;\n' +
+      '}\n' +
+      '.p {\n' +
+      '  animation-duration: 300ms;\n' +
+      '  animation-fill-mode: both;\n' +
+      '}\n' +
+      '.hidden .p {\n' +
+      '  animation: none;\n' +
+      '}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain('--snx-p-animation-name: none');
+    expect(r.css).toContain('animation-name: var(--snx-p-animation-name)');
+    expect(r.css).not.toContain('animation: var(--snx-');
+    expect(r.css).toContain('animation-duration: 300ms;');
+    expect(r.issues).toHaveLength(0);
+  });
+
+  it('should extract the animation name from a full animation shorthand flatten', () => {
+    const css = '.t {\n  color: red;\n}\n.spinning .t {\n  animation: sn-spin 5s linear infinite;\n}\n';
+    const r = transformCss(css, 'component', FILE);
+    expect(r.css).toContain('--snx-t-animation-name: sn-spin');
+    expect(r.css).toContain('animation-name: var(--snx-t-animation-name)');
+    expect(r.css).not.toContain('animation: var(--snx-');
+    expect(r.issues).toHaveLength(0);
+  });
+
+  it('should leave an elliptical border-radius shorthand whole', () => {
+    const r = transformCss('.a .t {\n  border-radius: 16rpx / 32rpx;\n}\n', 'component', FILE);
+    expect(r.css).toContain('--snx-t-border-radius: 16rpx / 32rpx');
+    expect(r.css).toContain('border-radius: var(--snx-t-border-radius)');
+    expect(r.issues).toHaveLength(0);
+  });
+
   it('should merge multiple container rules onto one target var name', () => {
     const css = '.a .b {\n  color: red;\n}\n.c .b {\n  color: green;\n}\n.b {\n  color: blue;\n}\n';
     const r = transformCss(css, 'component', FILE);

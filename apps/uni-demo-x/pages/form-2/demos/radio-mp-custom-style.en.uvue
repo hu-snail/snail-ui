@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/radio-mp-custom-style.en.vue sha256:a7ff5d496a9812b2 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-radio — custom class names & styles: customLabelClass lands on the label node, customClass / customStyle on the root. */
 import SnRadio from '@snui/uni-x/components/sn-radio/sn-radio.uvue';
@@ -10,8 +11,7 @@ const styled = ref<string | number | boolean | undefined>('b');
     <text class="sn-demo__title">customLabelClass</text>
     <SnRadioGroup v-model="labeled">
       <SnRadio value="a" custom-label-class="sn-demo__label"
-        ><text>Label styled through customLabelClass</text></SnRadio
-      >
+        ><text>Label styled through customLabelClass</text></SnRadio>
       <SnRadio value="b"><text>Plain label</text></SnRadio>
     </SnRadioGroup>
 

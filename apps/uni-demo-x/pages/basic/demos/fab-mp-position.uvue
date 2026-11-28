@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/fab-mp-position.vue sha256:39f15d77d5dd9b49 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-fab (uni-end) — 位置预设（四角 + 底边中点）配胶囊动作项。
@@ -48,7 +49,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="left-top"
       direction="down"
       :gap="{ top: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -76,7 +77,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="right-top"
       direction="left"
       :gap="{ top: 16, right: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -108,7 +109,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="left-bottom"
       direction="up"
       :gap="{ bottom: 16, left: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -140,7 +141,7 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
       position="bottom-center"
       direction="up"
       :gap="{ bottom: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view
         class="sn-fab-demo__pill"
@@ -222,8 +223,4 @@ function pick(key: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomCenter', label
   color: var(--sn-mp-color-text-primary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

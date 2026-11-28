@@ -5,7 +5,7 @@ import { SnButton, SnIcon, SnImage } from '@snui/vue-web';
 import { ImageOff, RotateCw } from 'lucide-vue-next';
 
 const BROKEN = '这个地址注定加载失败';
-const GOOD = 'https://picsum.photos/id/1024/400/300';
+const GOOD = 'https://cdn.uviewui.com/uview/album/2.jpg';
 const url = ref(BROKEN);
 
 function reload(): void {

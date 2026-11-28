@@ -72,6 +72,7 @@ import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
 import SnPopup from '../sn-popup/sn-popup.vue';
+import { resolveUniHost } from '../../utils/uni-host';
 import {
   clampZoom,
   dismissOpacity,
@@ -212,8 +213,7 @@ interface UniHost {
 }
 
 function getUni(): UniHost | null {
-  const host = globalThis as { uni?: UniHost };
-  return host.uni ?? null;
+  return resolveUniHost<UniHost>();
 }
 
 /** Viewport in px — touch math needs real pixels; tests fall back to 375×667. */

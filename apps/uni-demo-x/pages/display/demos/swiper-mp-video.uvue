@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-video.vue sha256:2aa561088f1dd105 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — 视频项的降级渲染 + 视频类 props（仅对齐参考 API）。
@@ -12,19 +13,19 @@ import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
   {
     type: 'video' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd1/750/400',
-    poster: 'https://picsum.photos/seed/snui-sw-vd1/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/3.jpg',
+    poster: 'https://cdn.uviewui.com/uview/album/3.jpg',
     text: '视频项 1 · 渲染海报',
   },
   {
     type: 'video' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd2/750/400',
-    poster: 'https://picsum.photos/seed/snui-sw-vd2/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/4.jpg',
+    poster: 'https://cdn.uviewui.com/uview/album/4.jpg',
     text: '视频项 2 · 渲染海报',
   },
   {
     type: 'image' as const,
-    value: 'https://picsum.photos/seed/snui-sw-vd3/750/400',
+    value: 'https://cdn.uviewui.com/uview/album/5.jpg',
     text: '普通图片项',
   },
 ];

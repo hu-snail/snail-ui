@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/barcode-mp-format.en.vue sha256:b53ccc0534de5ccb —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-barcode (uni-end) — Barcode formats: the `format` values.
@@ -16,8 +17,7 @@ import SnBarcode from '@snui/uni-x/components/sn-barcode/sn-barcode.uvue';
       <SnBarcode text="012345678905" format="UPC" :module-width="2" />
     </view>
     <text class="sn-demo__meta"
-      >EAN series auto-computes the check digit; invalid input goes through the error event</text
-    >
+      >EAN series auto-computes the check digit; invalid input goes through the error event</text>
   </view>
 </template>
 <style scoped>

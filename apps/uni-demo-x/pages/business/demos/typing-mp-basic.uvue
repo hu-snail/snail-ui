@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/typing-mp-basic.vue sha256:f8bd6e3997db7838 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-typing (uni-end) — 基础用法：默认文案 + 聊天气泡占位场景。

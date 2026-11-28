@@ -6,7 +6,7 @@
  * roller wiring. No rpx numbers in assertions.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnDatetimePicker from './sn-datetime-picker.vue';
 
@@ -116,7 +116,7 @@ describe('sn-datetime-picker', () => {
       expect(w.emitted('update:modelValue')).toBeUndefined();
       await w.find('.sn-datetime-picker__confirm').trigger('tap');
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
-      expect(new Date(value).getFullYear()).toBe(2020);
+      expect(new Date(value).getFullYear()).toBe(2021);
     });
 
     it('emits confirm with the value', async () => {
@@ -167,7 +167,7 @@ describe('sn-datetime-picker', () => {
       await w.find('.sn-datetime-picker__confirm').trigger('tap');
       await Promise.resolve();
       const value = beforeConfirm.mock.calls[0]?.[0] as number;
-      expect(new Date(value).getFullYear()).toBe(2020);
+      expect(new Date(value).getFullYear()).toBe(2021);
     });
 
     it('emits cancel and closes without writing the model', async () => {
@@ -348,11 +348,12 @@ describe('sn-datetime-picker', () => {
 
     it('emits change alongside the immediate model write', async () => {
       const w = mountPicker({ immediateChange: true });
+      // Render window 2021..2027 → item[0] is 2021.
       await firstColumn(w)?.findAll('.sn-datetime-picker-view__item')[0]?.trigger('tap');
       expect(w.emitted('update:modelValue')).toHaveLength(1);
       expect(w.emitted('change')).toHaveLength(1);
       const change = w.emitted('change')?.[0]?.[0] as { value: number };
-      expect(new Date(change.value).getFullYear()).toBe(2020);
+      expect(new Date(change.value).getFullYear()).toBe(2021);
     });
 
     it('emits open on every reopen', async () => {
@@ -361,6 +362,49 @@ describe('sn-datetime-picker', () => {
       await w.setProps({ visible: false });
       await w.setProps({ visible: true });
       expect(w.emitted('open')).toHaveLength(2);
+    });
+  });
+
+  describe('wheel style + vibrateShort (additive)', () => {
+    // 拖拽断言按设计参考宽度换算（750rpx = 375px，1px = 2rpx）；兄弟套件
+    // 可能改写过 innerWidth，进套件前重钉一次。
+    beforeEach(() => {
+      Object.defineProperty(globalThis, 'innerWidth', { value: 375, configurable: true, writable: true });
+    });
+
+    it('forwards wheel to the roller body', () => {
+      expect(mountPicker().find('.sn-datetime-picker-view').classes()).not.toContain(
+        'sn-datetime-picker-view--wheel',
+      );
+      expect(mountPicker({ wheel: true }).find('.sn-datetime-picker-view').classes()).toContain(
+        'sn-datetime-picker-view--wheel',
+      );
+    });
+
+    it('forwards vibrateShort so sliding ticks the host', async () => {
+      const calls: unknown[] = [];
+      (globalThis as { uni?: unknown }).uni = {
+        vibrateShort: (opts: unknown) => calls.push(opts),
+      };
+      const w = mountPicker({ vibrateShort: true });
+      const column = firstColumn(w)!;
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      expect(calls).toHaveLength(1);
+      delete (globalThis as { uni?: unknown }).uni;
+    });
+
+    it('keeps the roller silent when vibrateShort is off', async () => {
+      const calls: unknown[] = [];
+      (globalThis as { uni?: unknown }).uni = {
+        vibrateShort: (opts: unknown) => calls.push(opts),
+      };
+      const w = mountPicker();
+      const column = firstColumn(w)!;
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      expect(calls).toHaveLength(0);
+      delete (globalThis as { uni?: unknown }).uni;
     });
   });
 });

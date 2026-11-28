@@ -7,8 +7,23 @@
  * lengths it cannot parse.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
+
+// getCapsuleMetrics 在组件模块加载即被调用并缓存返回对象；测试通过共享可变
+// 对象驱动"测量到/未测量到"两条路径（组件持有同一引用，改字段即生效）。
+const capsuleState = vi.hoisted(() => ({
+  statusBarHeight: 0,
+  navBarHeight: 44,
+  capsulePadRight: 0,
+  hasCapsule: false,
+}));
+vi.mock('../../utils/capsule', () => ({
+  getCapsuleMetrics: () => capsuleState,
+}));
+
 import SnNavbar from './sn-navbar.vue';
 
 describe('sn-navbar', () => {
@@ -156,10 +171,9 @@ describe('sn-navbar', () => {
     });
 
     it('mirrors the safe-area box on the placeholder when safeAreaInsetTop is on', () => {
-      const wrapper = mount(
-        SnNavbar,
-        { props: { fixed: true, placeholder: true, safeAreaInsetTop: true } },
-      );
+      const wrapper = mount(SnNavbar, {
+        props: { fixed: true, placeholder: true, safeAreaInsetTop: true },
+      });
       expect(wrapper.find('.sn-navbar__placeholder').classes()).toContain(
         'sn-navbar__placeholder--safe-area',
       );
@@ -168,6 +182,26 @@ describe('sn-navbar', () => {
           .find('.sn-navbar__placeholder')
           .classes(),
       ).not.toContain('sn-navbar__placeholder--safe-area');
+    });
+
+    it('reserves the measured status bar + nav row on the placeholder (MP border-box)', () => {
+      // 全局 box-sizing: border-box 下，`min-height: 88rpx; padding-top: Npx`
+      // 的空占位会塌成 max(88rpx, Npx)——导航行被 padding 吃掉，首屏内容
+      // 顶进 fixed 导航栏下方（AUI-MP-002 回归）。占位必须显式拿
+      // `calc(statusBar + 88rpx)` 总高。
+      capsuleState.statusBarHeight = 47;
+      capsuleState.hasCapsule = true;
+      try {
+        const wrapper = mount(SnNavbar, {
+          props: { fixed: true, placeholder: true, safeAreaInsetTop: true },
+        });
+        expect(wrapper.find('.sn-navbar__placeholder').attributes('style')).toContain(
+          'calc(47px + 88rpx)',
+        );
+      } finally {
+        capsuleState.statusBarHeight = 0;
+        capsuleState.hasCapsule = false;
+      }
     });
 
     it('adds the safe-area class', () => {
@@ -248,6 +282,111 @@ describe('sn-navbar', () => {
     });
   });
 
+  describe('built-in MP capsule (mpCapsule)', () => {
+    afterEach(() => {
+      capsuleState.hasCapsule = false;
+    });
+
+    it('renders the built-in capsule when the MP environment is measured', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(true);
+    });
+
+    it('renders nothing in the capsule zone outside the MP environment', () => {
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+      expect(wrapper.find('.sn-navbar__capsule').exists()).toBe(false);
+    });
+
+    it('yields to a custom #capsule slot', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, {
+        slots: { capsule: '<text class="custom-cap">cap</text>' },
+      });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+      expect(wrapper.find('.custom-cap').exists()).toBe(true);
+    });
+
+    it('yields to left-zone content', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home', leftText: 'Back' } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+    });
+
+    it('stays off when mpCapsule is false', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home', mpCapsule: false } });
+      expect(wrapper.find('.sn-navbar__mp-capsule').exists()).toBe(false);
+    });
+
+    it('names the built-in capsule buttons for assistive tech', () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      const buttons = wrapper.findAll('.sn-navbar__mp-capsule-btn');
+      expect(buttons).toHaveLength(2);
+      expect(buttons[0].attributes('role')).toBe('button');
+      expect(buttons[0].attributes('aria-label')).toBe('Back');
+      expect(buttons[1].attributes('role')).toBe('button');
+      expect(buttons[1].attributes('aria-label')).toBe('Home');
+    });
+
+    it('emits back and navigates back from the built-in back button', async () => {
+      capsuleState.hasCapsule = true;
+      const navigateBack = vi.fn();
+      const host = globalThis as {
+        uni?: { navigateBack: ReturnType<typeof vi.fn> };
+        getCurrentPages?: () => unknown[];
+      };
+      host.uni = { navigateBack };
+      host.getCurrentPages = () => [{ route: 'a' }, { route: 'b' }];
+      try {
+        const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+        await wrapper.find('.sn-navbar__mp-capsule-btn').trigger('tap');
+        expect(wrapper.emitted('back')).toHaveLength(1);
+        expect(navigateBack).toHaveBeenCalledWith({ delta: 1 });
+        // 胶囊不是左侧文案区：不发 click-left。
+        expect(wrapper.emitted('click-left')).toBeUndefined();
+      } finally {
+        delete host.uni;
+        delete host.getCurrentPages;
+      }
+    });
+
+    it('leaves navigation to the host when autoBack is off on the built-in capsule', async () => {
+      capsuleState.hasCapsule = true;
+      const navigateBack = vi.fn();
+      const host = globalThis as { uni?: { navigateBack: ReturnType<typeof vi.fn> } };
+      host.uni = { navigateBack };
+      host.getCurrentPages = () => [{ route: 'a' }, { route: 'b' }];
+      try {
+        const wrapper = mount(SnNavbar, { props: { title: 'Home', autoBack: false } });
+        await wrapper.find('.sn-navbar__mp-capsule-btn').trigger('tap');
+        expect(navigateBack).not.toHaveBeenCalled();
+        expect(wrapper.emitted('back')).toHaveLength(1);
+      } finally {
+        delete host.uni;
+        delete host.getCurrentPages;
+      }
+    });
+
+    it('does not emit back-home when the built-in back button is tapped', async () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      await wrapper.find('.sn-navbar__mp-capsule-btn').trigger('tap');
+      // 返回键 stop 冒泡：容器的 back-home 契约只属于插槽内容。
+      expect(wrapper.emitted('back-home')).toBeUndefined();
+    });
+
+    it('emits back-home once from the built-in home button', async () => {
+      capsuleState.hasCapsule = true;
+      const wrapper = mount(SnNavbar, { props: { title: 'Home' } });
+      const homeButton = wrapper.findAll('.sn-navbar__mp-capsule-btn')[1];
+      await homeButton.trigger('tap');
+      expect(wrapper.emitted('back-home')).toHaveLength(1);
+    });
+  });
+
   describe('state classes', () => {
     it('flags the disabled sides on the root', () => {
       const wrapper = mount(SnNavbar, {
@@ -284,6 +423,115 @@ describe('sn-navbar', () => {
       });
       expect(wrapper.find('.sn-navbar__left').attributes('hover-class')).toBe('none');
       expect(wrapper.find('.sn-navbar__right').attributes('hover-class')).toBe('none');
+    });
+  });
+
+  describe('default back navigation (autoBack)', () => {
+    const host = globalThis as {
+      uni?: { navigateBack: ReturnType<typeof vi.fn>; reLaunch: ReturnType<typeof vi.fn> };
+      getCurrentPages?: () => unknown[];
+    };
+
+    /** 装一个栈深度可控的 uni 宿主，返回两个路由 spy。 */
+    function installRouter(stackSize: number): {
+      navigateBack: ReturnType<typeof vi.fn>;
+      reLaunch: ReturnType<typeof vi.fn>;
+    } {
+      const navigateBack = vi.fn();
+      const reLaunch = vi.fn();
+      host.uni = { navigateBack, reLaunch };
+      host.getCurrentPages = () =>
+        Array.from({ length: stackSize }, (_, index) => ({ route: `page-${index}` }));
+      return { navigateBack, reLaunch };
+    }
+
+    afterEach(() => {
+      delete host.uni;
+      delete host.getCurrentPages;
+    });
+
+    it('pops the page stack through uni.navigateBack when a previous page exists', async () => {
+      const { navigateBack, reLaunch } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).toHaveBeenCalledTimes(1);
+      expect(navigateBack).toHaveBeenCalledWith({ delta: 1 });
+      expect(reLaunch).not.toHaveBeenCalled();
+    });
+
+    it('reLaunches backFallback when the stack has no previous page', async () => {
+      const { navigateBack, reLaunch } = installRouter(1);
+      const wrapper = mount(SnNavbar, {
+        props: { leftArrow: true, backFallback: '/pages/index/index' },
+      });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+      expect(reLaunch).toHaveBeenCalledWith({ url: '/pages/index/index' });
+    });
+
+    it('does not reload or reLaunch when the stack has no previous page and no fallback', async () => {
+      const { navigateBack, reLaunch } = installRouter(1);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+      expect(reLaunch).not.toHaveBeenCalled();
+    });
+
+    it('leaves navigation to the host when autoBack is off', async () => {
+      const { navigateBack, reLaunch } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true, autoBack: false } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+      expect(reLaunch).not.toHaveBeenCalled();
+      expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+
+    it('does not navigate from a left zone without the arrow', async () => {
+      const { navigateBack } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftText: 'Back' } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+    });
+
+    it('does not navigate while leftDisabled', async () => {
+      const { navigateBack } = installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true, leftDisabled: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(navigateBack).not.toHaveBeenCalled();
+    });
+
+    it('still emits click-left / back alongside the default navigation', async () => {
+      installRouter(2);
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(wrapper.emitted('click-left')).toHaveLength(1);
+      expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+
+    it('is inert without a uni host (docs preview / unit env)', async () => {
+      const wrapper = mount(SnNavbar, { props: { leftArrow: true } });
+      await expect(wrapper.find('.sn-navbar__left').trigger('tap')).resolves.toBeUndefined();
+      expect(wrapper.emitted('back')).toHaveLength(1);
+    });
+  });
+
+  describe('H5 hit-testing (stacking order)', () => {
+    it('stacks the side zones above the full-width center container', () => {
+      // 回归（H5 返回键点了没反应）：.sn-navbar__center 是 width:100% 的定位
+      // 元素、DOM 顺序在侧区之后，浏览器会把它整块画在绝对定位的左右按钮
+      // 之上 —— 点击落在标题容器上，onLeftTap 永远不触发（Playwright 报
+      // "covered by .sn-navbar__center"）。happy-dom 不做绘制顺序，只能锁
+      // 源码契约：侧区与胶囊区必须显式抬层。
+      const source = readFileSync(
+        resolve(process.cwd(), 'src/components/sn-navbar/sn-navbar.vue'),
+        'utf8',
+      );
+      for (const selector of ['.sn-navbar__side', '.sn-navbar__capsule']) {
+        const start = source.indexOf(`${selector} {`);
+        expect(start, `${selector} rule missing`).toBeGreaterThan(-1);
+        const body = source.slice(start, source.indexOf('}', start));
+        expect(body).toMatch(/z-index:\s*1;/);
+      }
     });
   });
 });

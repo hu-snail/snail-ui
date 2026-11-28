@@ -4,1140 +4,1211 @@
 
 | 项 | 数量 |
 | --- | --- |
-| .uvue 产出 | 1435 |
+| .uvue 产出 | 1498 |
 | .ts 产出 | 12 |
-| 组件/协同导入 → @snui/uni-x 显式路径 | 2059 |
+| 组件/协同导入 → @snui/uni-x 显式路径 | 2116 |
 | 类型导入 → <comp>-types 实体 | 38 |
 | 模板组件导入映射 | 8 |
-| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 129 |
+| docs 预览钉住规则剥离（.sn-demo-contained 主体） | 123 |
 
 ## App.uvue 专属改写
 
-- static: mirrored 2 asset(s) from apps/uni-demo/src/static
+- static: mirrored 3 asset(s) from apps/uni-demo/src/static
 - App: @dcloudio/uni-app lifecycle import dropped (uvue auto-imports)
 - App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme
 - App: demo-bridge import dropped (docs-iframe only, ADR-0005)
 
 ## vue 导入剥离（uvue 自动导入）
 
-- ../uni-demo/src/components/DemoPageShell.vue: computed
-- ../uni-demo/src/components/DemoPageShell.vue: onMounted
-- ../uni-demo/src/components/DemoPageShell.vue: watch
-- ../uni-demo/src/pages/basic/demos/avatar-mp-basic.en.vue: onBeforeUnmount
-- ../uni-demo/src/pages/basic/demos/avatar-mp-basic.vue: onBeforeUnmount
-- ../uni-demo/src/pages/basic/demos/avatar-mp-fallback.en.vue: onBeforeUnmount
-- ../uni-demo/src/pages/basic/demos/avatar-mp-fallback.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/avatar-mp-fallback.vue: onBeforeUnmount
-- ../uni-demo/src/pages/basic/demos/avatar-mp-fallback.vue: ref
-- ../uni-demo/src/pages/basic/demos/badge-mp-visibility.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/badge-mp-visibility.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-form-type.en.vue: reactive
-- ../uni-demo/src/pages/basic/demos/button-mp-form-type.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-form-type.vue: reactive
-- ../uni-demo/src/pages/basic/demos/button-mp-form-type.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-hairline.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-hairline.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-mp-open-type.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-mp-open-type.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-state.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/button-mp-state.vue: ref
-- ../uni-demo/src/pages/basic/demos/cell-mp-link.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/cell-mp-link.vue: ref
-- ../uni-demo/src/pages/basic/demos/config-provider-mp-dark.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/config-provider-mp-dark.vue: ref
-- ../uni-demo/src/pages/basic/demos/divider-mp-hairline.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/divider-mp-hairline.vue: ref
-- ../uni-demo/src/pages/basic/demos/divider-mp.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/divider-mp.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-basic.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-direction.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-direction.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-drag.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-drag.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-expandable.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-expandable.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-fan.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-fan.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-position.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-position.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.en.vue: onBeforeUnmount
-- ../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.vue: onBeforeUnmount
-- ../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-type.en.vue: ref
-- ../uni-demo/src/pages/basic/demos/fab-mp-type.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.en.vue: computed
-- ../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.vue: computed
-- ../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/icon-mp-iconify.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/icon-mp-iconify.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/resize-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/resize-mp-basic.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/resize-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/resize-mp-custom.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/root-portal-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/root-portal-mp-basic.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/root-portal-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/root-portal-mp-custom.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/tag-mp-closable.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/tag-mp-closable.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/tag-mp-dynamic.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/tag-mp-dynamic.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-basic.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-combined.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-combined.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-destroy.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-destroy.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-duration.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-duration.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-lazy-render.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-lazy-render.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-touch-move.en.vue: ref
-- ../uni-demo/src/pages/basic-2/demos/transition-mp-touch-move.vue: ref
-- ../uni-demo/src/pages/business/demos/barcode-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/business/demos/barcode-mp-basic.vue: ref
-- ../uni-demo/src/pages/business/demos/barcode-mp-states.en.vue: ref
-- ../uni-demo/src/pages/business/demos/barcode-mp-states.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-basic.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-colors.en.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-colors.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-pointer-slot.en.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-pointer-slot.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-size.en.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-size.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-spin.en.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-spin.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-states.en.vue: ref
-- ../uni-demo/src/pages/business/demos/dialer-mp-states.vue: ref
-- ../uni-demo/src/pages/business/demos/liquid-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/business/demos/liquid-mp-basic.vue: ref
-- ../uni-demo/src/pages/business/demos/liquid-mp-states.en.vue: ref
-- ../uni-demo/src/pages/business/demos/liquid-mp-states.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-basic.en.vue: onBeforeUnmount
-- ../uni-demo/src/pages/business/demos/lucky-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-basic.vue: onBeforeUnmount
-- ../uni-demo/src/pages/business/demos/lucky-mp-basic.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-button-slot.en.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-button-slot.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-cell.en.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-cell.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-grid.en.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-grid.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-speed.en.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-speed.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-states.en.vue: ref
-- ../uni-demo/src/pages/business/demos/lucky-mp-states.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-basic.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-cover.en.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-cover.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-ratio.en.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-ratio.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-states.en.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-states.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-title-style.en.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-title-style.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-watermark.en.vue: ref
-- ../uni-demo/src/pages/business/demos/scratchcard-mp-watermark.vue: ref
-- ../uni-demo/src/pages/business/demos/typing-mp-states.en.vue: onBeforeUnmount
-- ../uni-demo/src/pages/business/demos/typing-mp-states.en.vue: ref
-- ../uni-demo/src/pages/business/demos/typing-mp-states.vue: onBeforeUnmount
-- ../uni-demo/src/pages/business/demos/typing-mp-states.vue: ref
-- ../uni-demo/src/pages/display/demos/card-mp.en.vue: ref
-- ../uni-demo/src/pages/display/demos/card-mp.vue: ref
-- ../uni-demo/src/pages/display/demos/count-down-mp-autostart.en.vue: ref
-- ../uni-demo/src/pages/display/demos/count-down-mp-autostart.vue: ref
-- ../uni-demo/src/pages/display/demos/count-down-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/display/demos/count-down-mp-basic.vue: ref
-- ../uni-demo/src/pages/display/demos/count-down-mp-control.en.vue: ref
-- ../uni-demo/src/pages/display/demos/count-down-mp-control.vue: ref
-- ../uni-demo/src/pages/display/demos/count-to-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/display/demos/count-to-mp-basic.vue: ref
-- ../uni-demo/src/pages/display/demos/count-to-mp-control.en.vue: ref
-- ../uni-demo/src/pages/display/demos/count-to-mp-control.vue: ref
-- ../uni-demo/src/pages/display/demos/count-to-mp-easing.en.vue: ref
-- ../uni-demo/src/pages/display/demos/count-to-mp-easing.vue: ref
-- ../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.vue: computed
-- ../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-basic.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-close-behavior.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-close-behavior.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-close-position.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-close-position.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-gestures.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-gestures.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-index.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-index.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-longpress.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-longpress.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-selector.en.vue: ref
-- ../uni-demo/src/pages/display/demos/image-preview-mp-selector.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-export-props.en.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-export-props.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-frame.en.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-frame.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-max-scale.en.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-max-scale.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-ratio.en.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-ratio.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-rotate.en.vue: ref
-- ../uni-demo/src/pages/display/demos/img-cropper-mp-rotate.vue: ref
-- ../uni-demo/src/pages/display/demos/img-mp-state.en.vue: ref
-- ../uni-demo/src/pages/display/demos/img-mp-state.vue: ref
-- ../uni-demo/src/pages/display/demos/qr-code-mp-export.en.vue: ref
-- ../uni-demo/src/pages/display/demos/qr-code-mp-export.vue: ref
-- ../uni-demo/src/pages/display/demos/rich-text-mp-anchor.vue: ref
-- ../uni-demo/src/pages/display/demos/rich-text-mp-empty.vue: ref
-- ../uni-demo/src/pages/display/demos/rich-text-mp-media.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-basic.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-data-keys.en.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-data-keys.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-image-mode.en.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-image-mode.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-playback.en.vue: ref
-- ../uni-demo/src/pages/display/demos/swiper-mp-playback.vue: ref
-- ../uni-demo/src/pages/display/demos/table-mp-sort.en.vue: computed
-- ../uni-demo/src/pages/display/demos/table-mp-sort.en.vue: ref
-- ../uni-demo/src/pages/display/demos/table-mp-sort.vue: computed
-- ../uni-demo/src/pages/display/demos/table-mp-sort.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-basic.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-close-position.en.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-close-position.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-fullscreen.en.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-fullscreen.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-layer.en.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-layer.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-selector.en.vue: ref
-- ../uni-demo/src/pages/display/demos/video-preview-mp-selector.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-action-icons.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-action-icons.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-behavior.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-behavior.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-header.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-header.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-panels.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-panels.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-render.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/action-sheet-mp-render.vue: ref
-- ../uni-demo/src/pages/feedback/demos/circle-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/circle-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback/demos/circle-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/circle-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/feedback/demos/circle-mp-speed.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/circle-mp-speed.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-behavior.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-behavior.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-close-position.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-close-position.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-image-tap.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-image-tap.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-longpress.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/curtain-mp-longpress.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-actions.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-actions.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-custom.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-icon.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-theme.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-vertical.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/dialog-mp-vertical.vue: ref
-- ../uni-demo/src/pages/feedback/demos/empty-mp-slots.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/empty-mp-slots.vue: ref
-- ../uni-demo/src/pages/feedback/demos/floating-panel-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/floating-panel-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback/demos/floating-panel-mp-config.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/floating-panel-mp-config.vue: ref
-- ../uni-demo/src/pages/feedback/demos/floating-panel-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/floating-panel-mp-custom.vue: ref
-- ../uni-demo/src/pages/feedback/demos/loadmore-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback/demos/loadmore-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-closable.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-closable.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-vertical.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-vertical.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notify-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notify-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notify-mp-style.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notify-mp-style.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notify-mp-variant.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/notify-mp-variant.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/overlay-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/overlay-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/overlay-mp-config.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/overlay-mp-config.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-config.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-config.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-position.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-position.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-render.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-render.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-scroll.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/popup-mp-scroll.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/progress-mp-label.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/progress-mp-label.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/skeleton-mp-animation.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/skeleton-mp-animation.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/skeleton-mp-custom-class-forms.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-before-close.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-before-close.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-disabled.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-basic.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-cover.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-cover.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-icon-style.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-icon-style.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-z-index.en.vue: ref
-- ../uni-demo/src/pages/feedback-2/demos/toast-mp-z-index.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-basic.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-card.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-card.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-card.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-card.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-declared-props.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-declared-props.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-formatter.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-formatter.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-formatter.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-formatter.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-header.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-header.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-header.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-header.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-lunar.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-lunar.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-lunar.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-lunar.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-panel.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-panel.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-events.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-events.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-basic.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-first-day-of-week.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-first-day-of-week.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-formatter.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-formatter.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-panel-title.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-panel-title.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-range.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-range.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-range.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-range.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.en.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.vue: computed
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-switch-mode.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-switch-mode.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-time-props.en.vue: ref
-- ../uni-demo/src/pages/form/demos/calendar-view-mp-time-props.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-copy.en.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-copy.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-interaction.en.vue: computed
-- ../uni-demo/src/pages/form/demos/captcha-mp-interaction.en.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-interaction.vue: computed
-- ../uni-demo/src/pages/form/demos/captcha-mp-interaction.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-popup.en.vue: computed
-- ../uni-demo/src/pages/form/demos/captcha-mp-popup.en.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-popup.vue: computed
-- ../uni-demo/src/pages/form/demos/captcha-mp-popup.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-size-tolerance.en.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-size-tolerance.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-verify.en.vue: computed
-- ../uni-demo/src/pages/form/demos/captcha-mp-verify.en.vue: ref
-- ../uni-demo/src/pages/form/demos/captcha-mp-verify.vue: computed
-- ../uni-demo/src/pages/form/demos/captcha-mp-verify.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-basic.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-before-confirm.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-before-confirm.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-card.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-card.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-card.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-card.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-disabled.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-disabled.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-fields.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-fields.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-fields.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-fields.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-indicator.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-indicator.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-indicator.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-indicator.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.en.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.en.vue: ref
-- ../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.vue: computed
-- ../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-card.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-card.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-colors.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-colors.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-group-limits.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-group-limits.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-group-state.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-group-state.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-indicator.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-indicator.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-placement.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-placement.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-standalone.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-standalone.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-toggle-all.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-toggle-all.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-type.en.vue: ref
-- ../uni-demo/src/pages/form/demos/checkbox-mp-type.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-background.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-background.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-error-info.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-error-info.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-gutter.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-gutter.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-mask.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-mask.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-no-border.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-no-border.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-shape.en.vue: ref
-- ../uni-demo/src/pages/form/demos/code-input-mp-shape.vue: ref
-- ../uni-demo/src/pages/form/demos/date-strip-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/date-strip-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form/demos/date-strip-mp-formatter.vue: ref
-- ../uni-demo/src/pages/form/demos/date-strip-mp-lunar.vue: ref
-- ../uni-demo/src/pages/form/demos/date-strip-mp-nav.vue: ref
-- ../uni-demo/src/pages/form/demos/date-strip-mp-range.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-before-confirm.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-before-confirm.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-card.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-card.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-card.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-card.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-header.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-header.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.vue: computed
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-boundary.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-boundary.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-column-formatter.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-column-formatter.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-formatter.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-formatter.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-immediate-change.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-immediate-change.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-keys.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-keys.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-roller-geometry.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-roller-geometry.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-bounds.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-bounds.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.en.vue: ref
-- ../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-asterisk.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-asterisk.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-basic.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-basic.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-cell-border.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-cell-border.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-cell-clickable.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-cell-clickable.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-cell-clickable.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-cell-clickable.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-cell-text.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-cell-text.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-custom.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-custom.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-custom.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-disabled.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-disabled.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-fields.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-fields.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-fields.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-fields.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-form-type.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-form-type.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-form-type.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-form-type.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-guard.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-guard.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-guard.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-guard.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-icon.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-icon.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-label.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-label.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-layout.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-layout.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-message-display.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-message-display.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-message-display.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-message-display.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-reset-submit.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-reset-submit.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-reset-submit.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-reset-submit.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-rules.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-rules.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-rules.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-rules.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-schema.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-schema.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-size.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-size.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-status-icon.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-status-icon.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-status-icon.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-status-icon.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-title-width.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-title-width.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-validate.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-validate.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-validate.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-validate.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-validation-flow.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-validation-flow.en.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-validation-flow.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-validation-flow.vue: ref
-- ../uni-demo/src/pages/form/demos/form-mp-value-align.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/form-mp-value-align.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-align.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-align.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clear-trigger.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clear-trigger.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clearable.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-clearable.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-compact.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-compact.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-composition.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-composition.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-hold.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-hold.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-type.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-confirm-type.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-count.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-count.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-selection.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-selection.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-spacing.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-cursor-spacing.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-enable-native.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-enable-native.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-focus.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-focus.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-inputmode.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-inputmode.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-keyboard-hold.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-keyboard-hold.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-password-toggle.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-password-toggle.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-placeholder.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-placeholder.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-prefix-suffix.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-prefix-suffix.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-sizes.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-sizes.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-slots.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-slots.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-status.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-status.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-types.en.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-types.vue: reactive
-- ../uni-demo/src/pages/form/demos/input-mp-word-limit.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-mp-word-limit.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-allow-null.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-allow-null.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-before-change.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-before-change.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-hooks.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-hooks.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-timing.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-commit-timing.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-controls.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-controls.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-long-press.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-long-press.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-round.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-round.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-step-strictly.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-step-strictly.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme-state.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme-state.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/form/demos/input-number-mp-theme.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-basic.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-car-custom.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-car-custom.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-close-loading.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-close-loading.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-decimal.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-decimal.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-delete-key.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-delete-key.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-idcard.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-idcard.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-labels.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-labels.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-random-order.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-random-order.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-scrim.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-mp-scrim.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-panel-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form/demos/keyboard-panel-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-button-text.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-button-text.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-cascade-confirm.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-cascade-confirm.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-fields.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-fields.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-immediate.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-immediate.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-rows.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-rows.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-sheet.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-mp-sheet.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.vue: ref
-- ../uni-demo/src/pages/form-2/demos/plate-input-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/plate-input-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/plate-input-mp-new-energy.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/plate-input-mp-new-energy.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-card.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-card.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-colors.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-colors.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-disabled-readonly.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-disabled-readonly.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-icon.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-indicator.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-indicator.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-placement.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-placement.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-type.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-type.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-uncheck.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/radio-mp-uncheck.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-clearable.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-clearable.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-css-icon.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-css-icon.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-half.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-half.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-icon.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-readonly.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-readonly.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-space.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/rate-mp-space.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-cancel.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-cancel.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-focus.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-focus.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-maxlength.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-maxlength.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-placeholder-left.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-placeholder-left.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-placeholder-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-placeholder-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-variant.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/search-mp-variant.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-before-confirm.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-before-confirm.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-checked-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-checked-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-chip-size.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-chip-size.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-fields.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-fields.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-filterable.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-filterable.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-loading.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-loading.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-scroll-into-view.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-sheet.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-sheet.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-type-radio.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/select-picker-mp-type-radio.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-export.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/signature-mp-export.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-icons.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-icons.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-tolerance.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slide-verify-mp-tolerance.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-popover.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-popover.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-range.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-range.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-theme.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-vertical.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/slider-mp-vertical.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-basic.vue: computed
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-cycle.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-cycle.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-line.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/sort-button-mp-line.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-color.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-color.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-css-icons.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-css-icons.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-icons.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-icons.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-loading.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-loading.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-shape.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-shape.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-size.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-size.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-text.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/switch-mp-text.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-auto-height.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-auto-height.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clear-trigger.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clear-trigger.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clearable.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-clearable.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-compact.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-compact.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-custom-class.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-custom-class.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-disabled-readonly.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-disabled-readonly.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-error.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-error.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-mp-runtime.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-mp-runtime.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-placeholder.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-placeholder.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-prefix-icon.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-prefix-icon.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-word-limit.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/textarea-mp-word-limit.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-accept.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-accept.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-basic.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-before-hooks.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-before-hooks.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-disabled.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.en.vue: computed
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-events-counter.vue: computed
-- ../uni-demo/src/pages/form-2/demos/upload-mp-image-mode.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-image-mode.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-multiple-source.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-multiple-source.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-request-method.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-request-method.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-status.en.vue: ref
-- ../uni-demo/src/pages/form-2/demos/upload-mp-status.vue: ref
-- ../uni-demo/src/pages/index/index.vue: computed
-- ../uni-demo/src/pages/index/index.vue: ref
-- ../uni-demo/src/pages/index/index.vue: watch
-- ../uni-demo/src/pages/more/demos/paging-mp-app.en.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-app.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/more/demos/paging-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-basic.vue: computed
-- ../uni-demo/src/pages/more/demos/paging-mp-basic.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-popup.en.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-popup.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-scroll.en.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-scroll.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-second-floor.en.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-second-floor.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-states.en.vue: ref
-- ../uni-demo/src/pages/more/demos/paging-mp-states.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-basic.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-range.en.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-range.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-size.en.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-size.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-theme.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-variant.en.vue: ref
-- ../uni-demo/src/pages/more/demos/slider-bar-mp-variant.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-basic.en.vue: nextTick
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-basic.vue: nextTick
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-icon-style.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-icon-style.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-shape.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-shape.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-theme.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-threshold.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/backtop-mp-threshold.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-accordion.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-accordion.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-before-expend.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-before-expend.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-card.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-card.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-icon.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-more-slot.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-more-slot.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-title-slot.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-title-slot.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-viewmore.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/collapse-mp-viewmore.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-direction.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-direction.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-guard.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-guard.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-icon.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-modal.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-modal.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-popup-height.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-popup-height.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-slot.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/drop-menu-mp-slot.vue: ref
-- ../uni-demo/src/pages/navigation/demos/grid-mp-clickable.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/grid-mp-clickable.vue: ref
-- ../uni-demo/src/pages/navigation/demos/grid-mp-kingkong.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/grid-mp-kingkong.vue: ref
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.en.vue: computed
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.vue: computed
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.vue: ref
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-custom.vue: ref
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-scrollto.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/index-bar-mp-scrollto.vue: ref
-- ../uni-demo/src/pages/navigation/demos/navbar-mp-capsule-slot.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/navbar-mp-capsule-slot.vue: ref
-- ../uni-demo/src/pages/navigation/demos/navbar-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/navbar-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-hide-on-one-page.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-hide-on-one-page.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-simple.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-simple.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-slots.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-slots.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-variant.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/pagination-mp-variant.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-content-slot.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-content-slot.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-height.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-icon-class.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-icon-class.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-menu.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-menu.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-placement.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/navigation/demos/popover-mp-theme.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-custom-style.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-custom-style.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-theme.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-theme.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-value-alias.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-value-alias.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-value.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-value.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-vibrate.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/segmented-mp-vibrate.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-badge.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-badge.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.en.vue: computed
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.vue: computed
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-guard.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-guard.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-icon.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.en.vue: computed
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.en.vue: nextTick
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.vue: computed
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.vue: nextTick
-- ../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/steps-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/steps-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.en.vue: computed
-- ../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.vue: computed
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-animate.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-animate.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-badge.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-badge.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-disabled.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-disabled.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-icon.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-icon.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-line.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-line.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-paging.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-paging.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-scroll.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-scroll.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-sticky.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-sticky.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-swiper.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-swiper.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-type.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tabs-mp-type.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-arrow.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-arrow.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-close.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-close.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-content.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-content.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-basic.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-basic.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-custom.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-custom.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-mask.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-mask.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-panel-slot.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-panel-slot.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-z-index.en.vue: ref
-- ../uni-demo/src/pages/navigation-2/demos/tour-mp-z-index.vue: ref
-- ../uni-demo/src/state/demo-ui.ts: computed
-- ../uni-demo/src/state/demo-ui.ts: ref
-- ../../packages/templates/src/uni/sn-ai-chat.vue: computed
-- ../../packages/templates/src/uni/sn-ai-chat.vue: onBeforeUnmount
-- ../../packages/templates/src/uni/sn-ai-chat.vue: ref
-- ../../packages/templates/src/uni/sn-ai-chat.vue: watch
-- ../../packages/templates/src/uni/sn-ai-message.vue: computed
-- ../../packages/templates/src/uni/sn-ai-message.vue: ref
+- ../../uni-demo/src/components/DemoPageShell.vue: computed
+- ../../uni-demo/src/components/DemoPageShell.vue: onMounted
+- ../../uni-demo/src/components/DemoPageShell.vue: watch
+- ../../uni-demo/src/pages/basic/demos/avatar-mp-basic.en.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/basic/demos/avatar-mp-basic.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/basic/demos/avatar-mp-fallback.en.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/basic/demos/avatar-mp-fallback.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/avatar-mp-fallback.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/basic/demos/avatar-mp-fallback.vue: ref
+- ../../uni-demo/src/pages/basic/demos/badge-mp-visibility.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/badge-mp-visibility.vue: ref
+- ../../uni-demo/src/pages/basic/demos/button-mp-loading.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/button-mp-loading.vue: ref
+- ../../uni-demo/src/pages/basic/demos/cell-mp-link.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/cell-mp-link.vue: ref
+- ../../uni-demo/src/pages/basic/demos/config-provider-mp-dark.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/config-provider-mp-dark.vue: ref
+- ../../uni-demo/src/pages/basic/demos/divider-mp-hairline.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/divider-mp-hairline.vue: ref
+- ../../uni-demo/src/pages/basic/demos/divider-mp.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/divider-mp.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-basic.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-direction.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-direction.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-drag.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-drag.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-expandable.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-expandable.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-fan.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-fan.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-position.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-position.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.en.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/basic/demos/fab-mp-trigger-icons.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-type.en.vue: ref
+- ../../uni-demo/src/pages/basic/demos/fab-mp-type.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.en.vue: computed
+- ../../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.vue: computed
+- ../../uni-demo/src/pages/basic-2/demos/icon-mp-gallery.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/icon-mp-iconify.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/icon-mp-iconify.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/resize-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/resize-mp-basic.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/resize-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/resize-mp-custom.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/root-portal-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/root-portal-mp-basic.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/root-portal-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/root-portal-mp-custom.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/tag-mp-closable.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/tag-mp-closable.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/tag-mp-dynamic.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/tag-mp-dynamic.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-basic.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-combined.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-combined.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-custom-class.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-custom-class.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-destroy.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-destroy.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-duration.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-duration.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-lazy-render.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-lazy-render.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-touch-move.en.vue: ref
+- ../../uni-demo/src/pages/basic-2/demos/transition-mp-touch-move.vue: ref
+- ../../uni-demo/src/pages/business/demos/barcode-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/barcode-mp-basic.vue: ref
+- ../../uni-demo/src/pages/business/demos/barcode-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/barcode-mp-states.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-basic.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-colors.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-colors.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-pointer-slot.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-pointer-slot.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-size.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-size.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-spin.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-spin.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/dialer-mp-states.vue: ref
+- ../../uni-demo/src/pages/business/demos/liquid-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/liquid-mp-basic.vue: ref
+- ../../uni-demo/src/pages/business/demos/liquid-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/liquid-mp-states.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-basic.en.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/business/demos/lucky-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-basic.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/business/demos/lucky-mp-basic.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-button-slot.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-button-slot.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-cell.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-cell.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-grid.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-grid.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-speed.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-speed.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/lucky-mp-states.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-basic.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-cover.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-cover.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-ratio.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-ratio.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-states.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-title-style.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-title-style.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-watermark.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/scratchcard-mp-watermark.vue: ref
+- ../../uni-demo/src/pages/business/demos/typing-mp-states.en.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/business/demos/typing-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/business/demos/typing-mp-states.vue: onBeforeUnmount
+- ../../uni-demo/src/pages/business/demos/typing-mp-states.vue: ref
+- ../../uni-demo/src/pages/display/demos/card-mp.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/card-mp.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-down-mp-autostart.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-down-mp-autostart.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-down-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-down-mp-basic.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-down-mp-control.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-down-mp-control.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-to-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-to-mp-basic.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-to-mp-control.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-to-mp-control.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-to-mp-easing.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/count-to-mp-easing.vue: ref
+- ../../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.vue: computed
+- ../../uni-demo/src/pages/display/demos/fit-swiper-mp-basic.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-basic.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-close-behavior.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-close-behavior.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-close-position.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-close-position.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-gestures.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-gestures.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-index.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-index.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-longpress.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-longpress.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-selector.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/image-preview-mp-selector.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-export-props.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-export-props.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-frame.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-frame.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-max-scale.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-max-scale.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-ratio.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-ratio.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-rotate.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-cropper-mp-rotate.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-mp-state.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/img-mp-state.vue: ref
+- ../../uni-demo/src/pages/display/demos/qr-code-mp-color.en.vue: computed
+- ../../uni-demo/src/pages/display/demos/qr-code-mp-color.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/qr-code-mp-color.vue: computed
+- ../../uni-demo/src/pages/display/demos/qr-code-mp-color.vue: ref
+- ../../uni-demo/src/pages/display/demos/qr-code-mp-export.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/qr-code-mp-export.vue: ref
+- ../../uni-demo/src/pages/display/demos/rich-text-mp-anchor.vue: ref
+- ../../uni-demo/src/pages/display/demos/rich-text-mp-empty.vue: ref
+- ../../uni-demo/src/pages/display/demos/rich-text-mp-media.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-basic.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-data-keys.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-data-keys.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-image-mode.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-image-mode.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-playback.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/swiper-mp-playback.vue: ref
+- ../../uni-demo/src/pages/display/demos/table-mp-sort.en.vue: computed
+- ../../uni-demo/src/pages/display/demos/table-mp-sort.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/table-mp-sort.vue: computed
+- ../../uni-demo/src/pages/display/demos/table-mp-sort.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-basic.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-close-position.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-close-position.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-fullscreen.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-fullscreen.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-layer.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-layer.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-selector.en.vue: ref
+- ../../uni-demo/src/pages/display/demos/video-preview-mp-selector.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-action-icons.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-action-icons.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-behavior.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-behavior.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-header.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-header.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-panels.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-panels.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-render.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/action-sheet-mp-render.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/circle-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/circle-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/circle-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/circle-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/circle-mp-speed.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/circle-mp-speed.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-behavior.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-behavior.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-close-position.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-close-position.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-image-tap.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-image-tap.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-longpress.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/curtain-mp-longpress.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-actions.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-actions.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-custom.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-icon.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-theme.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-vertical.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/dialog-mp-vertical.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/empty-mp-slots.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/empty-mp-slots.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/floating-panel-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/floating-panel-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/floating-panel-mp-config.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/floating-panel-mp-config.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/floating-panel-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/floating-panel-mp-custom.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/loadmore-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback/demos/loadmore-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-closable.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-closable.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-vertical.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notice-bar-mp-vertical.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notify-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notify-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notify-mp-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notify-mp-style.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notify-mp-variant.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/notify-mp-variant.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/overlay-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/overlay-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/overlay-mp-config.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/overlay-mp-config.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-config.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-config.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-position.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-position.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-render.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-render.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-scroll.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/popup-mp-scroll.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/progress-mp-label.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/progress-mp-label.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/skeleton-mp-animation.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/skeleton-mp-animation.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/skeleton-mp-custom-class-forms.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/skeleton-mp-custom-class-forms.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-before-close.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-before-close.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-both-sides.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.en.vue: computed
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.vue: computed
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-card.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-cell-group.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-cell-group.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/swipe-action-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-basic.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-cover.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-cover.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon-style.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon-style.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.en.vue: computed
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue: computed
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-icon.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-z-index.en.vue: ref
+- ../../uni-demo/src/pages/feedback-2/demos/toast-mp-z-index.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-basic.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-card.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-card.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-card.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-declared-props.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-declared-props.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-first-day-of-week.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-footer.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-footer.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-footer.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-footer.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-formatter.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-formatter.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-formatter.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-formatter.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-header.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-header.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-header.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-header.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-immediate-change.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-lunar.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-lunar.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-lunar.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-lunar.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-panel.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-panel.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-panel.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-range-constraints.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-sheet-chrome.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-events.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-events.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-mp-shortcuts-range.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-basic.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-default-time.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-first-day-of-week.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-first-day-of-week.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-formatter.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-formatter.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-panel-title.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-panel-title.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-range.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-range.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-range.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-range.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-same-day.vue: computed
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-switch-mode.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-switch-mode.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-time-props.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/calendar-view-mp-time-props.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-copy.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-copy.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-interaction.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/captcha-mp-interaction.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-interaction.vue: computed
+- ../../uni-demo/src/pages/form/demos/captcha-mp-interaction.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-popup.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/captcha-mp-popup.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-popup.vue: computed
+- ../../uni-demo/src/pages/form/demos/captcha-mp-popup.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-size-tolerance.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-size-tolerance.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-verify.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/captcha-mp-verify.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/captcha-mp-verify.vue: computed
+- ../../uni-demo/src/pages/form/demos/captcha-mp-verify.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-basic.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-before-confirm.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-before-confirm.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-card.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-card.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-card.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-disabled.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-disabled.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-fields.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-fields.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-fields.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-fields.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-indicator.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-indicator.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-indicator.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-indicator.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-lazy-load.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-sheet-chrome.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.vue: computed
+- ../../uni-demo/src/pages/form/demos/cascader-mp-strict-lazy.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-card.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-colors.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-colors.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-group-limits.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-group-limits.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-group-state.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-group-state.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-indicator.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-indicator.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-placement.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-placement.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-standalone.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-standalone.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-toggle-all.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-toggle-all.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-type.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/checkbox-mp-type.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-background.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-background.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-error-info.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-error-info.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-gutter.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-gutter.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-mask.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-mask.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-no-border.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-no-border.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-shape.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/code-input-mp-shape.vue: ref
+- ../../uni-demo/src/pages/form/demos/date-strip-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/date-strip-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form/demos/date-strip-mp-formatter.vue: ref
+- ../../uni-demo/src/pages/form/demos/date-strip-mp-lunar.vue: ref
+- ../../uni-demo/src/pages/form/demos/date-strip-mp-nav.vue: ref
+- ../../uni-demo/src/pages/form/demos/date-strip-mp-range.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-before-confirm.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-before-confirm.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-card.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-card.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-card.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-column-format.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-header.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-header.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-header.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-immediate-change.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-lunar.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-roller-geometry.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-sheet-chrome.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-time-bounds.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-time-type.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-mp-wheel.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-basic.vue: computed
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-boundary.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-boundary.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-column-formatter.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-column-formatter.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-formatter.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-formatter.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-immediate-change.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-immediate-change.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-keys.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-keys.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-roller-geometry.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-roller-geometry.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-bounds.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-bounds.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-time-type.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-wheel.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/datetime-picker-view-mp-wheel.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-asterisk.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-asterisk.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-basic.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-basic.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-border.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-border.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-clickable.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-clickable.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-clickable.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-clickable.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-text.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-cell-text.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-custom.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-custom.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-custom.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-disabled.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-disabled.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-fields.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-fields.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-fields.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-fields.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-form-type.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-form-type.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-form-type.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-form-type.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-guard.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-guard.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-guard.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-guard.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-icon.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-icon.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-label.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-label.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-layout.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-layout.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-message-display.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-message-display.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-message-display.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-message-display.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-reset-submit.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-reset-submit.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-reset-submit.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-reset-submit.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-rules.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-rules.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-rules.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-rules.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-schema.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-schema.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-size.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-size.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-status-icon.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-status-icon.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-status-icon.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-status-icon.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-title-width.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-title-width.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-validate.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-validate.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-validate.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-validate.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-validation-flow.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-validation-flow.en.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-validation-flow.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-validation-flow.vue: ref
+- ../../uni-demo/src/pages/form/demos/form-mp-value-align.en.vue: reactive
+- ../../uni-demo/src/pages/form/demos/form-mp-value-align.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-align.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-align.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-clear-trigger.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-clear-trigger.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-clearable.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-clearable.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-compact.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-compact.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-composition.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-composition.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-confirm-hold.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-confirm-hold.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-confirm-type.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-confirm-type.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-count.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-count.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-cursor-selection.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-cursor-selection.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-cursor-spacing.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-cursor-spacing.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-custom-class.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-custom-class.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-enable-native.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-enable-native.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-focus.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-focus.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-inputmode.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-inputmode.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-keyboard-hold.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-keyboard-hold.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-password-toggle.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-password-toggle.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-placeholder.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-placeholder.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-prefix-suffix.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-prefix-suffix.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-sizes.en.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-sizes.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-slots.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-slots.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-status.en.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-status.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-types.en.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-types.vue: reactive
+- ../../uni-demo/src/pages/form-2/demos/input-mp-word-limit.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-mp-word-limit.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-allow-null.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-animation.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-animation.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-before-change.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-before-change.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-commit-hooks.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-commit-hooks.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-commit-timing.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-commit-timing.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-controls.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-controls.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-custom-class.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-custom-class.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-long-press.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-long-press.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-round.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-round.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-step-strictly.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-step-strictly.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-theme-state.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-theme-state.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/input-number-mp-theme.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-car-custom.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-car-custom.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-close-loading.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-close-loading.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-decimal.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-decimal.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-delete-key.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-delete-key.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-idcard.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-idcard.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-labels.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-labels.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-random-order.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-random-order.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-scrim.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-mp-scrim.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-panel-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/keyboard-panel-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-button-text.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-button-text.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-cascade-confirm.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-cascade-confirm.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-fields.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-fields.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-immediate.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-immediate.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-rows.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-rows.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-sheet.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-sheet.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-wheel.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-mp-wheel.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band-dots.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band-dots.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band-mode.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band-mode.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band-soft.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band-soft.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-band.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-cascade.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-icons.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-icons.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-immediate.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-keys.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-rich.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-rich.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-rows.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-slots.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-slots.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-wheel.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/picker-view-mp-wheel.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/plate-input-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/plate-input-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/plate-input-mp-new-energy.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/plate-input-mp-new-energy.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-card.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-colors.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-colors.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-disabled-readonly.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-disabled-readonly.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-icon.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-indicator.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-indicator.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-placement.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-placement.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-type.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-type.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-uncheck.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/radio-mp-uncheck.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-clearable.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-clearable.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-color.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-color.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-css-icon.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-css-icon.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-half.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-half.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-icon.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-readonly.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-readonly.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-space.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/rate-mp-space.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-cancel.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-cancel.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-card.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-focus.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-focus.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-maxlength.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-maxlength.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-placeholder-left.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-placeholder-left.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-placeholder-style.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-placeholder-style.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-variant.en.vue: ref
+- ../../uni-demo/src/pages/form-2/demos/search-mp-variant.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-before-confirm.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-before-confirm.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-checked-color.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-checked-color.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-chip-size.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-chip-size.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-fields.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-fields.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-filterable.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-filterable.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-loading.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-loading.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-scroll-into-view.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-sheet.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-sheet.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-type-radio.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/select-picker-mp-type-radio.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/signature-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/signature-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/signature-mp-export.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/signature-mp-export.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-icons.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-icons.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-tolerance.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slide-verify-mp-tolerance.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-color.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-color.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-popover.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-popover.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-range.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-range.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-theme.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-vertical.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/slider-mp-vertical.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-basic.vue: computed
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-cycle.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-cycle.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-line.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/sort-button-mp-line.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-color.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-color.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-css-icons.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-css-icons.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-icons.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-icons.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-loading.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-loading.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-shape.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-shape.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-size.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-size.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-text.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/switch-mp-text.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-auto-height.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-auto-height.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-clear-trigger.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-clear-trigger.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-clearable.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-clearable.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-compact.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-compact.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-custom-class.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-custom-class.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-disabled-readonly.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-disabled-readonly.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-error.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-error.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-mp-runtime.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-mp-runtime.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-placeholder.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-placeholder.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-prefix-icon.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-prefix-icon.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-word-limit.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/textarea-mp-word-limit.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-accept.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-accept.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-before-hooks.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-before-hooks.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.en.vue: computed
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-events-counter.vue: computed
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-image-mode.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-image-mode.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-multiple-source.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-multiple-source.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-request-method.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-request-method.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-status.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/upload-mp-status.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-dots.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-mode.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-soft.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-band-soft.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-basic.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-cascade.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-cascade.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-icons.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-reminder.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-reminder.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-rich.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-rich.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-vibrate.en.vue: ref
+- ../../uni-demo/src/pages/form-3/demos/wheel-picker-mp-vibrate.vue: ref
+- ../../uni-demo/src/pages/index/index.vue: computed
+- ../../uni-demo/src/pages/index/index.vue: ref
+- ../../uni-demo/src/pages/index/index.vue: watch
+- ../../uni-demo/src/pages/more/demos/paging-mp-app.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-app.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/more/demos/paging-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-basic.vue: computed
+- ../../uni-demo/src/pages/more/demos/paging-mp-basic.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-popup.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-popup.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-scroll.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-scroll.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-second-floor.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-second-floor.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-states.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/paging-mp-states.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-basic.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-knob-icon.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-knob-icon.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-basic.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-basic.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-color.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-color.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-column.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-column.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-range.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-look-range.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-range.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-range.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-shape.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-shape.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-size.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-size.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-theme.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-variant.en.vue: ref
+- ../../uni-demo/src/pages/more/demos/slider-bar-mp-variant.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-basic.en.vue: nextTick
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-basic.vue: nextTick
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-icon-style.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-icon-style.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-shape.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-shape.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-theme.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-threshold.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/backtop-mp-threshold.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-accordion.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-accordion.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-before-expend.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-before-expend.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-card.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-card.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-icon.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-more-slot.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-more-slot.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-title-slot.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-title-slot.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-viewmore.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/collapse-mp-viewmore.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-direction.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-direction.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-guard.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-guard.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-icon.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-keys.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-modal.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-modal.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-popup-height.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-popup-height.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-slot.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/drop-menu-mp-slot.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/grid-mp-clickable.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/grid-mp-clickable.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/grid-mp-kingkong.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/grid-mp-kingkong.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.en.vue: computed
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.vue: computed
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-contacts.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-custom.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-scrollto.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/index-bar-mp-scrollto.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-capsule-slot.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-capsule-slot.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-capsule.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-capsule.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-mp-capsule.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/navbar-mp-mp-capsule.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-hide-on-one-page.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-hide-on-one-page.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-simple.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-simple.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-slots.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-slots.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-variant.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/pagination-mp-variant.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-alignment.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-alignment.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-content-slot.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-content-slot.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-height.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-height.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-menu.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-placement.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/navigation/demos/popover-mp-theme.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-custom-style.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-custom-style.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-theme.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-value-alias.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-value-alias.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-value.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-value.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-vibrate.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/segmented-mp-vibrate.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-badge.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-badge.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.en.vue: computed
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-basic.vue: computed
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-guard.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-guard.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-icon.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.en.vue: computed
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.en.vue: nextTick
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.vue: computed
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.vue: nextTick
+- ../../uni-demo/src/pages/navigation-2/demos/sidebar-mp-scroll.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/steps-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/steps-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.en.vue: computed
+- ../../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabbar-mp-playground.vue: computed
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-animate.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-animate.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-badge.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-badge.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-disabled.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-disabled.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-icon.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-icon.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-line.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-line.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-paging.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-paging.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-scroll.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-scroll.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-sticky.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-sticky.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-swiper.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-swiper.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-type.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tabs-mp-type.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-arrow.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-arrow.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-close.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-close.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-content.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-content.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-placement.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-theme.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tooltip-mp-theme.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-basic.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-basic.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-custom.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-custom.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-mask.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-mask.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-panel-slot.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-panel-slot.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-z-index.en.vue: ref
+- ../../uni-demo/src/pages/navigation-2/demos/tour-mp-z-index.vue: ref
+- ../../uni-demo/src/state/demo-ui.ts: computed
+- ../../uni-demo/src/state/demo-ui.ts: ref
+- ../../../packages/templates/src/uni/sn-ai-chat.vue: computed
+- ../../../packages/templates/src/uni/sn-ai-chat.vue: onBeforeUnmount
+- ../../../packages/templates/src/uni/sn-ai-chat.vue: ref
+- ../../../packages/templates/src/uni/sn-ai-chat.vue: watch
+- ../../../packages/templates/src/uni/sn-ai-message.vue: computed
+- ../../../packages/templates/src/uni/sn-ai-message.vue: ref
 
 ## docs 预览钉住规则剥离（docs iframe 预览专用；App 端 fixed 全屏层不得钉进演示卡片）
 
@@ -1262,24 +1333,20 @@
 - pages/navigation/demos/drop-menu-mp-guard.vue: .sn-drop-menu.sn-demo-contained
 - pages/navigation/demos/drop-menu-mp-keys.en.vue: .sn-drop-menu.sn-demo-contained
 - pages/navigation/demos/drop-menu-mp-keys.vue: .sn-drop-menu.sn-demo-contained
-- pages/navigation/demos/popover-mp-basic.en.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-basic.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-height.en.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-height.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-menu.en.vue: .sn-popover.sn-demo-contained
-- pages/navigation/demos/popover-mp-menu.vue: .sn-popover.sn-demo-contained
 - pages/navigation-2/demos/tooltip-mp-basic.en.vue: .sn-tooltip.sn-demo-contained
 - pages/navigation-2/demos/tooltip-mp-basic.vue: .sn-tooltip.sn-demo-contained
 
 ## 管线转换问题（CSS 规则删除等，需真机验证视觉）
 
 - App.vue: [tag-only-selector] tag-only selector "page"
+- App.vue: [tag-only-selector] tag-only selector "uni-app uni-view"
+- App.vue: [tag-only-selector] tag-only selector "view"
 - App.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - components/DemoPageShell.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic/avatar-group.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/basic/avatar.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/basic/badge.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/basic/button.vue: [import-rewrite] 18 relative .vue import(s) rewritten to .uvue
+- pages/basic/button.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/basic/cell.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/basic/config-provider.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic/demos/avatar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -1324,72 +1391,28 @@
 - pages/basic/demos/badge-mp-visibility.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/badge-mp-visibility.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic/demos/badge-mp-visibility.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-basic.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-basic.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-block.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-block.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-cell.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-cell.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-basic.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-basic.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-block.en.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-block.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.en.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
-- pages/basic/demos/button-mp-color-override.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic/demos/button-mp-color-override.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-color-override.vue: [pseudo-class] pseudo-class in ":deep(.my-mp-cta)"
-- pages/basic/demos/button-mp-color-override.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-form-type.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-form-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-form-type.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-form-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-hairline.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-hairline.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/basic/demos/button-mp-hairline.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-hairline.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-hairline.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/basic/demos/button-mp-hairline.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-hover.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-hover.en.vue: [pseudo-class] pseudo-class in ":deep(.my-press)"
-- pages/basic/demos/button-mp-hover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-hover.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-hover.vue: [pseudo-class] pseudo-class in ":deep(.my-press)"
-- pages/basic/demos/button-mp-hover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-icon-button.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-icon-button.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-icon-button.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-icon-button.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-loading-color.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-loading-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-loading-color.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-loading-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-loading-props.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-loading-props.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-loading-props.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-loading-props.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-mp-open-type.en.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-mp-open-type.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/basic/demos/button-mp-mp-open-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-mp-open-type.vue: [template-bare-text] 7 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-mp-open-type.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/basic/demos/button-mp-mp-open-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-open-type.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-open-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-open-type.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-open-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/button-mp-hairline.en.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-hairline.vue: [template-bare-text] 5 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-icon-button.en.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-icon-button.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-loading.en.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-loading.vue: [template-bare-text] 11 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-round.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/button-mp-round.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-size.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-size.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-state.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-state.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-state.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-state.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-variant.en.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/basic/demos/button-mp-variant.vue: [template-bare-text] 6 bare text node(s) wrapped in <text>
-- pages/basic/demos/button-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic/demos/button-mp-size.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-size.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-state.en.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-state.vue: [template-bare-text] 10 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-variant.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/basic/demos/button-mp-variant.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/cell-mp-link.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/cell-mp-link.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic/demos/config-provider-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -1484,11 +1507,15 @@
 - pages/basic-2/demos/icon-mp-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo--framed)"
 - pages/basic-2/demos/icon-mp-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-font.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/basic-2/demos/icon-mp-font.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/icon-mp-gallery.en.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/basic-2/demos/icon-mp-gallery.en.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-gallery.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-gallery.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/basic-2/demos/icon-mp-gallery.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/basic-2/demos/icon-mp-gallery.vue: [flex-direction-row] 3 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/demos/icon-mp-iconify.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/basic-2/demos/icon-mp-iconify.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -1687,7 +1714,7 @@
 - pages/basic-2/demos/transition-mp-touch-move.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/basic-2/demos/transition-mp-touch-move.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/basic-2/gap.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
-- pages/basic-2/icon.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/basic-2/icon.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/layout.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/resize.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
 - pages/basic-2/root-portal.vue: [import-rewrite] 4 relative .vue import(s) rewritten to .uvue
@@ -1859,7 +1886,9 @@
 - pages/display/demos/qr-code-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-canvas-id.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-qr-demo__root)"
 - pages/display/demos/qr-code-mp-canvas-id.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-qr-demo__root)"
+- pages/display/demos/qr-code-mp-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/qr-code-mp-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/display/demos/qr-code-mp-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/display/demos/qr-code-mp-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-dot-type.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/display/demos/qr-code-mp-dot-type.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2064,18 +2093,20 @@
 - pages/feedback-2/demos/notice-bar-mp-closable.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/notice-bar-mp-custom.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
 - pages/feedback-2/demos/notice-bar-mp-custom.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
-- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-basic.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-basic.vue: [template-attr] 4 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-style.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-style.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-style.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-style.vue: [template-attr] 3 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/notify-mp-variant.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
-- pages/feedback-2/demos/notify-mp-variant.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-basic.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-style.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-style.en.vue: [template-attr] 5 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-style.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/notify-mp-style.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-style.vue: [template-attr] 5 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-style.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-variant.en.vue: [template-attr] 4 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/notify-mp-variant.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/feedback-2/demos/notify-mp-variant.vue: [template-attr] 4 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/overlay-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/overlay-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/overlay-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2125,19 +2156,11 @@
 - pages/feedback-2/demos/skeleton-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__skeleton)"
 - pages/feedback-2/demos/skeleton-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__skeleton)"
 - pages/feedback-2/demos/swipe-action-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/swipe-action-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/feedback-2/demos/swipe-action-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/feedback-2/demos/swipe-action-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-before-close.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-before-close.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-both-sides.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-both-sides.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__swipe)"
-- pages/feedback-2/demos/swipe-action-mp-custom-style.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__swipe)"
-- pages/feedback-2/demos/swipe-action-mp-custom-style.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-disabled.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/feedback-2/demos/swipe-action-mp-disabled.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/feedback-2/demos/swipe-action-mp-card.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-card.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-cell-group.en.vue: [template-attr] 8 @tap binding(s) renamed to @click
+- pages/feedback-2/demos/swipe-action-mp-cell-group.vue: [template-attr] 8 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/feedback-2/demos/toast-mp-basic.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
 - pages/feedback-2/demos/toast-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
@@ -2166,17 +2189,17 @@
 - pages/feedback-2/popup.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/progress.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/skeleton.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
-- pages/feedback-2/swipe-action.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/feedback-2/swipe-action.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/feedback-2/toast.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/form/calendar-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form/calendar.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
+- pages/form/calendar.vue: [import-rewrite] 16 relative .vue import(s) rewritten to .uvue
 - pages/form/captcha.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
 - pages/form/cascader.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/form/checkbox.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/form/code-input.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/form/date-strip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/form/datetime-picker-view.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form/datetime-picker.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
+- pages/form/datetime-picker-view.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form/datetime-picker.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
 - pages/form/demos/calendar-mp-sheet-chrome.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/calendar-mp-sheet-chrome.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/calendar-view-mp-time-props.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__calendar)"
@@ -2251,6 +2274,8 @@
 - pages/form/demos/code-input-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin--tall)"
 - pages/form/demos/code-input-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin)"
 - pages/form/demos/code-input-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pin--tall)"
+- pages/form/demos/datetime-picker-mp-wheel.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form/demos/datetime-picker-mp-wheel.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form/demos/form-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
@@ -2279,69 +2304,65 @@
 - pages/form/demos/form-mp-validate.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-validation-flow.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form/demos/form-mp-validation-flow.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/input-mp-prefix-suffix.en.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
-- pages/form/demos/input-mp-prefix-suffix.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
-- pages/form/demos/input-mp-slots.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/input-mp-slots.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-car-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-car-custom.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-car-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-car-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-car-custom.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-car-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-close-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-close-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-close-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-close-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-close-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-close-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-decimal.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-decimal.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-decimal.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-decimal.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-decimal.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-decimal.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-delete-key.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-delete-key.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-delete-key.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-delete-key.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-delete-key.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-delete-key.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-idcard.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-idcard.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-idcard.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-idcard.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-idcard.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-idcard.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-labels.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-labels.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-labels.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-labels.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-labels.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-labels.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-random-order.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-random-order.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-random-order.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-random-order.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-random-order.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-random-order.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-scrim.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-scrim.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-scrim.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form/demos/keyboard-mp-scrim.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form/demos/keyboard-mp-scrim.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form/demos/keyboard-mp-scrim.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form/form.vue: [import-rewrite] 25 relative .vue import(s) rewritten to .uvue
-- pages/form/input-number.vue: [import-rewrite] 15 relative .vue import(s) rewritten to .uvue
-- pages/form/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
-- pages/form/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
-- pages/form/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/demos/input-mp-prefix-suffix.en.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
+- pages/form-2/demos/input-mp-prefix-suffix.vue: [pseudo-class] pseudo-class in ":deep(.my-icon-glossary)"
+- pages/form-2/demos/input-mp-slots.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/input-mp-slots.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-car-custom.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-car-custom.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-car-custom.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-car-custom.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-car-custom.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-car-custom.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-close-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-close-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-close-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-close-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-close-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-close-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-decimal.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-decimal.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-decimal.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-decimal.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-decimal.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-decimal.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-delete-key.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-delete-key.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-delete-key.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-delete-key.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-delete-key.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-delete-key.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-idcard.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-idcard.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-idcard.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-idcard.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-idcard.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-idcard.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-labels.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-labels.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-labels.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-labels.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-labels.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-labels.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-random-order.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-random-order.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-random-order.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-random-order.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-random-order.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-random-order.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-scrim.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-scrim.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-scrim.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/keyboard-mp-scrim.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-2/demos/keyboard-mp-scrim.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-2/demos/keyboard-mp-scrim.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2384,8 +2405,12 @@
 - pages/form-2/demos/picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/form-2/demos/picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/picker-mp-wheel.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-2/demos/picker-mp-wheel.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/form-2/demos/picker-view-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__picker)"
 - pages/form-2/demos/picker-view-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__picker)"
+- pages/form-2/demos/picker-view-mp-icons.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-2/demos/picker-view-mp-icons.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/form-2/demos/radio-mp-basic.en.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/form-2/demos/radio-mp-basic.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/form-2/demos/radio-mp-colors.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
@@ -2424,118 +2449,130 @@
 - pages/form-2/demos/search-mp-placeholder-style.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-demo__placeholder)::placeholder"
 - pages/form-2/demos/search-mp-placeholder-style.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(input)::placeholder"
-- pages/form-2/demos/select-picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-before-confirm.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-before-confirm.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-before-confirm.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-before-confirm.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-checked-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-checked-color.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-checked-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-checked-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-chip-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-chip-size.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-chip-size.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-chip-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-fields.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-fields.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-fields.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-fields.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-fields.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-fields.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-filterable.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-filterable.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-filterable.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-filterable.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-filterable.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-filterable.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-scroll-into-view.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-scroll-into-view.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-sheet.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-sheet.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-type-radio.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/select-picker-mp-type-radio.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/form-2/demos/select-picker-mp-type-radio.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/select-picker-mp-type-radio.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slide-verify-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
-- pages/form-2/demos/slide-verify-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
-- pages/form-2/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
-- pages/form-2/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
-- pages/form-2/demos/slider-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
-- pages/form-2/demos/slider-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
-- pages/form-2/demos/slider-mp-popover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slider-mp-popover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slider-mp-vertical.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/slider-mp-vertical.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/sort-button-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
-- pages/form-2/demos/sort-button-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
-- pages/form-2/demos/switch-mp-css-icons.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/switch-mp-css-icons.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/textarea-mp-prefix-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/textarea-mp-prefix-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
-- pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
-- pages/form-2/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
-- pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
-- pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
-- pages/form-2/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
-- pages/form-2/demos/upload-mp-request-method.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/upload-mp-request-method.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
-- pages/form-2/demos/upload-mp-request-method.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/form-2/picker-view.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
-- pages/form-2/picker.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-2/input-number.vue: [import-rewrite] 16 relative .vue import(s) rewritten to .uvue
+- pages/form-2/input.vue: [import-rewrite] 30 relative .vue import(s) rewritten to .uvue
+- pages/form-2/keyboard-panel.vue: [import-rewrite] 3 relative .vue import(s) rewritten to .uvue
+- pages/form-2/keyboard.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-2/picker-view.vue: [import-rewrite] 17 relative .vue import(s) rewritten to .uvue
+- pages/form-2/picker.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/form-2/plate-input.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/form-2/radio.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/form-2/rate.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-2/search.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form-2/select-picker.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-2/signature.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
-- pages/form-2/slide-verify.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
-- pages/form-2/slider.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
-- pages/form-2/sort-button.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
-- pages/form-2/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
-- pages/form-2/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
-- pages/form-2/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-2/search.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/demos/select-picker-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-before-confirm.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-before-confirm.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-before-confirm.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-before-confirm.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-before-confirm.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-before-confirm.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-checked-color.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-checked-color.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-checked-color.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-checked-color.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-checked-color.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-checked-color.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-chip-size.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-chip-size.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-chip-size.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-chip-size.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-chip-size.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-chip-size.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-fields.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-fields.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-fields.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-fields.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-fields.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-fields.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-filterable.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-filterable.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-filterable.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-filterable.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-filterable.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-filterable.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-loading.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-loading.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-loading.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-loading.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-loading.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-loading.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-scroll-into-view.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-scroll-into-view.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-scroll-into-view.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-scroll-into-view.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-sheet.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-sheet.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-sheet.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-sheet.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-sheet.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-sheet.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-type-radio.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-type-radio.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-type-radio.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/select-picker-mp-type-radio.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/form-3/demos/select-picker-mp-type-radio.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/select-picker-mp-type-radio.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slide-verify-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
+- pages/form-3/demos/slide-verify-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__verify)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
+- pages/form-3/demos/slide-verify-mp-icons.en.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-next)"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-icon-demo-done)"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.demo-verify-css)"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-next)::after"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.sn-icon-demo-done)::after"
+- pages/form-3/demos/slide-verify-mp-icons.vue: [pseudo-element] pseudo-element in ".sn-demo :deep(.demo-verify-css)::after"
+- pages/form-3/demos/slider-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
+- pages/form-3/demos/slider-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__slider)"
+- pages/form-3/demos/slider-mp-popover.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slider-mp-popover.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slider-mp-vertical.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/slider-mp-vertical.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/sort-button-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
+- pages/form-3/demos/sort-button-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__sort)"
+- pages/form-3/demos/switch-mp-css-icons.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/switch-mp-css-icons.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/textarea-mp-prefix-icon.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/textarea-mp-prefix-icon.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
+- pages/form-3/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
+- pages/form-3/demos/upload-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
+- pages/form-3/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__upload)"
+- pages/form-3/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__evoke)"
+- pages/form-3/demos/upload-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__tile)"
+- pages/form-3/demos/upload-mp-request-method.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/upload-mp-request-method.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/upload-mp-request-method.vue: [template-attr] 1 @tap binding(s) renamed to @click
+- pages/form-3/demos/upload-mp-request-method.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/wheel-picker-mp-icons.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/wheel-picker-mp-icons.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/wheel-picker-mp-reminder.en.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/form-3/demos/wheel-picker-mp-reminder.en.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/demos/wheel-picker-mp-reminder.vue: [template-attr] 3 @tap binding(s) renamed to @click
+- pages/form-3/demos/wheel-picker-mp-reminder.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/form-3/select-picker.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/signature.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/slide-verify.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
+- pages/form-3/slider.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/form-3/sort-button.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
+- pages/form-3/switch.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/form-3/textarea.vue: [import-rewrite] 14 relative .vue import(s) rewritten to .uvue
+- pages/form-3/upload.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
+- pages/form-3/wheel-picker.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/index/index.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
-- pages/index/index.vue: [template-attr] 6 @tap binding(s) renamed to @click
+- pages/index/index.vue: [template-attr] 10 @tap binding(s) renamed to @click
+- pages/index/index.vue: [template-attr] 1 scroll-x/scroll-y attr(s) rewritten to direction
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__btn:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__chip:active"
 - pages/index/index.vue: [pseudo-class] pseudo-class in ".home__card:active"
@@ -2557,12 +2594,14 @@
 - pages/more/demos/paging-mp-states.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/paging-mp-states.vue: [template-bare-text] 3 bare text node(s) wrapped in <text>
 - pages/more/demos/paging-mp-states.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/slider-bar-mp-look-column.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/more/demos/slider-bar-mp-look-column.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/slider-bar-mp-variant.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/demos/slider-bar-mp-variant.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/more/paging.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/more/slider-bar.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
+- pages/more/slider-bar.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
 - pages/navigation/backtop.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
-- pages/navigation/collapse.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
+- pages/navigation/collapse.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/demos/backtop-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/backtop-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo__stage :deep(.sn-backtop.sn-demo-pinned)"
 - pages/navigation/demos/backtop-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2639,42 +2678,52 @@
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__bar)"
 - pages/navigation/demos/navbar-mp-capsule-slot.vue: [flex-direction-row] 2 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-capsule.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-capsule.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-capsule.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-capsule.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-mp-capsule.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-mp-capsule.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/navbar-mp-mp-capsule.vue: [template-attr] 2 @tap binding(s) renamed to @click
+- pages/navigation/demos/navbar-mp-mp-capsule.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation/demos/pagination-mp-slots.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
 - pages/navigation/demos/pagination-mp-slots.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pager)"
+- pages/navigation/demos/popover-mp-alignment.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-alignment.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-basic.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-basic.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-border.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-border.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-content-slot.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-content-slot.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-content-slot.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-content-slot.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-custom-style.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pop)"
-- pages/navigation/demos/popover-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__arrow)"
 - pages/navigation/demos/popover-mp-custom-style.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__pop)"
-- pages/navigation/demos/popover-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-demo__arrow)"
-- pages/navigation/demos/popover-mp-height.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-height.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-icon-class.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-icon-class.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
-- pages/navigation/demos/popover-mp-icon-class.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-icon-class.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-height.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-height.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
+- pages/navigation/demos/popover-mp-height.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-height.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-menu.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-menu.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-menu.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-menu.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-popover.sn-demo-contained)"
 - pages/navigation/demos/popover-mp-placement.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
-- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
-- pages/navigation/demos/popover-mp-placement.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation/demos/popover-mp-placement.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-rounded.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation/demos/popover-mp-rounded.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.en.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/demos/popover-mp-theme.vue: [template-bare-text] 4 bare text node(s) wrapped in <text>
 - pages/navigation/drop-menu.vue: [import-rewrite] 11 relative .vue import(s) rewritten to .uvue
 - pages/navigation/grid.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - pages/navigation/index-bar.vue: [import-rewrite] 6 relative .vue import(s) rewritten to .uvue
-- pages/navigation/navbar.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation/navbar.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
 - pages/navigation/pagination.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
-- pages/navigation/popover.vue: [import-rewrite] 10 relative .vue import(s) rewritten to .uvue
+- pages/navigation/popover.vue: [import-rewrite] 12 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/demos/segmented-mp-custom-style.en.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/segmented-mp-custom-style.vue: [pseudo-class] pseudo-class in ".sn-demo :deep(.sn-segmented-demo--framed)"
 - pages/navigation-2/demos/sidebar-mp-badge.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
@@ -2694,12 +2743,16 @@
 - pages/navigation-2/demos/sidebar-mp-scroll.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sidebar-mp-scroll.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-basic.en.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/navigation-2/demos/steps-mp-basic.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/steps-mp-basic.vue: [template-attr] 2 @tap binding(s) renamed to @click
-- pages/navigation-2/demos/steps-mp-basic.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/steps-mp-connector.en.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
+- pages/navigation-2/demos/steps-mp-connector.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
 - pages/navigation-2/demos/steps-mp-custom-class.en.vue: [pseudo-class] pseudo-class in ":deep(.steps-brand)"
 - pages/navigation-2/demos/steps-mp-custom-class.vue: [pseudo-class] pseudo-class in ":deep(.steps-brand)"
+- pages/navigation-2/demos/steps-mp-icon.en.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
+- pages/navigation-2/demos/steps-mp-icon.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
+- pages/navigation-2/demos/steps-mp-node.en.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
 - pages/navigation-2/demos/steps-mp-node.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/steps-mp-node.vue: [pseudo-class] pseudo-class in ".sn-demo__label:first-child"
 - pages/navigation-2/demos/steps-mp-node.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/sticky-mp-basic.en.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/sticky-mp-basic.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
@@ -2753,6 +2806,8 @@
 - pages/navigation-2/demos/tooltip-mp-placement.en.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
 - pages/navigation-2/demos/tooltip-mp-placement.vue: [template-bare-text] 1 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tooltip-mp-placement.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)
+- pages/navigation-2/demos/tooltip-mp-theme.en.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
+- pages/navigation-2/demos/tooltip-mp-theme.vue: [template-bare-text] 2 bare text node(s) wrapped in <text>
 - pages/navigation-2/demos/tour-mp-basic.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-basic.vue: [template-attr] 1 @tap binding(s) renamed to @click
 - pages/navigation-2/demos/tour-mp-custom.en.vue: [template-attr] 1 @tap binding(s) renamed to @click
@@ -2777,7 +2832,7 @@
 - pages/navigation-2/sticky.vue: [import-rewrite] 5 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tabbar.vue: [import-rewrite] 2 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tabs.vue: [import-rewrite] 13 relative .vue import(s) rewritten to .uvue
-- pages/navigation-2/tooltip.vue: [import-rewrite] 8 relative .vue import(s) rewritten to .uvue
+- pages/navigation-2/tooltip.vue: [import-rewrite] 9 relative .vue import(s) rewritten to .uvue
 - pages/navigation-2/tour.vue: [import-rewrite] 7 relative .vue import(s) rewritten to .uvue
 - templates/uni/sn-ai-chat.vue: [import-rewrite] 1 relative .vue import(s) rewritten to .uvue
 - templates/uni/sn-ai-chat.vue: [flex-direction-row] 1 flex container(s) given explicit flex-direction: row (uni-app x column default)

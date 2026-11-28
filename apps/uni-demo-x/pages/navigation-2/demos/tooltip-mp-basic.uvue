@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tooltip-mp-basic.vue sha256:d0c62e7fdd6b25cf —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tooltip (uni-end) — tap-triggered hint with a toggle.
@@ -35,5 +36,15 @@ const open = ref(false);
 }
 .sn-tooltip-demo__space {
   height: 180rpx;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden——本 demo 的包装类全链放开，
+   锚定弹层（tooltip / popover / drop-menu）伸出包装盒时不被裁
+   （App.vue 全局规则只命中页面级元素与 demo 根节点，AGENTS.md §103）。 */
+.sn-tooltip-demo__meta {
+  overflow: visible;
+}
+.sn-tooltip-demo__space {
+  overflow: visible;
 }
 </style>

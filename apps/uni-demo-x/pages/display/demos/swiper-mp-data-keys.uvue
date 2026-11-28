@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-data-keys.vue sha256:5a0518fe2acfac41 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — 数据字段映射（valueKey / textKey）+ 受控 current + 事件。
@@ -7,9 +8,9 @@ import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 /** 自定义字段名：图片地址在 `url`，标题在 `title`。 */
 const list = [
-  { url: 'https://picsum.photos/seed/snui-sw-d1/750/400', title: '自定义字段 1' },
-  { url: 'https://picsum.photos/seed/snui-sw-d2/750/400', title: '自定义字段 2' },
-  { url: 'https://picsum.photos/seed/snui-sw-d3/750/400', title: '自定义字段 3' },
+  { url: 'https://cdn.uviewui.com/uview/album/3.jpg', title: '自定义字段 1' },
+  { url: 'https://cdn.uviewui.com/uview/album/4.jpg', title: '自定义字段 2' },
+  { url: 'https://cdn.uviewui.com/uview/album/5.jpg', title: '自定义字段 3' },
 ];
 
 const current = ref(0);
@@ -41,8 +42,7 @@ function onJump(index: number) {
       <SnButton size="small" @click="onJump(2)"><text>第 3 张</text></SnButton>
     </view>
     <text class="sn-demo__meta"
-      >current（v-model:current）={{ current }}；最近事件：{{ lastEvent }}</text
-    >
+      >current（v-model:current）={{ current }}；最近事件：{{ lastEvent }}</text>
     <text class="sn-demo__meta">
       valueKey / textKey 改字段名（默认 value / text）；跳张按钮直接写 current 验证受控。
     </text>

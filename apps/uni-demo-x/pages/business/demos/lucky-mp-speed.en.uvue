@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/lucky-mp-speed.en.vue sha256:83b8dbf70ed7df0a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-lucky (uni-end) — Speed & highlight: `speed` / prize color override.
@@ -37,8 +38,7 @@ function scheduleStop(lucky: InstanceType<typeof SnLucky> | null, count: number)
       @start="scheduleStop(slowRef, coloredPrizes.length)"
     />
     <text class="sn-demo__meta"
-      >speed is the highlight step interval (ms); color only affects the highlight background</text
-    >
+      >speed is the highlight step interval (ms); color only affects the highlight background</text>
   </view>
 </template>
 <style scoped>

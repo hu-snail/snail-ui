@@ -1,16 +1,15 @@
 <script setup lang="ts">
 /**
- * Demo: sn-calendar — cell-card entry for the sheet calendar.
+ * Demo: sn-calendar — cell entry row for the sheet calendar.
  *
- * The card-form sn-cell-group carries the entry row (title + hint + selected
- * value); tapping it opens the sheet. Rolling inside only updates the draft —
- * `v-model` is written on confirm and cancel discards the draft.
+ * The entry row uses sn-cell directly (no group card; the module title is
+ * carried by the page outside); tapping it opens the sheet. A pick writes `v-model`
+ * and closes right away (confirm-on-select, no footer).
  */
 import { computed, ref } from 'vue';
 import { Calendar } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 5, 1).getTime();
 const max = new Date(2024, 7, 31).getTime();
@@ -27,17 +26,14 @@ const formatted = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Basic usage">
-      <SnCell
-        title="Pick a date"
-        label="Bounds: 2024-06-01 ~ 2024-08-31"
-        :value="formatted"
-        placeholder="Not selected"
-        :prefix-icon-data="Calendar"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Pick a date"
+      :value="formatted"
+      placeholder="Not selected"
+      :prefix-icon-data="Calendar"
+      is-link
+      @click="open = true"
+    />
 
     <text class="sn-demo__meta">Selected: {{ formatted || 'Not selected' }}</text>
 

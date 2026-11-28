@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation-2/demos/tabs-mp-swiper.vue sha256:1b568049e9f4a901 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-tabs — 内容区原生 swiper（swipeable / duration / swiper-easing / swiper-height）。
@@ -19,8 +20,7 @@ const easingActive = ref(0);
     <SnTabs v-model="swipeActive" swipeable type="card" :duration="400" :swiper-height="240">
       <SnTab title="推荐" :name="0">
         <view class="sn-demo__pane"
-          ><text class="sn-demo__pane-text">左右滑动内容区即可切换页签。</text></view
-        >
+          ><text class="sn-demo__pane-text">左右滑动内容区即可切换页签。</text></view>
       </SnTab>
       <SnTab title="关注" :name="1">
         <view class="sn-demo__pane"><text class="sn-demo__pane-text">第二页内容。</text></view>
@@ -48,8 +48,7 @@ const easingActive = ref(0);
       </SnTab>
       <SnTab title="月" :name="2" disabled>
         <view class="sn-demo__pane"
-          ><text class="sn-demo__pane-text">按月统计（禁用：滑到这里会弹回）</text></view
-        >
+          ><text class="sn-demo__pane-text">按月统计（禁用：滑到这里会弹回）</text></view>
       </SnTab>
     </SnTabs>
 

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/badge-mp-custom.vue sha256:0bcdc64ec2e533f1 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-badge (uni-end) — `customClass` / `customStyle`。
@@ -54,8 +55,7 @@ const items = [
     </view>
 
     <text class="sn-demo__meta"
-      >角标自身的外观（type / bgColor / top / right）不受这两个 prop 影响</text
-    >
+      >角标自身的外观（type / bgColor / top / right）不受这两个 prop 影响</text>
     <view class="sn-demo__row">
       <SnBadge
         :value="6"

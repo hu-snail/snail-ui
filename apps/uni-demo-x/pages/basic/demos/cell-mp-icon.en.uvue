@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/cell-mp-icon.en.vue sha256:d9d5c75291782f56 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-cell — the three leading-icon sources plus size tiers and colour tokens. */
 import { registerSnIcons } from '@snui/uni-x/components/sn-icon/sn-icon-registry';
@@ -25,16 +26,14 @@ registerSnIcons({ 'cell-moon': MoonIcon });
 <template>
   <view class="sn-demo sn-demo--column">
     <text class="sn-demo__label"
-      >Name chain (built-in catalogue names need no registration; registry names are custom)</text
-    >
+      >Name chain (built-in catalogue names need no registration; registry names are custom)</text>
     <SnCellGroup insert>
       <SnCell title="Catalogue name" value="bell" prefix-icon="bell" />
       <SnCell title="Registry name" value="cell-moon" prefix-icon="cell-moon" />
     </SnCellGroup>
 
     <text class="sn-demo__label"
-      >IconData objects (named imports from the icon set, win over names)</text
-    >
+      >IconData objects (named imports from the icon set, win over names)</text>
     <SnCellGroup insert>
       <SnCell title="Starred" value="Star" :prefix-icon-data="Star" />
       <SnCell title="Liked" value="Heart" :prefix-icon-data="Heart" />
@@ -73,12 +72,12 @@ registerSnIcons({ 'cell-moon': MoonIcon });
       <SnCell
         title="Leading image"
         value="Avatar"
-        prefix-icon-url="https://picsum.photos/seed/snui-cell/96"
+        prefix-icon-url="https://cdn.uviewui.com/uview/album/4.jpg"
       />
       <SnCell
         title="Trailing image"
         value="Attachment"
-        suffix-icon-url="https://picsum.photos/seed/snui-cell-file/96"
+        suffix-icon-url="https://cdn.uviewui.com/uview/album/5.jpg"
       />
     </SnCellGroup>
   </view>
@@ -90,7 +89,10 @@ registerSnIcons({ 'cell-moon': MoonIcon });
   gap: 24rpx;
   width: 100%;
 }
+/* Full-bleed page: demos no longer carry outer padding — captions pad
+ * themselves back to align with cell rows (24rpx) and the module head inset. */
 .sn-demo__label {
+  padding: 0 var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-xs);
 }

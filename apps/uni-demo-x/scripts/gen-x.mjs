@@ -25,6 +25,8 @@ import {
   rmSync,
   writeFileSync,
 } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { transformVueToUvue } from '../../../packages/uni-x/src/transform/index.ts';
@@ -34,7 +36,12 @@ const appRoot = resolve(here, '..');
 const srcRoot = resolve(appRoot, '../uni-demo/src');
 const templatesRoot = resolve(appRoot, '../../packages/templates/src');
 const uniXDist = resolve(appRoot, '../../packages/uni-x/dist');
-const outRoot = appRoot;
+// main() 在生成期间把 outRoot 指向暂存目录，全部产物写入 stage 后按目录
+// rename 原子交换回工程根：HBuilderX 工程监视器看到的不再是 rmSync + 数千
+// 次逐文件重写，而是一次目录替换，消除「读到不完整工程 → 工程类型识别
+// 失败被缓存 → 运行报『不是 uni-app 项目，暂不支持』」的并发窗口
+// （AGENTS.md §118.3，2026-11-17 起复发多次，外置卷上更频发）。
+let outRoot = appRoot;
 
 /** uni-app x 组合式 API 自动导入名单（uvue 无需 import from 'vue'）。 */
 const VUE_AUTO_IMPORTS = new Set([
@@ -88,7 +95,10 @@ function rewriteImports(code, fromFile, outDir) {
   code = code.replace(
     /^import\s+(\w+)\s*,\s*\{([^}]*)\}\s*from\s+'(@snui\/(?:uni-src|uni)\/components\/sn-[a-z0-9-]+\/sn-[a-z0-9-]+)\.vue';\s*\n/gm,
     (line, name, bindings, spec) => {
-      const parts = bindings.split(',').map((n) => n.trim()).filter(Boolean);
+      const parts = bindings
+        .split(',')
+        .map((n) => n.trim())
+        .filter(Boolean);
       const nonType = parts.filter((n) => !n.startsWith('type '));
       if (nonType.length > 0) {
         throw new Error(
@@ -129,15 +139,12 @@ function rewriteImports(code, fromFile, outDir) {
     },
   );
   // 3. 场景引用的模板组件 → 本工程 templates/ 产物（相对路径换算）。
-  code = code.replace(
-    /from\s*'@snui\/templates-src\/([^']+)'/g,
-    (line, spec) => {
-      const outPath = templateOutPath(spec);
-      stats.templatesMapped++;
-      const relSpec = relative(outDir, outPath).replace(/\\/g, '/');
-      return `from '${relSpec.startsWith('.') ? relSpec : `./${relSpec}`}'`;
-    },
-  );
+  code = code.replace(/from\s*'@snui\/templates-src\/([^']+)'/g, (line, spec) => {
+    const outPath = templateOutPath(spec);
+    stats.templatesMapped++;
+    const relSpec = relative(outDir, outPath).replace(/\\/g, '/');
+    return `from '${relSpec.startsWith('.') ? relSpec : `./${relSpec}`}'`;
+  });
   // 4. 其余 @snui/uni-src → @snui/uni-x（组件协同 ts / utils）。
   code = code.replaceAll('@snui/uni-src/', '@snui/uni-x/');
   // 5. demo 相对导入的 .vue → .uvue（聚合页 → 场景、场景 → 场景）。
@@ -145,7 +152,10 @@ function rewriteImports(code, fromFile, outDir) {
   // 6. `import { x } from 'vue'`：剥离 uvue 自动导入名单内的名字，
   //    全部可剥离时整行删除。
   code = code.replace(/^import\s*\{([^}]*)\}\s*from\s*'vue';\s*\n/gm, (line, names) => {
-    const parts = names.split(',').map((n) => n.trim()).filter(Boolean);
+    const parts = names
+      .split(',')
+      .map((n) => n.trim())
+      .filter(Boolean);
     const kept = parts.filter((n) => !VUE_AUTO_IMPORTS.has(n.replace(/^type\s+/, '')));
     for (const dropped of parts.filter((n) => VUE_AUTO_IMPORTS.has(n.replace(/^type\s+/, '')))) {
       stats.vueImportStrips.push(`${relFromOut(fromFile)}: ${dropped}`);
@@ -181,18 +191,8 @@ function toTs(srcPath, outDir) {
 const DEMO_CONTAINED_RE = /\.sn-demo-contained(?![\w-])/;
 
 /**
- * 钉住规则在 x 产物里保留的组件。fab 是悬浮按钮：`position` 预设描述的是
- * 容器内锚点而非全屏层，App 端 absolute 锚定直接父元素（官方 css/position
- * 文档），钉进 demo 舞台正是 demo 想表达的行为——不钉的话 fixed 会按页面根
- * 绝对布局，一页多个场景的按钮全部堆到屏幕四角（真机反馈的「布局错乱」）。
- * 其余 fixed 全屏层（popup / dialog / calendar …）必须保持页面根绝对布局，
- * 钉住会把全屏层压回卡片坐标裁剪——继续剥离。
- */
-const DEMO_PIN_KEEP_RES = [/\.sn-fab(?![\w-])/];
-
-/**
  * 剥离 demo 场景产物 <style> 里的 docs 预览钉住规则（`.sn-demo-contained`
- * 为主体、且不在 DEMO_PIN_KEEP_RES 保留名单内的规则块）。
+ * 为主体的规则块）。
  *
  * Why: 钉住规则（`.sn-<comp>.sn-demo-contained { position: absolute }`）
  * 只服务 docs iframe 预览——把 fixed 全屏层钉进演示卡片；uni-app x App 端
@@ -243,9 +243,7 @@ function stripPinRules(css, issueTag) {
       continue;
     }
     const selectors = splitSelectorList(headBare);
-    const kept = selectors.filter(
-      (s) => !DEMO_CONTAINED_RE.test(s) || DEMO_PIN_KEEP_RES.some((re) => re.test(s)),
-    );
+    const kept = selectors.filter((s) => !DEMO_CONTAINED_RE.test(s));
     if (kept.length === 0) {
       // 整块剥离：selector 前的紧邻注释（docs 预览说明）随 head 一并去掉。
       for (const s of selectors) stats.demoPinStrips.push(`${issueTag}: ${s.trim()}`);
@@ -402,25 +400,48 @@ function emitApp() {
       return '';
     })
     .replace(/^import\s+'@snui\/uni\/styles';\s*\n/m, () => {
-      stats.appSpecific.push("App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme");
+      stats.appSpecific.push(
+        "App: '@snui/uni/styles' script import moved into <style> as @snui/uni-x/theme",
+      );
       return '';
     })
     .replace(/^import\s*\{\s*initDemoBridge\s*\}\s*from\s*'\.\/state\/demo-bridge';\s*\n/m, () => {
       stats.appSpecific.push('App: demo-bridge import dropped (docs-iframe only, ADR-0005)');
       return '';
     })
-    .replace(/\n\/\/ #ifdef H5\n\/\/ 宿主（docs iframe）桥[^\n]*\ninitDemoBridge\(\);\n\/\/ #endif\n/g, '\n')
-    .replace(/^<style>/m, "<style>\n/* 主题变量层（uni-app x App 端无 :root，变量挂在 .sn-theme-root ——\n   DemoPageShell 根节点携带该 class；本块由 gen-x.mjs 生成，勿手改）。 */\n@import '@snui/uni-x/theme/index.css';");
-  code = `<!-- 由 scripts/gen-x.mjs 从 apps/uni-demo/src/App.vue 生成，勿手改。 -->\n${code}`;
+    .replace(
+      /\n\/\/ #ifdef H5\n\/\/ 宿主（docs iframe）桥[^\n]*\ninitDemoBridge\(\);\n\/\/ #endif\n/g,
+      '\n',
+    )
+    .replace(
+      /^<style>/m,
+      "<style>\n/* 主题变量层（uni-app x App 端无 :root，变量挂在 .sn-theme-root ——\n   DemoPageShell 根节点携带该 class；本块由 gen-x.mjs 生成，勿手改）。 */\n@import '@snui/uni-x/theme/index.css';",
+    );
+  code = `${sourceStamp('apps/uni-demo/src/App.vue', readFileSync(src, 'utf8'), true)}\n${code}`;
   code = rewriteImports(code, src, outRoot);
   writeFileEnsured(join(outRoot, 'App.uvue'), code);
   stats.uvue++;
+}
+
+/**
+ * 生成文件头的源指纹：check-x 的「新鲜度契约」据此校验生成树是否与
+ * apps/uni-demo 当前源同步 —— 源码改动后未重跑 gen-x（H5 / MP 预览仍跑
+ * 旧产物）在这里直接失败，而不是让人对着旧样式反复排查。哈希基于源文件
+ * 内容（clone / checkout 安全，与 mtime 无关）。
+ */
+function sourceStamp(repoRelSrc, sourceCode, isVue) {
+  const hash = createHash('sha256').update(sourceCode).digest('hex').slice(0, 16);
+  const body =
+    `gen-x: source ${repoRelSrc} sha256:${hash} —— 生成产物勿手改；` +
+    '源码改动后重跑 pnpm -F @snui/uni-demo-x gen';
+  return isVue ? `<!-- ${body} -->` : `// ${body}`;
 }
 
 /** DemoPageShell 根节点补 sn-theme-root（主题变量挂载点，见 App.uvue 注释）。 */
 function emitShell(srcPath, outPath) {
   let code = toUvue(srcPath, dirname(outPath), relative(srcRoot, srcPath));
   code = code.replace('class="demo-shell"', 'class="sn-theme-root demo-shell"');
+  code = `${sourceStamp(`apps/uni-demo/src/${relative(srcRoot, srcPath).split(/[/\\]/).join('/')}`, readFileSync(srcPath, 'utf8'), true)}\n${code}`;
   writeFileEnsured(outPath, code);
   stats.uvue++;
 }
@@ -494,7 +515,14 @@ function main() {
     console.error('[gen-x] packages/uni-x/dist 不存在 —— 先运行 pnpm -F @snui/uni-x build');
     process.exit(1);
   }
+  // 全量产物先写进隐藏暂存目录（点开头目录 HBuilderX 工程树不收录），写完
+  // 后逐目录原子交换回工程根——监视器不再经历 rm + 逐文件重写的裸窗口。
+  const stageRoot = join(appRoot, '.gen-stage');
+  rmSync(stageRoot, { recursive: true, force: true });
+  mkdirSync(stageRoot, { recursive: true });
+  outRoot = stageRoot;
   for (const dir of ['pages', 'components', 'state', 'templates']) {
+    // stage 是全新目录，无需清理；保留调用以维持与旧流程相同的语义边界。
     rmSync(join(outRoot, dir), { recursive: true, force: true });
   }
   // App.uvue / pages.json are always rewritten at the end of the run — do NOT
@@ -524,7 +552,10 @@ function main() {
       isVue && relSrc.split(/[/\\]/).includes('demos')
         ? stripDemoContainedPins(code, relSrc)
         : code;
-    writeFileEnsured(outPath, finalCode);
+    writeFileEnsured(
+      outPath,
+      `${sourceStamp(`apps/uni-demo/src/${relSrc.split(/[/\\]/).join('/')}`, readFileSync(srcPath, 'utf8'), isVue)}\n${finalCode}`,
+    );
     if (isVue) stats.uvue++;
     else stats.ts++;
   }
@@ -539,7 +570,10 @@ function main() {
     const code = isVue
       ? toUvue(srcPath, dirname(outPath), `templates/${relSpec}`)
       : toTs(srcPath, dirname(outPath));
-    writeFileEnsured(outPath, code);
+    writeFileEnsured(
+      outPath,
+      `${sourceStamp(`packages/templates/src/${relSpec.split(/[/\\]/).join('/')}`, readFileSync(srcPath, 'utf8'), isVue)}\n${code}`,
+    );
     if (isVue) stats.uvue++;
     else stats.ts++;
   }
@@ -573,8 +607,41 @@ function main() {
   emitApp();
   emitPagesJson();
   emitReport();
+  // 写入阶段结束：恢复工程根，把暂存目录里的产物按目录/文件原子交换回来。
+  // rename 同一卷内是单次系统调用，HBuilderX 监视器只看到一次替换事件。
+  outRoot = appRoot;
+  for (const dir of ['pages', 'components', 'state', 'templates']) {
+    rmSync(join(outRoot, dir), { recursive: true, force: true });
+    renameSync(join(stageRoot, dir), join(outRoot, dir));
+  }
+  if (existsSync(join(stageRoot, 'static'))) {
+    rmSync(join(outRoot, 'static'), { recursive: true, force: true });
+    renameSync(join(stageRoot, 'static'), join(outRoot, 'static'));
+  }
+  for (const file of ['App.uvue', 'pages.json', 'GEN-REPORT.md']) {
+    if (existsSync(join(stageRoot, file))) {
+      renameSync(join(stageRoot, file), join(outRoot, file));
+    }
+  }
+  rmSync(stageRoot, { recursive: true, force: true });
   // After every writer has run — GEN-REPORT.md gets its own companion too.
   cleanAppleDouble();
+
+  // dist → 本工程 node_modules 拷贝同步：@snui/uni-x 在本工程内是 sync-uni-x
+  // 物化的真实目录（消除软链），组件重建后不同步拷贝，HBuilderX 的 web 编译
+  // 会一直服务旧组件（编译缓存按路径驻留，重启才重读磁盘）——真机与 web 均
+  // 复现过的回归。gen 与 sync 强绑定，杜绝「build 了忘 sync」的跳步。
+  const syncScript = fileURLToPath(new URL('sync-uni-x.mjs', import.meta.url));
+  try {
+    execFileSync(process.execPath, [syncScript], { stdio: 'inherit' });
+  } catch (error) {
+    console.error(
+      '[gen-x] sync-uni-x 失败 —— node_modules/@snui/uni-x 拷贝仍是旧组件，' +
+        '请手动运行 pnpm -F @snui/uni-demo-x sync-uni-x。',
+      error,
+    );
+  }
+
   console.log(
     `[gen-x] ${stats.uvue} .uvue + ${stats.ts} .ts → apps/uni-demo-x` +
       ` (imports ${stats.uniXRemapped}, types ${stats.typeImportsRemapped},` +

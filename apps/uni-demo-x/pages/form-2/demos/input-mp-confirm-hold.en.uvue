@@ -1,0 +1,18 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form-2/demos/input-mp-confirm-hold.en.vue sha256:3122ed6dc5a2dfee —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<script setup lang="ts">
+/** Demo: sn-input — keyboard stays up on confirm (confirmHold): the confirm key does not dismiss the keyboard. */
+import SnInput from '@snui/uni-x/components/sn-input/sn-input.uvue';
+const held = ref('');
+</script>
+<template>
+  <view class="sn-input-demo">
+    <SnInput v-model="held" confirm-hold placeholder="Keyboard stays up on confirm" />
+  </view>
+</template>
+<style scoped>
+.sn-input-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+</style>

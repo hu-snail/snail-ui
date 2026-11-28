@@ -35,23 +35,6 @@ const DEFAULT_NAV_HEIGHT = 44;
 /** Breathing room between the capsule's left edge and page actions. */
 const CAPSULE_GAP = 8;
 
-interface MenuButtonRect {
-  width?: number;
-  height?: number;
-  top?: number;
-  left?: number;
-}
-
-interface WindowInfo {
-  statusBarHeight?: number;
-  windowWidth?: number;
-}
-
-interface CapsuleUniHost {
-  getSystemInfoSync?: () => WindowInfo;
-  getMenuButtonBoundingClientRect?: () => MenuButtonRect | null;
-}
-
 let cached: CapsuleMetrics | null = null;
 
 /** Measure (and memoize) the capsule geometry. */
@@ -64,21 +47,23 @@ export function getCapsuleMetrics(): CapsuleMetrics {
   let hasCapsule = false;
 
   // #ifdef MP
-  const host = (globalThis as { uni?: CapsuleUniHost }).uni;
-  const readSys = host?.getSystemInfoSync;
-  if (typeof readSys === 'function') {
+  // Static `uni.*` calls (not globalThis) so the uni-app compiler bundles the
+  // APIs — a dynamic lookup is invisible to its static analysis and leaves the
+  // status bar at 0 on MP (see src/uni-env.d.ts).
+  if (typeof uni !== 'undefined' && typeof uni.getSystemInfoSync === 'function') {
     try {
-      const sys = readSys.call(host);
+      const sys = uni.getSystemInfoSync();
       statusBarHeight = sys?.statusBarHeight ?? 0;
 
       // #ifdef MP-WEIXIN
-      const readRect = host?.getMenuButtonBoundingClientRect;
-      const rect = typeof readRect === 'function' ? readRect.call(host) : null;
-      if (rect && (rect.width ?? 0) > 0 && (rect.top ?? 0) > statusBarHeight) {
-        const gap = (rect.top ?? 0) - statusBarHeight;
-        navBarHeight = Math.max(gap * 2 + (rect.height ?? 0), DEFAULT_NAV_HEIGHT);
-        capsulePadRight = (sys?.windowWidth ?? 375) - (rect.left ?? 0) + CAPSULE_GAP;
-        hasCapsule = true;
+      if (typeof uni.getMenuButtonBoundingClientRect === 'function') {
+        const rect = uni.getMenuButtonBoundingClientRect();
+        if (rect && (rect.width ?? 0) > 0 && (rect.top ?? 0) > statusBarHeight) {
+          const gap = (rect.top ?? 0) - statusBarHeight;
+          navBarHeight = Math.max(gap * 2 + (rect.height ?? 0), DEFAULT_NAV_HEIGHT);
+          capsulePadRight = (sys?.windowWidth ?? 375) - (rect.left ?? 0) + CAPSULE_GAP;
+          hasCapsule = true;
+        }
       }
       // #endif
     } catch {

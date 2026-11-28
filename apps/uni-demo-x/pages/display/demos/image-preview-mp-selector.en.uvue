@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/image-preview-mp-selector.en.vue sha256:9745718b23f4de39 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-image-preview (uni-end) — `selector` hit areas.
@@ -13,9 +14,9 @@ const preview = ref<{
 } | null>(null);
 
 const images = [
-  'https://picsum.photos/seed/snui-beh-a/900/1300',
-  'https://picsum.photos/seed/snui-beh-b/900/1300',
-  'https://picsum.photos/seed/snui-beh-c/900/1300',
+  'https://cdn.uviewui.com/uview/album/2.jpg',
+  'https://cdn.uviewui.com/uview/album/3.jpg',
+  'https://cdn.uviewui.com/uview/album/4.jpg',
 ];
 
 const lastEvent = ref('—');
@@ -37,11 +38,9 @@ const lastEvent = ref('—');
 
     <view class="sn-demo__row">
       <SnButton size="small" @click="preview?.open({ startPosition: 0 })"
-        ><text>Open from the first</text></SnButton
-      >
+        ><text>Open from the first</text></SnButton>
       <SnButton size="small" @click="preview?.open({ startPosition: 2 })"
-        ><text>Open from the third</text></SnButton
-      >
+        ><text>Open from the third</text></SnButton>
     </view>
     <text class="sn-demo__meta">Latest event: {{ lastEvent }}</text>
 

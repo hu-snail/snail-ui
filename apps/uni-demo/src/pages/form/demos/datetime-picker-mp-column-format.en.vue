@@ -3,7 +3,6 @@
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const min = new Date(2024, 0, 1).getTime();
@@ -31,16 +30,13 @@ const formattedText = computed(() => {
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="Formatted + filtered"
-        label="unit suffixes on the labels; even months only"
-        :prefix-icon-data="Filter"
-        :value="formattedText"
-        is-link
-        @click="openFormatted = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="Formatted + filtered"
+      :prefix-icon-data="Filter"
+      :value="formattedText"
+      is-link
+      @click="openFormatted = true"
+    />
 
     <SnDatetimePicker
       v-model="formatted"

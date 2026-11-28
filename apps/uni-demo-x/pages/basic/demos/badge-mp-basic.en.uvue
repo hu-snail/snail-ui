@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/badge-mp-basic.en.vue sha256:5e27c9ea902cf02d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-badge (uni-end) — numeric values, max cap and types. */
 import SnBadge from '@snui/uni-x/components/sn-badge/sn-badge.uvue';

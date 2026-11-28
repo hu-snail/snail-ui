@@ -22,7 +22,9 @@ export const swipeActionDocPageEn: SnDocPageData = {
     { t: 'code', s: 'v-model' },
     { t: 'text', s: ' reports ' },
     { t: 'code', s: "'left' | 'close' | 'right'" },
-    { t: 'text', s: '.' },
+    { t: 'text', s: '. Action glyphs can fade with the occlusion distance via the ' },
+    { t: 'code', s: '--sn-swipe-action-reveal-*' },
+    { t: 'text', s: ' CSS vars.' },
   ],
   quickActions: [
     { icon: 'copy', label: 'Add @snui/uni', copy: 'pnpm add @snui/uni', copiedLabel: 'Copied' },
@@ -59,12 +61,22 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-basic',
       title: 'Basic usage',
-      blurb: 'Swipe left to reveal Delete; the state is shown live.',
+      blurb: 'Floating card row + delete pill: swipe left to reveal Delete; the state is shown live.',
+    },
+    {
+      name: 'swipe-action-mp-card',
+      title: 'Card rows (message list)',
+      blurb: 'iOS-mail style message cards: swipe to reveal an Archive pill; tapping it collapses the row.',
+    },
+    {
+      name: 'swipe-action-mp-cell-group',
+      title: 'List group (cell style)',
+      blurb: 'Gapless sn-cell-group list; swipe a row for Mute / Delete — glyphs fade with the occlusion distance.',
     },
     {
       name: 'swipe-action-mp-both-sides',
       title: 'Both sides',
-      blurb: 'The #left / #right slots render action areas on both sides.',
+      blurb: 'The #left / #right slots render pills on both sides; dragging past the centre flips sides.',
     },
     {
       name: 'swipe-action-mp-before-close',
@@ -79,7 +91,7 @@ import { SwipeAction } from '@snui/uni';
     {
       name: 'swipe-action-mp-custom-style',
       title: 'Root styling',
-      blurb: 'custom-class / custom-style land on the root node.',
+      blurb: 'custom-class / custom-style land on the root node (the component paints no background).',
     },
   ],
   props: {

@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/video-preview-mp-layer.en.vue sha256:7a1f5cbca5da9754 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-video-preview (uni-end) — stacking & style (`zIndex` / `customStyle`).
@@ -12,7 +13,7 @@ const preview = ref<{
 
 const clip = {
   src: 'https://www.w3schools.com/html/mov_bbb.mp4',
-  poster: 'https://picsum.photos/seed/snui-video-cfg/750/420',
+  poster: 'https://cdn.uviewui.com/uview/album/6.jpg',
   title: 'Custom stacking and style',
 };
 </script>

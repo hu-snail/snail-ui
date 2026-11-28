@@ -7,6 +7,8 @@
  * it cannot parse.
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h } from 'vue';
@@ -378,6 +380,57 @@ describe('sn-grid', () => {
           .find('.sn-grid-item__badge')
           .exists(),
       ).toBe(false);
+    });
+
+    it('keeps the label inside the stack so square cells cannot clip it', () => {
+      // Regression (uni-app x): the label used to be a sibling of the stack.
+      // Square cells give content a 0-height box + 100% padding-bottom, so the
+      // label overflowed into the padding and the view clipped its top half.
+      // Sharing one flex parent also makes `reverse` (order on icon-wrap) work.
+      const wrapper = mountGrid({ square: true }, [{ text: 'Label' }]);
+      const stack = wrapper.find('.sn-grid-item__stack');
+      expect(stack.find('.sn-grid-item__icon-wrap').exists()).toBe(true);
+      expect(stack.find('.sn-grid-item__text-wrap').exists()).toBe(true);
+      const content = wrapper.find('.sn-grid-item__content');
+      expect(
+        Array.from(content.element.children).some((child) =>
+          child.classList.contains('sn-grid-item__text-wrap'),
+        ),
+      ).toBe(false);
+    });
+
+    it('pins the badge inside the icon box without negative offsets', () => {
+      // uni-app x clips children that leave a view: the old negative top/right
+      // offsets shaved the badge into a half circle. happy-dom drops rpx, so
+      // guard the stylesheet text as well as the DOM position.
+      const wrapper = mountGrid({}, [{ text: 'A', value: 5 }]);
+      expect(wrapper.find('.sn-grid-item__icon-wrap').find('.sn-grid-item__badge').exists()).toBe(
+        true,
+      );
+      const source = readFileSync(join(import.meta.dirname, 'sn-grid-item.vue'), 'utf8');
+      expect(source).not.toMatch(/top:\s*-\d+rpx/);
+      expect(source).not.toMatch(/right:\s*-\d+rpx/);
+    });
+
+    it('reserves the badge corner only on badge cells so square labels survive', () => {
+      // Regression (uni-app x): a permanent 24rpx padding on icon-wrap made
+      // icon + gap + label (~74px) taller than the fixed-height square stack
+      // (~62px). Centring pushed the label past the view's clipped bottom edge,
+      // shaving off its lower half. happy-dom cannot resolve rpx / layout, so
+      // guard both the class wiring and the stylesheet text.
+      const plain = mountGrid({ square: true }, [{ text: 'Label' }]);
+      expect(plain.find('.sn-grid-item__icon-wrap--badge').exists()).toBe(false);
+
+      const badged = mountGrid({}, [{ text: 'A', value: 5 }]);
+      expect(badged.find('.sn-grid-item__icon-wrap--badge').exists()).toBe(true);
+
+      const source = readFileSync(join(import.meta.dirname, 'sn-grid-item.vue'), 'utf8');
+      const iconRuleStart = source.indexOf('.sn-grid-item__icon-wrap {');
+      const badgeRuleStart = source.indexOf('.sn-grid-item__icon-wrap--badge {');
+      const iconRule = source.slice(iconRuleStart, badgeRuleStart);
+      const badgeRule = source.slice(badgeRuleStart, source.indexOf('}', badgeRuleStart) + 1);
+      expect(iconRule).not.toContain('padding:');
+      expect(badgeRule).toContain('padding: var(--sn-mp-spacing-4)');
     });
   });
 

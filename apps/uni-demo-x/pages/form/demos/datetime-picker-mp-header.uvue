@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/datetime-picker-mp-header.vue sha256:b7e58a57efc686e7 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-datetime-picker — 弹层头部契约（取消左 / 标题中 / 确认右）。
@@ -8,7 +9,6 @@
  */
 import SnDatetimePicker from '@snui/uni-x/components/sn-datetime-picker/sn-datetime-picker.uvue';
 import SnCell from '@snui/uni-x/components/sn-cell/sn-cell.uvue';
-import SnCellGroup from '@snui/uni-x/components/sn-cell/sn-cell-group.uvue';
 import { Calendar } from '@snui/uni-x/components/sn-icon/sn-icon-set';
 
 const stamp = new Date(2026, 9, 29).getTime();
@@ -35,35 +35,30 @@ const customText = computed(() => textOf(custom.value));
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup insert>
-      <SnCell
-        title="带标题"
-        label="title：标题居中，取消 / 确认分列两侧"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="titledText"
-        is-link
-        @click="openTitled = true"
-      />
-      <SnCell
-        title="无标题"
-        label="不传 title：确认仍贴右边缘"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="bareText"
-        is-link
-        @click="openBare = true"
-      />
-      <SnCell
-        title="自定义文案"
-        label="cancelButtonText / confirmButtonText：只换文字，位置不变"
-        :prefix-icon-data="Calendar"
-        placeholder="请选择"
-        :value="customText"
-        is-link
-        @click="openCustom = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="带标题"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="titledText"
+      is-link
+      @click="openTitled = true"
+    />
+    <SnCell
+      title="无标题"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="bareText"
+      is-link
+      @click="openBare = true"
+    />
+    <SnCell
+      title="自定义文案"
+      :prefix-icon-data="Calendar"
+      placeholder="请选择"
+      :value="customText"
+      is-link
+      @click="openCustom = true"
+    />
 
     <SnDatetimePicker
       v-model="titled"

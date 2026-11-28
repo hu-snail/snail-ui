@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-standalone.en.vue sha256:c9f04e719a437084 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-checkbox — standalone usage and custom values.
@@ -12,8 +13,7 @@ const subscribed = ref<string>('yes');
   <view class="sn-demo sn-demo--stack">
     <SnCheckbox v-model="standalone"><text>Standalone v-model (outside a group)</text></SnCheckbox>
     <text class="sn-demo__meta"
-      >Standalone: the tick writes back to its own modelValue ({{ standalone }})</text
-    >
+      >Standalone: the tick writes back to its own modelValue ({{ standalone }})</text>
 
     <SnCheckbox v-model="subscribed" true-value="yes" false-value="no"><text>
       custom trueValue / falseValue

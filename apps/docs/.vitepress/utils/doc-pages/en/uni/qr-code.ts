@@ -64,7 +64,8 @@ import { QrCode } from '@snui/uni';
     {
       name: 'qr-code-mp-color',
       title: 'Custom colors (`colorDark` / `colorLight`)',
-      blurb: 'color-dark recolours the modules; color-light recolours the quiet zone.',
+      blurb:
+        'Six swatches at the bottom of the card switch the module / quiet-zone colours live; the four corner blocks are rounded by default.',
     },
     {
       name: 'qr-code-mp-export',
@@ -124,6 +125,12 @@ import { QrCode } from '@snui/uni';
         type: 'number',
         default: '1',
         desc: 'Module fill ratio inside its cell, `0.4`-`1`.',
+      },
+      {
+        name: 'cornerRadius',
+        type: 'number',
+        default: '6',
+        desc: 'AUI extension: corner-block radius in design px; `0` restores square corners.',
       },
       {
         name: 'enableGradient',

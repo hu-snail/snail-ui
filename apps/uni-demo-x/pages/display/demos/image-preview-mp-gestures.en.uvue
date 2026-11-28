@@ -1,10 +1,11 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/image-preview-mp-gestures.en.vue sha256:af0d61bc7c907e24 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /** Demo: sn-image-preview (uni-end) — WeChat-grade gestures: pinch / double-tap / drag-down dismiss. */
 import SnImagePreview from '@snui/uni-x/components/sn-image-preview/sn-image-preview.uvue';
 const images = [
-  'https://picsum.photos/id/1015/800/1200',
-  'https://picsum.photos/id/1035/800/1000',
-  'https://picsum.photos/id/1043/1200/800',
+  'https://cdn.uviewui.com/uview/album/5.jpg',
+  'https://cdn.uviewui.com/uview/album/6.jpg',
+  'https://cdn.uviewui.com/uview/album/7.jpg',
 ];
 
 const preview = ref();
@@ -26,8 +27,7 @@ function open(index: number): void {
       />
     </view>
     <text class="sn-demo__hint"
-      >Pinch to zoom · double-tap · pan when zoomed · drag down to close</text
-    >
+      >Pinch to zoom · double-tap · pan when zoomed · drag down to close</text>
     <SnImagePreview ref="preview" :images="images" />
   </view>
 </template>

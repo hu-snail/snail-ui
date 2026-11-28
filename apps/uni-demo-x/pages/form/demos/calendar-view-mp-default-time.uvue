@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/calendar-view-mp-default-time.vue sha256:19d9e1b32cfd9b48 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-calendar-view — 默认时分与即时写回（defaultTime + immediateChange）。
@@ -45,8 +46,7 @@ function markPayday(day: CalendarDayItem): Partial<CalendarDayItem> | undefined 
       @change="onChange"
     />
     <text class="sn-demo__meta"
-      >defaultTime="09:30:00" + immediateChange：点中即写回带时分秒的时间戳 —— {{ timedText }}</text
-    >
+      >defaultTime="09:30:00" + immediateChange：点中即写回带时分秒的时间戳 —— {{ timedText }}</text>
     <text class="sn-demo__meta">change 已触发 {{ changes }} 次</text>
   </view>
 </template>

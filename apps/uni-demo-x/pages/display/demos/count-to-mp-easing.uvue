@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/count-to-mp-easing.vue sha256:dd7c591547a2a143 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-count-to (uni-end) — use-easing 缓动曲线对比 + custom-class / custom-style。
@@ -29,8 +30,7 @@ const round = ref(0);
       custom-style="letter-spacing: 1rpx"
     />
     <text class="sn-demo__meta"
-      >customClass 挂在根节点、customStyle 追加到 inline style（上方带底色的数字）。</text
-    >
+      >customClass 挂在根节点、customStyle 追加到 inline style（上方带底色的数字）。</text>
 
     <SnButton size="small" @click="round += 1"><text>重新播放两组</text></SnButton>
   </view>

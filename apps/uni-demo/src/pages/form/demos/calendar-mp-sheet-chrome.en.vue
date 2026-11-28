@@ -2,7 +2,7 @@
 /**
  * Demo: sn-calendar — sheet chrome and footer slot.
  *
- * One cell card carries the entry: show-confirm = false drops the confirm
+ * One sn-cell row carries the entry (no group card; the module title is carried by the page): show-confirm = false drops the confirm
  * button and the confirm-left slot holds a clear action, on top of the
  * modal / safe-area / stacking / custom class and style forwarding.
  */
@@ -10,7 +10,6 @@ import { computed, ref } from 'vue';
 import { Info } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
-import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -29,17 +28,14 @@ const noConfirmText = computed(() => fmtStamp(noConfirm.value));
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup card title="Sheet chrome &amp; footer slot">
-      <SnCell
-        title="No confirm button + footer slot"
-        label="show-confirm=false · confirm-left slot holds a clear action · close-on-click-modal=false"
-        :value="noConfirmText"
-        placeholder="Not selected"
-        :prefix-icon-data="Info"
-        is-link
-        @click="open = true"
-      />
-    </SnCellGroup>
+    <SnCell
+      title="No confirm button + footer slot"
+      :value="noConfirmText"
+      placeholder="Not selected"
+      :prefix-icon-data="Info"
+      is-link
+      @click="open = true"
+    />
 
     <SnCalendar
       v-model="noConfirm"

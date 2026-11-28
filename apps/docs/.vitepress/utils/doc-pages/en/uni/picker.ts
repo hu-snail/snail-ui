@@ -88,6 +88,11 @@ import { Picker } from '@snui/uni';
         '`immediateChange` writes `v-model` continuously during the roll instead of on confirm.',
     },
     {
+      name: 'picker-mp-wheel',
+      title: 'Wheel style (`wheel` / `vibrateShort`)',
+      blurb: 'The sheet roller wears the rounded pill band; sliding ticks a light haptic (App / MP).',
+    },
+    {
       name: 'picker-mp-sheet',
       title: 'Sheet behavior (scrim / stacking / safe area)',
       blurb:
@@ -179,6 +184,24 @@ import { Picker } from '@snui/uni';
         type: 'boolean',
         default: 'false',
         desc: 'Write `v-model` on every roll instead of only on confirm.',
+      },
+      {
+        name: 'wheel',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Wheel style (additive): forwarded to the roller — the selected row renders a rounded pill band with a distance fade.',
+      },
+      {
+        name: 'wheelBand',
+        type: "'shared' | 'perColumn'",
+        default: "'shared'",
+        desc: 'Band shape (additive): shared spans every column with one pill; perColumn one band per column. Forwarded to the roller.',
+      },
+      {
+        name: 'vibrateShort',
+        type: 'boolean',
+        default: 'false',
+        desc: 'Slide haptic (additive): forwarded to the roller — fires `uni.vibrateShort({ type: "light" })` per detent on App / MP.',
       },
       { name: 'customClass', type: 'string', default: "''", desc: 'Class on the root node.' },
       { name: 'customStyle', type: 'string', default: "''", desc: 'Inline style on the sheet.' },

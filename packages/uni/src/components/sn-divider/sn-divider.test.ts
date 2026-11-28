@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnDivider from './sn-divider.vue';
+// Raw SFC source for CSS-level regression guards (同 sn-badge：happy-dom 不解析
+// rpx / 真机 flex 布局，规则本体的回归只能断言源码)。?raw 走 Vite 资产管线，
+// 两端一致。
+import dividerSource from './sn-divider.vue?raw';
 
 describe('sn-divider (AUI-MP-005)', () => {
   it('renders an empty horizontal separator by default', () => {
@@ -128,5 +132,26 @@ describe('sn-divider (AUI-MP-005)', () => {
     const w = mount(SnDivider);
     expect(w.attributes('style')).not.toContain('dashed');
     expect(w.attributes('style')).toContain('solid');
+  });
+
+  /* ── stray inactive-axis border regressions (device-verified) ───────────
+   * An inline border-style on the axis the class CSS never sized paints a
+   * border with the initial `medium` width / `currentColor` colour — the dark
+   * bar rendered at the slot-text edge on mp-weixin / uni-app x. */
+
+  it('omits border-left-style on horizontal dividers so no stray bar paints', () => {
+    const w = mount(SnDivider, { slots: { default: 'OR' } });
+    expect(w.attributes('style')).toContain('border-top-style');
+    expect(w.attributes('style')).not.toContain('border-left-style');
+  });
+
+  it('omits border-top-style on vertical dividers so no stray bar paints', () => {
+    const w = mount(SnDivider, { props: { direction: 'vertical', dashed: true } });
+    expect(w.attributes('style')).toContain('border-left-style');
+    expect(w.attributes('style')).not.toContain('border-top-style');
+  });
+
+  it('centers the default content position — stylesheet carries the content-center rule', () => {
+    expect(dividerSource).toMatch(/\.sn-divider--content-center\s*\{[^}]*justify-content:\s*center/);
   });
 });

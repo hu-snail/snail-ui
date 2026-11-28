@@ -13,7 +13,11 @@ const exported = ref('—');
 async function onExport() {
   if (qrRef.value === null) return;
   try {
-    exported.value = await qrRef.value.exportImage();
+    const result = await qrRef.value.exportImage();
+    // uni-app x 直接返回完整 PNG data URL，避免把上万字符铺进示例文字。
+    exported.value = result.startsWith('data:image/')
+      ? `${result.slice(0, 22)}…（共 ${result.length} 字符，可直接用于 <image :src>）`
+      : result;
   } catch (error) {
     const code = (error as { code?: string }).code ?? 'EXPORT_FAILED';
     exported.value = `导出不可用（${code}）`;
@@ -25,7 +29,7 @@ async function onExport() {
   <view class="sn-demo sn-demo--column">
     <SnQrCode ref="qrRef" text="https://snui.dev/export" :size="200" :margin="12" />
     <SnButton size="small" @tap="onExport">导出图片</SnButton>
-    <text class="sn-demo__meta">exportImage 返回临时文件路径：{{ exported }}</text>
+    <text class="sn-demo__meta">exportImage 返回临时文件路径或 data URL：{{ exported }}</text>
   </view>
 </template>
 

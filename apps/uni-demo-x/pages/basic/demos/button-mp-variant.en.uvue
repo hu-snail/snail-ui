@@ -1,23 +1,71 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/button-mp-variant.en.vue sha256:41b00367f453d542 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
-/** Demo: sn-button — variant 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'. */
+/**
+ * Demo: sn-button — variant matrix × semantic types (base is the default
+ * filled look shown in Basic usage, so no dedicated group here).
+ * Spacing note: uni-app x has no flex `gap` support — inline `custom-style`
+ * margins + explicit `flex-direction: row`.
+ */
 import SnButton from '@snui/uni-x/components/sn-button/sn-button.uvue';
+type ButtonVariant = 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
+type SemanticType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
+
+const variants: Array<{ key: ButtonVariant; label: string }> = [
+  { key: 'plain', label: 'Plain' },
+  { key: 'dashed', label: 'Dashed' },
+  { key: 'soft', label: 'Soft' },
+  { key: 'subtle', label: 'Subtle' },
+  { key: 'text', label: 'Text' },
+];
+
+const types: Array<{ key: SemanticType; label: string }> = [
+  { key: 'primary', label: 'Primary button' },
+  { key: 'success', label: 'Success button' },
+  { key: 'info', label: 'Info button' },
+  { key: 'warning', label: 'Warning button' },
+  { key: 'danger', label: 'Danger button' },
+];
+
+/** In-row spacing fallback (uni-app x lacks gap). */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 <template>
-  <view class="sn-button-demo">
-    <SnButton type="primary" variant="base"><text>base</text></SnButton>
-    <SnButton type="primary" variant="plain"><text>plain</text></SnButton>
-    <SnButton type="primary" variant="dashed"><text>dashed</text></SnButton>
-    <SnButton type="primary" variant="soft"><text>soft</text></SnButton>
-    <SnButton variant="subtle"><text>subtle</text></SnButton>
-    <SnButton variant="text"><text>text</text></SnButton>
+  <view class="sn-mp-btn-stack">
+    <view v-for="variant in variants" :key="variant.key" class="sn-mp-btn-group">
+      <text class="sn-mp-btn-label">{{ variant.label }} ({{ variant.key }})</text>
+      <view class="sn-mp-btn-row">
+        <SnButton
+          v-for="item in types"
+          :key="item.key"
+          :custom-style="rowGap"
+          :type="item.key"
+          :variant="variant.key"
+        ><text>
+          {{ variant.key === 'text' ? 'Button' : item.label }}
+        </text></SnButton>
+      </view>
+    </view>
   </view>
 </template>
 <style scoped>
-.sn-button-demo {
+.sn-mp-btn-stack {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-  align-items: center;
+  flex-direction: column;
+}
+.sn-mp-btn-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20rpx;
+}
+.sn-mp-btn-row {
+  display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.sn-mp-btn-label {
+  margin-bottom: 12rpx;
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

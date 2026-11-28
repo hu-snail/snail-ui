@@ -73,7 +73,7 @@ import { QrCode } from '@snui/uni';
     {
       name: 'qr-code-mp-color',
       title: '自定义颜色（colorDark / colorLight）',
-      blurb: 'color-dark 换码点色，color-light 换留白色。',
+      blurb: 'color-dark 换码点色，color-light 换留白色；卡片底部 6 组色卡实时切换，四个角块默认带圆角。',
     },
     {
       name: 'qr-code-mp-export',
@@ -119,6 +119,12 @@ import { QrCode } from '@snui/uni';
       { name: 'margin', type: 'number', default: '0', desc: '静区宽度，设计稿 px' },
       { name: 'dotType', type: 'QrDotType', default: "'square'", desc: 'Module shape.' },
       { name: 'dotScale', type: 'number', default: '1', desc: '码点填充比例（钳制 0.4-1）' },
+      {
+        name: 'cornerRadius',
+        type: 'number',
+        default: '6',
+        desc: '四个角块圆角半径，设计稿 px；0 恢复标准直角（AUI 扩展属性）。',
+      },
       { name: 'enableGradient', type: 'boolean', default: 'false', desc: '是否启用渐变' },
       {
         name: 'gradientColor',

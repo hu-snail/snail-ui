@@ -41,13 +41,35 @@
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
+ * ## MP wrapper node (virtualHost)
+ *
+ * WeChat MP wraps every component in a custom-component host node, and that
+ * node — not the root view — becomes the flex item inside `.sn-steps`. The
+ * root's `flex: 1 1 0` then never applies, every step shrinks to fit-content
+ * width, and the horizontal connectors stop short of the next indicator
+ * (device-verified regression). `options: { virtualHost: true }` removes the
+ * wrapper so the root view participates directly — the same switch wot-ui's
+ * `wd-step` flips (AGENTS.md §112 reference library). With the wrapper gone,
+ * `class` / `style` passed on the component tag merge onto the root only when
+ * the host app enables `mergeVirtualHostAttributes` in its manifest — props
+ * (`customClass` / `customStyle`) are unaffected.
+ *
+ * ## Vertical rail
+ *
+ * The connector is absolutely positioned against the step root (`top` under
+ * the 48rpx indicator, `bottom: 0` on the step's bottom edge) instead of being
+ * flex-grown inside the header: the header's height is content-driven and the
+ * stretch + flex-grow chain stalled at the line's min-height on MP, leaving
+ * the gap under it uncovered. Absolute anchoring is the same strategy as the
+ * sn-badge corner pin and is immune to the content height.
+ *
  * Not responsible for:
  *   - 激活下标本身 — 由 sn-steps 持有
  *   - 连接线样式 — 由 sn-steps 的 `connector` 统一持有
  *   - 步骤间流转 — 由宿主驱动
  */
 
-import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
@@ -55,7 +77,12 @@ import { Check, X } from '../sn-icon/sn-icon-set';
 import { nextUid } from '../../utils/uid';
 import { SN_STEPS_KEY, resolveSnStepIconSize, type SnStepStatus } from './sn-steps-types';
 
-defineOptions({ name: 'SnStep' });
+defineOptions({
+  name: 'SnStep',
+  // #ifdef MP-WEIXIN
+  options: { virtualHost: true },
+  // #endif
+});
 
 const props = withDefaults(
   defineProps<{
@@ -132,8 +159,31 @@ const isLast = computed(() => {
   return stepIndex.value >= 0 && stepIndex.value === count - 1;
 });
 
+const isFirst = computed(() => stepIndex.value === 0);
+
+/* Keep the resolved status in the container so the next step can colour the
+ * leading rail with the step it is coming from (dashed / dotted included). */
+watchEffect(() => {
+  if (!steps || stepIndex.value < 0) return;
+  steps.setStepStatus(uid, resolvedStatus.value);
+});
+
+/** Status of the step immediately before this one — drives the leading rail. */
+const previousStatus = computed<SnStepStatus | undefined>(() => {
+  if (stepIndex.value <= 0) return undefined;
+  return steps?.getStepStatus(stepIndex.value - 1);
+});
+
 const isVertical = computed(() => steps?.vertical.value ?? false);
 const isDot = computed(() => steps?.dot.value ?? false);
+/** `align-center` is horizontal-only (wd-steps contract). */
+const isCenter = computed(() => (steps?.alignCenter.value ?? false) && !isVertical.value);
+/**
+ * `space` supplies an explicit width per step; the equal flex share would
+ * otherwise stretch it and cancel the spacing. Centering (`align-center`)
+ * keeps wd-steps' equal widths and only centres each step's content.
+ */
+const isIntrinsic = computed(() => (steps?.space.value ?? '') !== '');
 
 /** `icon` name resolved through registry → built-in catalogue (sync only). */
 const resolvedNameIcon = computed<IconData | undefined>(() => {
@@ -197,6 +247,10 @@ const rootClass = computed(() => [
     'sn-step--vertical': isVertical.value,
     'sn-step--horizontal': !isVertical.value,
     'sn-step--dot': isDot.value,
+    'sn-step--center': isCenter.value,
+    'sn-step--intrinsic': isIntrinsic.value,
+    'sn-step--prev-finished': previousStatus.value === 'finished',
+    'sn-step--prev-error': previousStatus.value === 'error',
   },
   props.customClass,
 ]);
@@ -211,11 +265,28 @@ const rootClass = computed(() => [
     :aria-current="resolvedStatus === 'process' ? 'step' : undefined"
   >
     <view class="sn-step__header">
+      <!-- Centered mode uses two symmetric rails: the leading rail fills the
+           gap from the previous step into this indicator; the trailing rail
+           fills the gap out of it. Equal flex shares keep the indicator at
+           50% without absolute-position calc (fragile on MP / uvue). The
+           outer rails are hidden inline — class-based visibility rides a
+           var()-injected rule on MP-WeChat and must not be load-bearing. -->
+      <view
+        v-if="isCenter && !isDot"
+        class="sn-step__line sn-step__line--before"
+        :class="{ 'sn-step__line--hidden': isFirst }"
+        :style="[connectorStyle, isFirst ? 'visibility: hidden;' : '']"
+        aria-hidden="true"
+      />
       <!-- additive `node` slot: a custom node replaces the default indicator
            (number / status glyph) as a whole; the connector line stays. -->
       <slot name="node">
         <view class="sn-step__indicator">
-          <slot name="icon">
+          <!-- Dot mode renders a pure dot: the number / status glyphs are
+               suppressed so the indicator stays a clean circle (wd-steps
+               contract). The `icon` slot is intentionally bypassed here. -->
+          <view v-if="isDot" class="sn-step__dot" />
+          <slot v-else name="icon">
             <!-- Icon precedence: IconData object > image URL > resolved name.
                  An unresolvable name falls through to the builtin glyphs so
                  the indicator is never blank. -->
@@ -257,9 +328,21 @@ const rootClass = computed(() => [
           </slot>
         </view>
       </slot>
+      <!-- In centered mode the trailing rail is always present (hidden on the
+           last step) so the indicator stays centered. Without centering, only
+           non-last steps draw a connector. Vertical steps anchor the connector
+           against the root box (see the .sn-step__line--vertical note). -->
       <view
-        v-if="!isLast && !isDot"
+        v-if="isCenter && !isDot"
+        class="sn-step__line sn-step__line--after"
+        :class="{ 'sn-step__line--hidden': isLast }"
+        :style="[connectorStyle, isLast ? 'visibility: hidden;' : '']"
+        aria-hidden="true"
+      />
+      <view
+        v-else-if="!isLast && !isDot"
         class="sn-step__line"
+        :class="{ 'sn-step__line--vertical': isVertical }"
         :style="connectorStyle"
         aria-hidden="true"
       />
@@ -285,31 +368,96 @@ const rootClass = computed(() => [
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
 .sn-step {
   display: flex;
-  flex: 1 1 0;
+  /* `flex: none` is the safe default: in a vertical (column) container a
+   * `flex-basis: 0` collapses every step to zero height and nothing renders.
+   * Horizontal steps opt into equal widths via `.sn-step--horizontal`. */
+  flex: none;
   flex-direction: column;
   box-sizing: border-box;
   min-width: 0;
 }
 
 .sn-step--horizontal {
+  flex: 1 1 0;
   align-items: center;
 }
 
+/* `align-center`: symmetric rails inside the header keep the indicator at
+ * 50% and make the connector continuous across step boundaries. No absolute
+ * positioning / calc() — MP and uvue resolve those inconsistently. */
+.sn-step--center .sn-step__header {
+  justify-content: center;
+}
+
+.sn-step--center .sn-step__line {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Centered mode paints the connector as two adjacent in-flow segments: the
+ * leading rail (inside this step's box, indicator-ward) takes the PREVIOUS
+ * step's status colour, the trailing rail takes this step's own. Flex-packed
+ * boxes touch, so the two halves form one continuous line with no transform.
+ * The old design painted only the trailing rail and stretched it across the
+ * boundary with a scaled overhang; the overhang never rendered on MP-WeChat
+ * (device-verified), leaving the next step's leading rail as a visible gap. */
+.sn-step--center .sn-step__line--before {
+  border-color: var(--sn-mp-color-border-default);
+}
+
+/* The root carries --prev-finished / --prev-error for exactly this: the
+ * segment left of the indicator belongs to the connector the previous step
+ * is leaving. Declared after the center rule so the status colour wins the
+ * same-var cascade on roots carrying both classes. */
+.sn-step--prev-finished .sn-step__line--before {
+  border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-step--prev-error .sn-step__line--before {
+  border-color: var(--sn-mp-color-feedback-danger);
+}
+
+/* The outer rails are layout-only on the first / last step. */
+.sn-step--center .sn-step__line--hidden {
+  visibility: hidden;
+}
+
+.sn-step--center .sn-step__content {
+  align-items: center;
+}
+
+/* `space` needs an intrinsic width instead of an equal flex share, otherwise
+ * the container's justify-content can never take effect. Centering itself is
+ * handled by the symmetric rails above. */
+.sn-step--horizontal.sn-step--intrinsic {
+  flex: 0 0 auto;
+}
+
+/* `position: relative` anchors the absolute vertical rail to this box (see
+ * .sn-step__line--vertical below). */
 .sn-step--vertical {
+  flex: none;
   flex-direction: row;
   align-items: flex-start;
+  position: relative;
 }
 
 .sn-step__header {
   display: flex;
   align-items: center;
   width: 100%;
+  /* The centered trailing rail is scaled past the step box; a host / uni
+   * reset with `overflow: hidden` would clip it at the step boundary. */
+  overflow: visible;
 }
 
 .sn-step--vertical .sn-step__header {
   flex-direction: column;
   width: auto;
-  height: 100%;
+  /* Fill the step's content-driven height so the connector can stretch.
+   * `height: 100%` against an auto-height step collapsed to zero on MP/uvue. */
+  height: auto;
+  align-self: stretch;
 }
 
 .sn-step__indicator {
@@ -318,13 +466,17 @@ const rootClass = computed(() => [
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 40rpx;
-  height: 40rpx;
+  /* 48rpx leaves a visible gap around the default 32rpx glyph; a 40rpx ring
+   * crowded the icon right up against its border (see the icon demo). */
+  width: 48rpx;
+  height: 48rpx;
   border: 2rpx solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-full);
   background-color: var(--sn-mp-color-background-surface);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
+  padding: 0;
+  margin: 0;
 }
 
 .sn-step--dot .sn-step__indicator {
@@ -332,6 +484,13 @@ const rootClass = computed(() => [
   height: 16rpx;
   border: none;
   background-color: var(--sn-mp-color-border-default);
+}
+
+/* Dot mode glyph: the indicator itself carries the background / state colour,
+ * this child only exists to keep the slot tree non-empty (no number / icon). */
+.sn-step__dot {
+  width: 100%;
+  height: 100%;
 }
 
 .sn-step--finished .sn-step__indicator {
@@ -390,16 +549,38 @@ const rootClass = computed(() => [
   border-left-style: solid;
 }
 
-.sn-step--vertical .sn-step__line {
+/**
+ * Vertical rail — absolutely positioned against the step root instead of
+ * flex-grown inside the header. The old chain (header `align-self: stretch`
+ * feeding a flex-grow line) is content-height dependent and stalled at the
+ * line's min-height on MP-WeChat, leaving the gap under it uncovered.
+ * Anchoring `top` under the 48rpx indicator and `bottom: 0` on the step's
+ * bottom edge — which is the next indicator's top — is correct for any
+ * content height and needs no stretch. Single-class selector: a descendant
+ * rule here would be var-injected by the uni-x flattener (AGENTS.md §116.2),
+ * and concrete geometry must not ride on var() substitution. Declared after
+ * the base rule so it wins the cascade at equal specificity.
+ */
+.sn-step__line--vertical {
+  position: absolute;
+  top: 50rpx;
+  bottom: 0;
+  left: 23rpx;
   width: 0;
-  height: 100%;
-  min-height: 40rpx;
+  height: auto;
+  min-height: 0;
   border-top-width: 0;
   border-left-width: 2rpx;
 }
 
+/* A connector segment belongs to the step it leaves: the trailing rail uses
+ * that step's status; the leading rail on the next step mirrors it. */
 .sn-step--finished .sn-step__line {
   border-color: var(--sn-mp-color-action-primary);
+}
+
+.sn-step--error .sn-step__line {
+  border-color: var(--sn-mp-color-feedback-danger);
 }
 
 .sn-step__content {
@@ -407,11 +588,19 @@ const rootClass = computed(() => [
   flex-direction: column;
   gap: var(--sn-mp-spacing-1);
   min-width: 0;
-  padding: var(--sn-mp-spacing-2) 0;
+  /* Longhands, not a shorthand: the uni-x descendant flattener splits
+   * multi-value shorthands across the injected --snx-* context vars and
+   * multi-value splits come out invalid (the vertical content lost its left
+   * indent and bottom padding on MP-WeChat — same conclusion as the border
+   * longhands above). */
+  padding-top: var(--sn-mp-spacing-2);
+  padding-bottom: var(--sn-mp-spacing-2);
 }
 
 .sn-step--vertical .sn-step__content {
-  padding: 0 0 var(--sn-mp-spacing-5) var(--sn-mp-spacing-3);
+  padding-top: 0;
+  padding-bottom: var(--sn-mp-spacing-5);
+  padding-left: var(--sn-mp-spacing-3);
 }
 
 .sn-step__title-row {

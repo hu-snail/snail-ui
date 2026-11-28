@@ -12,7 +12,8 @@
  *     with the ISO N1-N4 penalty evaluation.
  *   - Segment modes: numeric / alphanumeric / byte. `encode()` picks the mode
  *     from the payload (all digits → numeric, all in the ISO alphanumeric set
- *     → alphanumeric, otherwise byte with UTF-8 via `TextEncoder`). Mixed-mode
+ *     → alphanumeric, otherwise byte with a built-in UTF-8 encoder — mini-
+ *     program engines have no `TextEncoder` global). Mixed-mode
  *     segmentation (splitting one payload across modes) is NOT implemented —
  *     every payload uses exactly one segment, which is always decodable.
  *   - `boostEcl` defaults to true: the EC level may be raised (L→M→Q→H)
@@ -516,8 +517,50 @@ export type SnQrSegmentMode = 'numeric' | 'alphanumeric' | 'byte';
 /** Characters allowed by ISO/IEC 18004 alphanumeric mode. */
 const ALPHANUMERIC_CHARSET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
 
+/**
+ * UTF-8 encode without `TextEncoder`. The mini-program JS engines (WeChat,
+ * Alipay, ...) do not provide that global, so every byte-mode payload threw a
+ * ReferenceError there and surfaced as the bogus "data too long" error.
+ * Lone surrogates map to U+FFFD, matching `TextEncoder` semantics; surrogate
+ * pairs are combined manually so astral code points (emoji etc.) survive.
+ */
 function toUtf8Bytes(text: string): number[] {
-  return Array.from(new TextEncoder().encode(text));
+  const bytes: number[] = [];
+  for (let i = 0; i < text.length; i++) {
+    let codePoint = text.charCodeAt(i);
+    const isHighSurrogate = codePoint >= 0xd800 && codePoint <= 0xdbff;
+    if (isHighSurrogate && i + 1 < text.length) {
+      const low = text.charCodeAt(i + 1);
+      if (low >= 0xdc00 && low <= 0xdfff) {
+        codePoint = 0x10000 + ((codePoint - 0xd800) << 10) + (low - 0xdc00);
+        i++;
+      } else {
+        codePoint = 0xfffd;
+      }
+    } else if (isHighSurrogate || (codePoint >= 0xdc00 && codePoint <= 0xdfff)) {
+      // Lone surrogate — `TextEncoder` replaces it with the replacement char.
+      codePoint = 0xfffd;
+    }
+    if (codePoint < 0x80) {
+      bytes.push(codePoint);
+    } else if (codePoint < 0x800) {
+      bytes.push(0xc0 | (codePoint >> 6), 0x80 | (codePoint & 0x3f));
+    } else if (codePoint < 0x10000) {
+      bytes.push(
+        0xe0 | (codePoint >> 12),
+        0x80 | ((codePoint >> 6) & 0x3f),
+        0x80 | (codePoint & 0x3f),
+      );
+    } else {
+      bytes.push(
+        0xf0 | (codePoint >> 18),
+        0x80 | ((codePoint >> 12) & 0x3f),
+        0x80 | ((codePoint >> 6) & 0x3f),
+        0x80 | (codePoint & 0x3f),
+      );
+    }
+  }
+  return bytes;
 }
 
 /** Mode indicators from the standard (4 bits each). */

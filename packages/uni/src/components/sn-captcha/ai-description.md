@@ -27,7 +27,7 @@ function onPass() {
   <sn-button type="primary" @tap="show = true">验证</sn-button>
   <sn-captcha
     v-model="show"
-    src="https://picsum.photos/seed/snui-captcha-basic/600/400"
+    src="https://cdn.uviewui.com/uview/album/1.jpg"
     :width="300"
     :height="200"
     @success="onPass"

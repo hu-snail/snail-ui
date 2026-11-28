@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/swiper-mp-image-mode.en.vue sha256:46113fb71ff03dc0 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-swiper (uni-end) — image fit (`imageMode`).
@@ -5,9 +6,9 @@
  */
 import SnSwiper from '@snui/uni-x/components/sn-swiper/sn-swiper.uvue';
 const list = [
-  { value: 'https://picsum.photos/seed/snui-sw-d1/750/400', text: 'aspectFit 1' },
-  { value: 'https://picsum.photos/seed/snui-sw-d2/750/400', text: 'aspectFit 2' },
-  { value: 'https://picsum.photos/seed/snui-sw-d3/750/400', text: 'aspectFit 3' },
+  { value: 'https://cdn.uviewui.com/uview/album/6.jpg', text: 'aspectFit 1' },
+  { value: 'https://cdn.uviewui.com/uview/album/7.jpg', text: 'aspectFit 2' },
+  { value: 'https://cdn.uviewui.com/uview/album/8.jpg', text: 'aspectFit 3' },
 ];
 
 const current = ref(0);

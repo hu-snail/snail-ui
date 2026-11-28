@@ -1,9 +1,36 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/qr-code-mp-color.vue sha256:28cb7ea6bff9d058 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-qr-code (uni-end) — 自定义颜色（colorDark / colorLight）。
  * Per AUI-DOCS-016: imports the real @snui/uni sn-qr-code from its SFC source.
+ *
+ * 卡片底部的色卡实时切换 colorDark / colorLight；canvas 只认具体色值，
+ * 所以色卡与二维码共用同一份数据，不用 CSS 变量（变量在画布里无法解析）。
+ * 四个角块（三个定位角 + 右下对齐图案）默认带圆角，见 cornerRadius。
  */
 import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
+/** 一组「深色码点 + 浅色留白」：保持深底浅色，扫码器才认得出来。 */
+interface DemoPalette {
+  label: string;
+  dark: string;
+  light: string;
+}
+
+const palettes: DemoPalette[] = [
+  { label: '午夜蓝', dark: '#191970', light: '#f0ffff' },
+  { label: '松绿', dark: '#14532d', light: '#ecfdf5' },
+  { label: '酒红', dark: '#7f1d1d', light: '#fff1f2' },
+  { label: '靛紫', dark: '#312e81', light: '#eef2ff' },
+  { label: '可可', dark: '#4c2a1a', light: '#fff7ed' },
+  { label: '经典黑', dark: '#111111', light: '#ffffff' },
+];
+
+const activeIndex = ref(0);
+const active = computed(() => palettes[activeIndex.value] as DemoPalette);
+
+function pick(index: number): void {
+  activeIndex.value = index;
+}
 </script>
 <template>
   <view class="sn-demo sn-demo--column">
@@ -11,12 +38,29 @@ import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
       <SnQrCode
         text="https://snui.dev"
         :size="150"
-        color-dark="midnightblue"
-        color-light="azure"
+        :color-dark="active.dark"
+        :color-light="active.light"
         :margin="10"
       />
     </view>
-    <text class="sn-demo__meta">color-dark 换码点色，color-light 换留白色。</text>
+    <text class="sn-demo__meta"
+      >color-dark 换码点色，color-light 换留白色；四个角块默认带圆角。</text>
+    <view class="sn-demo__swatches" aria-label="二维码配色色卡">
+      <view
+        v-for="(option, index) in palettes"
+        :key="option.label"
+        class="sn-demo__swatch"
+        :class="{ 'sn-demo__swatch--picked': index === activeIndex }"
+        :style="{ backgroundColor: option.light }"
+        role="button"
+        :aria-label="`配色 ${option.label}`"
+        @click="pick(index)"
+      >
+        <view class="sn-demo__swatch-dot" :style="{ backgroundColor: option.dark }" />
+      </view>
+    </view>
+    <text class="sn-demo__meta"
+      >当前：{{ active.label }}（{{ active.dark }} / {{ active.light }}）</text>
   </view>
 </template>
 <style scoped>
@@ -32,6 +76,36 @@ import SnQrCode from '@snui/uni-x/components/sn-qr-code/sn-qr-code.uvue';
   gap: 16rpx;
   align-items: flex-start;
   flex-direction: row;
+}
+.sn-demo__swatches {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+  margin-top: var(--sn-mp-spacing-1);
+}
+.sn-demo__swatch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 56rpx;
+  height: 56rpx;
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-sm);
+  opacity: 0.55;
+}
+.sn-demo__swatch--picked {
+  opacity: 1;
+  border: 4rpx solid var(--sn-mp-color-action-primary);
+  box-shadow: var(--sn-mp-shadow-sm);
+}
+.sn-demo__swatch-dot {
+  width: 26rpx;
+  height: 26rpx;
+  border-radius: var(--sn-mp-radius-full);
 }
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);

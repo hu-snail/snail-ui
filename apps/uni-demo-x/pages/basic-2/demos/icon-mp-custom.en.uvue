@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic-2/demos/icon-mp-custom.en.vue sha256:7a5989bb5c99e2d9 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-icon (uni-end) — `customClass` / `customStyle`.
@@ -24,8 +25,7 @@ import { Star, Heart, Settings } from '@snui/uni-x/components/sn-icon/sn-icon-se
     </view>
 
     <text class="sn-demo__meta"
-      >customStyle (string): written as the root style, replacing the sizing box</text
-    >
+      >customStyle (string): written as the root style, replacing the sizing box</text>
     <view class="sn-demo__row">
       <SnIcon
         :icon="Star"
@@ -35,8 +35,7 @@ import { Star, Heart, Settings } from '@snui/uni-x/components/sn-icon/sn-icon-se
     </view>
 
     <text class="sn-demo__meta"
-      >Both together: customClass adds the frame, customStyle sets colour and fill</text
-    >
+      >Both together: customClass adds the frame, customStyle sets colour and fill</text>
     <view class="sn-demo__row">
       <SnIcon
         :icon="Heart"

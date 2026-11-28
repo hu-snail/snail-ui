@@ -1,55 +1,54 @@
 <script setup lang="ts">
 /**
- * Demo: sn-button (uni-end) — `hairline` 细边框。
+ * Demo: sn-button (uni-end) — 细边框（`hairline`，描边开关）。
  *
- * `hairline` 只对 `type="default"` 生效（其它类型本来就有语义色描边），
- * 默认 true，置 false 后边框变透明；可与 loading 态叠加。
+ * 细边框的本体是 default 类型的灰细描边（朴素/虚线等语义色描边归「变体」
+ * 模块演示）。`hairline=false` 是总开关：default 去描边，plain / dashed
+ * 等变体也只剩文字色。
+ *
+ * 布局说明：uni-app x 不支持 flex `gap`，间距用内联 `custom-style` margin
+ * 兜底，显式 `flex-direction: row` 抵消 uni-app x 的 column 默认值。
  */
-import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 
-const busy = ref(false);
-
-function toggleBusy(): void {
-  busy.value = !busy.value;
-}
+/** 行内按钮间距（uni-app x 无 gap 兜底）。 */
+const rowGap = { margin: '0 16rpx 16rpx 0' };
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__meta">hairline：default 类型下 true 显示细边框，false 去掉边框</text>
-    <view class="sn-demo__row">
-      <SnButton>hairline（默认）</SnButton>
-      <SnButton :hairline="false">hairline=false</SnButton>
-      <SnButton hairline :disabled="true">hairline + disabled</SnButton>
+  <view class="sn-mp-btn-stack">
+    <text class="sn-mp-btn-meta">细边框（默认开启）：default 类型的灰细描边</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap">默认按钮</SnButton>
+      <SnButton :custom-style="rowGap" size="large">默认按钮</SnButton>
     </view>
 
-    <text class="sn-demo__meta">loading 与 hairline 叠加：细边框按钮的加载态</text>
-    <view class="sn-demo__row">
-      <SnButton loading :loading-props="{ size: 40 }">加载中（hairline）</SnButton>
-      <SnButton :hairline="false" loading>加载中（无边框）</SnButton>
-      <SnButton type="primary" :loading="busy" @tap="toggleBusy">
-        {{ busy ? '请求中…' : '点我切 loading' }}
+    <text class="sn-mp-btn-meta">hairline=false：default 去描边；plain / 虚线变体也只剩文字色</text>
+    <view class="sn-mp-btn-row">
+      <SnButton :custom-style="rowGap" :hairline="false">默认按钮</SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="plain" type="primary">
+        描边移除
+      </SnButton>
+      <SnButton :custom-style="rowGap" :hairline="false" variant="dashed" type="success">
+        描边移除
       </SnButton>
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-demo--stack {
+.sn-mp-btn-stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-  align-items: stretch;
-  width: 100%;
 }
-.sn-demo__row {
+.sn-mp-btn-row {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 16rpx;
   align-items: center;
 }
-.sn-demo__meta {
+.sn-mp-btn-meta {
+  margin-bottom: 12rpx;
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);

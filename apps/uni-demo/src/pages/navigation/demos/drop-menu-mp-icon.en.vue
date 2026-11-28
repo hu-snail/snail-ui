@@ -55,7 +55,7 @@ const urlOptions = [
   {
     label: 'Brand zone',
     value: 'brand',
-    iconUrl: 'https://picsum.photos/seed/snui-drop-menu/96',
+    iconUrl: 'https://cdn.uviewui.com/uview/album/9.jpg',
   },
   { label: 'Plain text row', value: 'plain' },
 ];
@@ -66,7 +66,7 @@ const precedenceOptions = [
     label: 'Object wins',
     value: 'all',
     iconData: Star,
-    iconUrl: 'https://picsum.photos/seed/snui-drop-menu-priority/96',
+    iconUrl: 'https://cdn.uviewui.com/uview/album/10.jpg',
     icon: 'clock',
   },
 ];

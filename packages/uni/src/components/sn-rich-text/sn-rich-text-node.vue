@@ -33,6 +33,7 @@ import { normalizeSizeAttr, resolveNodeStyle } from './sn-rich-text-node-style';
 import { RICH_TEXT_CONTEXT_KEY, RICH_TEXT_NOOP_CONTEXT } from './sn-rich-text-context';
 import type { RichTextNodeContext } from './sn-rich-text-context';
 import type { RichTextNode, RichTextTableMeta } from './sn-rich-text-types';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnRichTextNode' });
 
@@ -310,7 +311,7 @@ interface AudioHost {
 let audioContext: InnerAudioLike | undefined;
 
 function readAudioHost(): AudioHost | undefined {
-  return (globalThis as { uni?: AudioHost }).uni;
+  return resolveUniHost<AudioHost>() ?? undefined;
 }
 
 /** Lazily create + wire the audio context; undefined when unsupported. */
@@ -829,6 +830,10 @@ function cellStyle(colSpan: number, width: string): string {
 .sn-rich-text__table-scroll {
   width: 100%;
   white-space: nowrap;
+  /* uni-app x: scroller flex-direction row — the content wrapper follows it,
+   * otherwise the table scroll extent clamps to the viewport (official
+   * scroll-view example pattern). No-op on uni-app H5. */
+  flex-direction: row;
 }
 
 .sn-rich-text__table-body {

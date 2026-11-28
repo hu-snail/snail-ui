@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
-// 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
+// Token 样式链（按 tokens-mp 头部约定：base → alias → 组件样式）。
+// @snui/uni/styles 只消费 --sn-mp-*，本身不定义——缺 base/alias 两层时
+// H5 端组件调色全链失效（气泡等面板背景 transparent）。
+import '@snui/tokens/styles/index.css';
+import '@snui/tokens-mp/styles/index.css';
 import '@snui/uni/styles';
 import { initDemoBridge } from './state/demo-bridge';
 import { useDemoUi } from './state/demo-ui';
@@ -126,6 +130,98 @@ page {
   flex-direction: column;
   gap: 16rpx;
   box-sizing: border-box;
+}
+
+/* uni-app x 的 view 默认 overflow: hidden（H5 / MP 默认 visible），demo 脚手架
+ * 的每一层（场景卡 module / 页面 page / shell）都会把伸出卡片边界的弹层
+ * （tooltip / popover 等绝对定位气泡）裁掉半截——只修弹层组件自身不够，链条
+ * 上任何一层 hidden 都会裁。脚手架全链放开；弹层组件根节点已各自声明
+ * visible（如 sn-tooltip）。逐类单规则：uni-app x 对逗号选择器列表的解析
+ * 不保证可用。 */
+.module {
+  overflow: visible;
+}
+.module__body {
+  overflow: visible;
+}
+.page {
+  overflow: visible;
+}
+.demo-shell__body {
+  overflow: visible;
+}
+.demo-shell {
+  overflow: visible;
+}
+.sn-demo {
+  overflow: visible;
+}
+.sn-demo--stack {
+  overflow: visible;
+}
+.sn-demo--column {
+  overflow: visible;
+}
+.sn-demo__row {
+  overflow: visible;
+}
+
+/* uni-app x web 运行时对每个 view 施加 `uni-app uni-view { overflow: hidden }`
+ * 默认值——demo 源码里**各自声明的包装类**（如 `.sn-popover-demo__center`）
+ * 无法穷举，弹层组件的气泡会被任意一层裁掉。用元素选择器全量放开。
+ * !important 必须带：uni-app x web 把运行时基础样式表注入在 App 样式之后，
+ * 同特异的 App 规则按顺序反而会输（实测）。
+ *
+ * 仅 uni-app x web 编译：`WEB` 在标准 uni-app H5 里同样为真（platform h5
+ * 会置 WEB），必须再叠一层 UNI_APP_X 才能把标准 H5 / MP 排除在外——它们的
+ * view 默认就是 visible，这条 !important 对它们没有放开作用，只会反向覆盖
+ * 组件自身的普通 `overflow: hidden`（如 sn-swipe-action 的 root）：根节点
+ * 一旦不裁剪，闭合态驻外（translateX ±100%）的动作区就把页面 scrollWidth
+ * 撑宽，滑动手势顺手把整页横移（设备实测：390px 视口 → 552px）。App（native）
+ * 端元素选择器由 uni-x 管线按支持度处理（unsupported 即 dropped+reported），
+ * 脚手架与弹层包装的裁剪由上方逐类规则覆盖。 */
+/* #ifdef UNI_APP_X */
+/* #ifdef WEB */
+uni-app uni-view {
+  overflow: visible !important;
+}
+view {
+  overflow: visible !important;
+}
+/* #endif */
+/* #endif */
+
+/* popover demo 的局部包装类：uni-app x 按「类在哪个样式表定义」附加作用域
+ * 属性——只在 demo 自己 scoped 样式里声明的类不带 App 作用域，上面的全局
+ * uni-view 规则与脚手架规则都碰不到它们，气泡照样被裁。把类登记到 App
+ * 样式后，使用该类的元素会带上 App 的 data-v，规则即可命中（zh / en 两个
+ * demo 变体共用类名，一处登记双端生效）。 */
+.sn-popover-demo__center {
+  overflow: visible;
+}
+.sn-popover-demo__cell {
+  overflow: visible;
+}
+.sn-popover-demo__grid {
+  overflow: visible;
+}
+.sn-popover-demo__row {
+  overflow: visible;
+}
+.sn-popover-demo__space {
+  overflow: visible;
+}
+.sn-popover-theme__pane {
+  overflow: visible;
+}
+.sn-popover-theme__label {
+  overflow: visible;
+}
+.sn-popover-theme__meta {
+  overflow: visible;
+}
+.sn-popover-theme__space {
+  overflow: visible;
 }
 
 .sn-demo--stack {

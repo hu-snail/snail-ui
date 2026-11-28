@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/basic/demos/fab-mp-type.vue sha256:d33ddd5072f4517a —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-fab (uni-end) — 主题色（`type`）。
@@ -60,7 +61,7 @@ function pick(label: string): void {
       position="right-bottom"
       direction="up"
       :gap="{ bottom: 16, right: 16 }"
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view class="sn-fab-demo__bubble" role="button" aria-label="音乐" @click="pick('音乐')">
         <SnIcon :icon="Music" size="var(--sn-mp-icon-size-large)" />
@@ -135,8 +136,4 @@ function pick(label: string): void {
   flex-direction: row;
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

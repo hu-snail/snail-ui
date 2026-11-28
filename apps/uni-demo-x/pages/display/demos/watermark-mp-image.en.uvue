@@ -1,10 +1,11 @@
+<!-- gen-x: source apps/uni-demo/src/pages/display/demos/watermark-mp-image.en.vue sha256:0a0947d957c91525 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-watermark (uni-end) — image watermark (`image` / `imageWidth` / `imageHeight`).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-watermark from its SFC source.
  */
 import SnWatermark from '@snui/uni-x/components/sn-watermark/sn-watermark.uvue';
-const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
+const logo = 'https://cdn.uviewui.com/uview/album/4.jpg';
 </script>
 <template>
   <view class="sn-demo sn-demo--stack">
@@ -19,8 +20,7 @@ const logo = 'https://picsum.photos/seed/snui-wm-logo/200/200';
       <view class="sn-watermark-demo__card">
         <text class="sn-watermark-demo__title">Image watermark tiles</text>
         <text class="sn-watermark-demo__body"
-          >image wins over content; imageWidth / imageHeight size the tile.</text
-        >
+          >image wins over content; imageWidth / imageHeight size the tile.</text>
       </view>
     </view>
   </view>

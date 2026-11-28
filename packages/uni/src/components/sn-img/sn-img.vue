@@ -48,6 +48,7 @@
 
 import { computed, getCurrentInstance, inject, ref, watch } from 'vue';
 import { SN_WATERFALL_KEY, type SnWaterfallContext } from '../sn-waterfall/sn-waterfall-types';
+import { resolveUniHost } from '../../utils/uni-host';
 
 defineOptions({ name: 'SnImg' });
 
@@ -231,14 +232,7 @@ const rootClass = computed(() => [
 function openPreview(): void {
   const preview = props.previewSrc !== '' ? props.previewSrc : props.src;
   if (!preview) return;
-  if (typeof uni !== 'undefined' && typeof uni.previewImage === 'function') {
-    uni.previewImage({ urls: [preview], current: preview });
-    return;
-  }
-  const host = globalThis as {
-    uni?: { previewImage?: (options: { urls: string[]; current?: string }) => unknown };
-  };
-  const previewImage = host.uni?.previewImage;
+  const previewImage = resolveUniHost<{ previewImage?: (options: { urls: string[]; current?: string }) => unknown }>()?.previewImage;
   if (typeof previewImage === 'function') previewImage({ urls: [preview], current: preview });
 }
 

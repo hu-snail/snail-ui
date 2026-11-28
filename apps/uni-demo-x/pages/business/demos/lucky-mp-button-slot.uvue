@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/business/demos/lucky-mp-button-slot.vue sha256:8eccba28fde8a481 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-lucky (uni-end) — 自定义抽奖按钮：#button 插槽。

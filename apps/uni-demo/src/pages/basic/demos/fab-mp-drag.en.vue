@@ -9,8 +9,10 @@
  *     drag and items slide out upwards.
  *   - Copy stays in parity with fab-mp-drag.vue.
  *
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
- * the phone screen (the real runtime keeps `position: fixed`).
+ * Every instance pins into the demo stage with inline
+ * `custom-style="position: absolute;"` — the stage is the anchor container on
+ * every end (H5 / MP / uni-app x). A page-scope class rule cannot reach a
+ * child component's root through MP style isolation; inline style can.
  */
 import { ref } from 'vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
@@ -41,7 +43,7 @@ function pick(label: string): void {
       position="right-bottom"
       direction="up"
       draggable
-      custom-class="sn-demo-contained"
+      custom-style="position: absolute;"
     >
       <view class="sn-fab-demo__bubble" role="button" aria-label="Music" @tap="pick('Music')">
         <SnIcon :icon="Music" size="var(--sn-mp-icon-size-large)" />
@@ -97,8 +99,4 @@ function pick(label: string): void {
   color: var(--sn-mp-color-text-secondary);
 }
 
-/* Docs-preview only — pin the fixed layer to the phone screen. */
-.sn-fab.sn-demo-contained {
-  position: absolute;
-}
 </style>

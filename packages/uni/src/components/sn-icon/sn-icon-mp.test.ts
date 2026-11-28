@@ -8,7 +8,15 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { buildIconDataUrl, isConcreteIconColor, readResolvedIconColor } from './sn-icon-mp';
+import {
+  buildIconDataUrl,
+  isConcreteIconColor,
+  readResolvedIconColor,
+  pickMpQueryHost,
+  rendersRasterized,
+  RETRY_DELAYS_MS,
+} from './sn-icon-mp';
+import { resolveSnIconStringSync } from './sn-icon-providers';
 import type { IconData } from './sn-icon-types';
 
 /** Decode the base64 payload of a `data:image/svg+xml;base64,...` URL. */
@@ -88,5 +96,80 @@ describe('readResolvedIconColor', () => {
     expect(readResolvedIconColor({ color: 'currentColor' })).toBe('');
     expect(readResolvedIconColor({})).toBe('');
     expect(readResolvedIconColor(null)).toBe('');
+  });
+});
+
+describe('rendersRasterized', () => {
+  it('treats DOM-less targets (MP / App native) as rasterized', () => {
+    expect(rendersRasterized(undefined)).toBe(true);
+    expect(rendersRasterized(null)).toBe(true);
+  });
+
+  it('treats a DOM node without an svg child as rasterized (uni-app x web)', () => {
+    // 回归：uni-x 转换把所有端的 <svg> 分支替换成 <image> 光栅化，而旧的
+    // `typeof document === 'undefined'` 门在 web 上为 false → 取色器早退，
+    // 全站图标永落墨色。以真实渲染形态为准：无 svg 子节点 = 光栅化。
+    const imgHost = { querySelector: () => null, ownerDocument: undefined };
+    expect(rendersRasterized(imgHost)).toBe(true);
+  });
+
+  it('treats an inline-svg host as NOT rasterized (classic uni H5)', () => {
+    const svgHost = { querySelector: (s: string) => (s === 'svg' ? ({} as Element) : null) };
+    expect(rendersRasterized(svgHost)).toBe(false);
+  });
+
+  it('treats unknown shapes conservatively as rasterized', () => {
+    expect(rendersRasterized({})).toBe(true);
+  });
+});
+
+describe('pickMpQueryHost', () => {
+  const scopeHost = { createSelectorQuery: () => ({}) };
+  const uniHost = { createSelectorQuery: () => ({}) };
+
+  it('should prefer the component $scope query (native scoping over the page-level uni query)', () => {
+    // 回归（heart 图标在 MP 上渲染为黑）：232331e5 把 uni 宿主的页面级查询
+    // 排到了 $scope 前面 —— 嵌套自定义组件里 `.in(Vue proxy)` 不可靠，部分
+    // 图标实例取色失败永落墨色。$scope 必须优先。
+    const picked = pickMpQueryHost(scopeHost, uniHost, 'proxy');
+    expect(picked.kind).toBe('scope');
+    expect(picked.createQuery).toBe(scopeHost.createSelectorQuery);
+    expect(picked.queryScope).toBe(scopeHost);
+  });
+
+  it('should fall back to the uni host query only without a $scope', () => {
+    const picked = pickMpQueryHost(null, uniHost, 'proxy');
+    expect(picked.kind).toBe('uni');
+    expect(picked.createQuery).toBe(uniHost.createSelectorQuery);
+    expect(picked.queryScope).toBe('proxy');
+  });
+
+  it('should report no host when neither source exposes createSelectorQuery', () => {
+    expect(pickMpQueryHost({}, {}).kind).toBe(null);
+    expect(pickMpQueryHost(null, null, 'proxy').kind).toBe(null);
+  });
+});
+
+describe('RETRY_DELAYS_MS', () => {
+  it('should retry the computed-color query multiple times with a bounded budget', () => {
+    // 单次 50ms 重试在重型页面上会输给首次渲染（回归：图标永落墨色兜底）。
+    expect(RETRY_DELAYS_MS.length).toBeGreaterThanOrEqual(4);
+    expect(RETRY_DELAYS_MS.every((ms) => ms > 0)).toBe(true);
+    expect(RETRY_DELAYS_MS[RETRY_DELAYS_MS.length - 1]).toBeLessThan(2000);
+  });
+});
+
+describe('catalog icons bake the resolved color (heart regression)', () => {
+  it('should bake the stroke color into catalog-driven string icons', () => {
+    // 回归：MP 按钮内嵌 heart 图标曾渲染为黑（取色竞态 + 墨色兜底）。烘焙层
+    // 本身必须对任意目录图标把解析色写入 stroke —— 黑色只能来自取色失败，
+    // 该条锁定烘焙层不再是嫌疑路径。
+    for (const name of ['heart', 'check', 'plus']) {
+      const data = resolveSnIconStringSync(name);
+      expect(data, name).not.toBeNull();
+      const svg = decodeSvg(buildIconDataUrl(data as IconData, '#ffffff', 2));
+      expect(svg, name).toContain('stroke="#ffffff"');
+      expect(svg, name).toContain('fill="none"');
+    }
   });
 });

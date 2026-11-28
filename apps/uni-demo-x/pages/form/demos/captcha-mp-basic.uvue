@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/captcha-mp-basic.vue sha256:396cfbefe046ac8d —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-captcha (uni-end) — 拼图验证基础用法：v-model 打开，success 回调。
@@ -14,7 +15,7 @@ const passed = ref(false);
 const attempts = ref(0);
 
 /** Stable network poster (picsum seed) so the puzzle cuts a real photo. */
-const SOURCE = 'https://picsum.photos/seed/snui-captcha-basic/600/400';
+const SOURCE = 'https://cdn.uviewui.com/uview/album/4.jpg';
 
 function onSuccess(): void {
   passed.value = true;

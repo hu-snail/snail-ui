@@ -339,6 +339,7 @@ function exitFull(): void {
           left-text="Demo"
           safe-area-inset-top
           bordered
+          :auto-back="false"
           @back="exitFull"
         />
         <view class="icx__searchbar">
@@ -387,6 +388,7 @@ function exitFull(): void {
           left-text="Back"
           safe-area-inset-top
           bordered
+          :auto-back="false"
           @back="backToPage"
         />
         <view class="icd">

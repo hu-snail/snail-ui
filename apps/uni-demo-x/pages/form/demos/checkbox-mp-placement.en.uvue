@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/form/demos/checkbox-mp-placement.en.vue sha256:d29955975e5437df —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-checkbox — layout and label (size / placement / maxWidth).
@@ -19,8 +20,7 @@ const long = ref<boolean>(true);
       A long label used to verify the maxWidth truncation and the customLabelClass style hook
     </text></SnCheckbox>
     <text class="sn-demo__meta"
-      >maxWidth bounds the label; customLabelClass lands on the label text node</text
-    >
+      >maxWidth bounds the label; customLabelClass lands on the label text node</text>
   </view>
 </template>
 <style scoped>

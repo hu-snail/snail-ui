@@ -1,3 +1,4 @@
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/collapse-mp-icon.vue sha256:1fb37ffdee81bf8e —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-collapse — 标题图标的三种来源、尺寸档位与配色。
@@ -57,7 +58,7 @@ const colored = ref([]);
       <SnCollapseItem
         name="a"
         title="品牌头像"
-        title-icon-url="https://picsum.photos/seed/snui-collapse/96"
+        title-icon-url="https://cdn.uviewui.com/uview/album/8.jpg"
       >
         <text class="sn-demo__body">图片图标与 SVG 图标共用同一个尺寸盒。</text>
       </SnCollapseItem>
