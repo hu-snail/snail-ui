@@ -354,6 +354,75 @@ describe('sn-popover', () => {
       expect(shownBubble(plain)!.find('.sn-popover__container').attributes('style')).toBeUndefined();
     });
 
+    it('carries the border around the sharp arrow via an outline triangle', async () => {
+      const w = mount(SnPopover, {
+        props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
+      });
+      await flushPromises();
+      const outline = shownBubble(w)!.find('.sn-popover__arrow-outline');
+      expect(outline.exists()).toBe(true);
+      const style = outline.attributes('style') ?? '';
+      // bottom placement → apex-up triangle → the coloured side is border-bottom.
+      expect(style).toContain('border-bottom-color: #2563eb');
+      // The other three sides must stay transparent — they are the triangle's
+      // silhouette; colouring all four renders a solid rectangle instead.
+      expect(style).not.toContain('border-top-color');
+      expect(style).not.toContain('border-left-color');
+      expect(style).not.toContain('border-right-color');
+    });
+
+    it('renders no outline triangle without borderColor or in rounded mode', async () => {
+      const plain = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+      await flushPromises();
+      expect(shownBubble(plain)!.find('.sn-popover__arrow-outline').exists()).toBe(false);
+
+      const rounded = mount(SnPopover, {
+        props: { modelValue: true, content: 'x', borderColor: '#2563eb', arrowShape: 'rounded' },
+      });
+      await flushPromises();
+      expect(shownBubble(rounded)!.find('.sn-popover__arrow-outline').exists()).toBe(false);
+    });
+
+    it('paints the outline triangle below the container and 2px past the fill', () => {
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      const rule = (selector: string) =>
+        source.slice(source.indexOf(selector), source.indexOf('}', source.indexOf(selector)));
+      const base = rule('.sn-popover__arrow-outline {');
+      expect(base).toContain('z-index: 499');
+      // 10px protrusion − 8px fill = the ~1.4px slant band continuing the border.
+      const down = rule('.sn-popover__arrow-outline.sn-popover__arrow-down {');
+      expect(down).toContain('bottom: -10px');
+      expect(down).toContain('border-top-width: 10px');
+    });
+
+    it('deepens the bordered fill triangle so the border never ghosts across the mouth', async () => {
+      const w = mount(SnPopover, {
+        props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
+      });
+      await flushPromises();
+      expect(w.classes()).toContain('sn-popover--bordered');
+      // Plain mode stays unmarked.
+      const plain = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+      await flushPromises();
+      expect(plain.classes()).not.toContain('sn-popover--bordered');
+
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      const rule = (selector: string) =>
+        source.slice(source.indexOf(selector), source.indexOf('}', source.indexOf(selector)));
+      // The fill's box bottom must reach 2px into the body (10px legs on the
+      // unchanged -8px offset): a 1px overlap stops exactly at the border
+      // strip's lower edge, whose antialiased tail ghosts across the mouth
+      // as a faint grey line at fractional zoom ratios (user-reported).
+      const up = rule('.sn-popover--bordered .sn-popover__arrow-up {');
+      expect(up).toContain('border-bottom-width: 10px');
+      expect(up).toContain('border-right-width: 10px');
+      // The overrides must precede the rounded rule so rounded + border keeps
+      // border-width: 0 (equal specificity — later rule wins).
+      expect(source.indexOf('.sn-popover--bordered .sn-popover__arrow-up {')).toBeLessThan(
+        source.indexOf('.sn-popover__arrow.sn-popover__arrow--rounded {'),
+      );
+    });
+
     it('applies a consumer border colour and the rounded arrow on real measurements', async () => {
       stubSelectorQuery({
         target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },

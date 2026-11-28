@@ -25,7 +25,7 @@ import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">border-color: borderless by default / a 1px border when set</text>
-    <text class="sn-demo__hint">The border draws on the bubble body only; the arrow follows the bubble fill (no border).</text>
+    <text class="sn-demo__hint">The border wraps the body and the sharp arrow into one closed outline; rounded-arrow mode keeps a body-only border.</text>
   </view>
 </template>
 

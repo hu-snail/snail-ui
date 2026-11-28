@@ -74,7 +74,7 @@ import { SnPopover } from '@snui/uni';
     {
       name: 'popover-mp-border',
       title: '自定义边框',
-      blurb: 'border-color：气泡主体画 1px 自定义颜色边框；箭头跟随底色。',
+      blurb: 'border-color：气泡主体画 1px 自定义颜色边框，并延续到尖角箭头连成一条闭合轮廓。',
     },
     { name: 'popover-mp-theme', title: "主题", blurb: "暗黑 / 浅色主题下气泡与箭头自动跟随" },
   ],
@@ -116,6 +116,18 @@ import { SnPopover } from '@snui/uni';
         type: "boolean",
         default: "true",
         desc: "是否显示箭头；关闭后箭头占用的间距一并去掉",
+      },
+      {
+        name: 'arrowShape',
+        type: "'sharp' | 'rounded'",
+        default: "'sharp'",
+        desc: "箭头形状：尖角三角 / 圆角方钉（带圆角的方形，与气泡连为一体）",
+      },
+      {
+        name: 'borderColor',
+        type: "string",
+        default: "''",
+        desc: "自定义边框颜色（默认无边框）；设置后主体与尖角箭头连成一条闭合轮廓，圆角箭头模式仅主体描边",
       },
       {
         name: 'disabled',

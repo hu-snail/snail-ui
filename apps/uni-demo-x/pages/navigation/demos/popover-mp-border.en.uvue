@@ -1,4 +1,4 @@
-<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-border.en.vue sha256:5e138a71ea3ea476 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
+<!-- gen-x: source apps/uni-demo/src/pages/navigation/demos/popover-mp-border.en.vue sha256:5574bf4163819205 —— 生成产物勿手改；源码改动后重跑 pnpm -F @snui/uni-demo-x gen -->
 <script setup lang="ts">
 /**
  * Demo: sn-popover (uni-end) — custom bubble border colour (EN twin).
@@ -25,7 +25,7 @@ import SnPopover from '@snui/uni-x/components/sn-popover/sn-popover.uvue';
     <view class="sn-popover-demo__space" />
 
     <text class="sn-demo__meta">border-color: borderless by default / a 1px border when set</text>
-    <text class="sn-demo__hint">The border draws on the bubble body only; the arrow follows the bubble fill (no border).</text>
+    <text class="sn-demo__hint">The border wraps the body and the sharp arrow into one closed outline; rounded-arrow mode keeps a body-only border.</text>
   </view>
 </template>
 <style scoped>

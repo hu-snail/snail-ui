@@ -29,6 +29,10 @@
  *
  * ## Documented divergences from wd-popover
  *
+ *   - ADDITIVE (registered in AGENTS.md §112.3a): `arrowShape` ('sharp' |
+ *     'rounded' tip) and `borderColor` (1px consumer border that continues
+ *     around the sharp arrow through the outline triangle) — wd-popover has
+ *     neither.
  *   - Menu row dividers are real elements, not `::after`: uni-app x App has
  *     no pseudo-elements (AGENTS.md §116.2).
  *   - `iconClass` resolves through `sn-icon` (registry → built-in catalog →
@@ -268,19 +272,42 @@ const { popStyle, arrowStyle, roundedStyle } = position;
 
 /**
  * Bubble border, consumer-coloured: the reference card is borderless — a
- * set `borderColor` draws a 1px border on the body (the arrow follows the
- * fill only; a bordered arrow tip is not drawable as a border triangle).
+ * set `borderColor` draws a 1px border on the body AND carries around the
+ * sharp arrow through the outline triangle below. Rounded tips keep a
+ * body-only border (a rotated square has no per-edge outline to continue).
  */
 const containerStyle = computed(() =>
   props.borderColor ? `border: 1px solid ${props.borderColor};` : undefined,
 );
 
-/** Root class: the component block + the consumer class. */
+/** The triangle-forming border side per placement family (matches the
+ * arrow family classes: top → arrow-down colours border-top, …). */
+const OUTLINE_SIDE_BY_FAMILY: Record<string, string> = {
+  top: 'top',
+  bottom: 'bottom',
+  left: 'left',
+  right: 'right',
+};
+
+/**
+ * Outline triangle's border colour — the triangle-forming side ONLY. The
+ * border-triangle silhouette needs the other three sides transparent:
+ * colouring all four turns the tip into a solid rectangle.
+ */
+const arrowOutlineColorStyle = computed(() => {
+  if (!props.borderColor) return undefined;
+  const family = (position.actualPlacement.value ?? props.placement).split('-')[0] ?? '';
+  const side = OUTLINE_SIDE_BY_FAMILY[family] ?? 'top';
+  return `border-${side}-color: ${props.borderColor};`;
+});
+
+/** Root class: the component block + the bordered marker + the consumer class. */
 const rootClass = computed(() => [
   'sn-popover',
   /* The zoom origin anchors on the arrow's edge, so the body scales out of
    * the junction instead of drifting away from the arrow mid-animation. */
   `sn-popover--origin-${props.placement.split('-')[0]}`,
+  ...(props.borderColor ? ['sn-popover--bordered'] : []),
   props.customClass,
 ]);
 
@@ -571,6 +598,18 @@ defineExpose({ open, close, updatePosition });
         coincides with the bubble box (the transition adds no box of its own),
         so the arrow keeps the same coordinates while staying unclipped.
       -->
+      <!-- Bordered mode: an outline triangle UNDER the fill triangle — z 499,
+           one step BELOW the container (500), so sub-pixel rounding at the
+           abutment row can never paint consumer colour inside the bubble. It
+           protrudes 10px vs the fill's 8px: on the 45° slants that leaves a
+           ~1.4px band of the border colour (2px horizontal) continuing the
+           body's 1px border line around the tip — one closed outline. -->
+      <view
+        v-if="props.visibleArrow && props.borderColor && props.arrowShape !== 'rounded'"
+        :class="['sn-popover__arrow', 'sn-popover__arrow-outline', arrowClass, { 'sn-popover__arrow--shown': showPopover }]"
+        :style="(arrowStyle ?? '') + (arrowOutlineColorStyle ?? '')"
+        aria-hidden="true"
+      />
       <view
         v-if="props.visibleArrow"
         :class="[
@@ -939,6 +978,40 @@ defineExpose({ open, close, updatePosition });
   left: -8px;
 }
 
+/* Outline triangle (bordered mode): painted one step BELOW the container —
+ * even if sub-pixel rounding bleeds its top row past the bubble edge, the
+ * container's own paint (z 500) wins and no consumer colour shows inside
+ * the bubble. Protruding 10px vs the fill's 8px exposes a ~1.4px colour
+ * band on the 45° slant edges (2px horizontal) — the arrow-side
+ * continuation of the body border. */
+.sn-popover__arrow-outline {
+  z-index: 499;
+}
+.sn-popover__arrow-outline.sn-popover__arrow-down {
+  bottom: -10px;
+  border-top-width: 10px;
+  border-right-width: 10px;
+  border-left-width: 10px;
+}
+.sn-popover__arrow-outline.sn-popover__arrow-up {
+  top: -10px;
+  border-bottom-width: 10px;
+  border-right-width: 10px;
+  border-left-width: 10px;
+}
+.sn-popover__arrow-outline.sn-popover__arrow-right {
+  right: -10px;
+  border-top-width: 10px;
+  border-bottom-width: 10px;
+  border-left-width: 10px;
+}
+.sn-popover__arrow-outline.sn-popover__arrow-left {
+  left: -10px;
+  border-top-width: 10px;
+  border-bottom-width: 10px;
+  border-right-width: 10px;
+}
+
 /* Zoom origin per placement family: the edge the arrow anchors on stays
  * pinned while the body scales in. */
 .sn-popover--origin-top .sn-popover__container {
@@ -952,6 +1025,35 @@ defineExpose({ open, close, updatePosition });
 }
 .sn-popover--origin-right .sn-popover__container {
   transform-origin: left center;
+}
+
+/* Bordered mode: the fill triangle grows 1px on every leg so its box bottom
+ * reaches 2px INTO the body. Its old 1px overlap stopped exactly at the
+ * border strip's lower edge — at fractional zoom ratios (1.4× browser zoom /
+ * DPR scaling) the strip's antialiased bottom edge then peeked through the
+ * arrow mouth as a faint grey line still "connecting" the two border
+ * segments (user-reported). One extra px of white-on-white is invisible and
+ * keeps the mouth a clean opening. Placed BEFORE the rounded rule so
+ * rounded + border keeps border-width 0 (equal specificity, later wins). */
+.sn-popover--bordered .sn-popover__arrow-up {
+  border-bottom-width: 10px;
+  border-right-width: 10px;
+  border-left-width: 10px;
+}
+.sn-popover--bordered .sn-popover__arrow-down {
+  border-top-width: 10px;
+  border-right-width: 10px;
+  border-left-width: 10px;
+}
+.sn-popover--bordered .sn-popover__arrow-right {
+  border-left-width: 10px;
+  border-top-width: 10px;
+  border-bottom-width: 10px;
+}
+.sn-popover--bordered .sn-popover__arrow-left {
+  border-right-width: 10px;
+  border-top-width: 10px;
+  border-bottom-width: 10px;
 }
 
 /* Rounded arrow tip (arrowShape="rounded"): a filled rounded square

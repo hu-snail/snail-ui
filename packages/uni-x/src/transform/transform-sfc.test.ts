@@ -131,14 +131,16 @@ describe('transformVueToUvue — App trigger open path (popover / tooltip)', () 
 
       // The catcher must not leak outside the App gates — the component
       // carries TWO gates (template catcher + style shield), so both are
-      // stripped before the leak check (the style block lives after the
-      // template one; stripping back-to-front keeps the slice indexes valid).
+      // stripped before the leak check. Each end marker is anchored at its
+      // own start: other conditional pairs (e.g. the container's
+      // `/* #ifndef MP */` shadow) precede the shield, so a from-zero search
+      // would resolve `styleEnd` BEFORE `styleStart` and strip nothing.
       const styleStart = out.indexOf('/* #ifdef APP */');
-      const styleEnd = out.indexOf('/* #endif */') + '/* #endif */'.length;
+      const styleEnd = out.indexOf('/* #endif */', styleStart) + '/* #endif */'.length;
       expect(styleStart).toBeGreaterThan(-1);
       const afterStyle = out.slice(0, styleStart) + out.slice(styleEnd);
       const tplStart = afterStyle.indexOf('<!-- #ifdef APP -->');
-      const tplEnd = afterStyle.indexOf('<!-- #endif -->') + '<!-- #endif -->'.length;
+      const tplEnd = afterStyle.indexOf('<!-- #endif -->', tplStart) + '<!-- #endif -->'.length;
       const withoutGate = afterStyle.slice(0, tplStart) + afterStyle.slice(tplEnd);
       expect(withoutGate).not.toContain(`${component}__trigger-catcher`);
 

@@ -74,7 +74,7 @@ import { SnPopover } from '@snui/uni';
     {
       name: 'popover-mp-border',
       title: 'Custom border',
-      blurb: 'border-color — a 1px consumer-coloured border on the bubble body; the arrow follows the fill.',
+      blurb: 'border-color — a 1px consumer-coloured border that continues around the sharp arrow into one closed outline.',
     },
     { name: 'popover-mp-theme', title: "Theme", blurb: "The bubble and arrow follow the dark / light theme" },
   ],
@@ -116,6 +116,18 @@ import { SnPopover } from '@snui/uni';
         type: "boolean",
         default: "true",
         desc: "Render the arrow; when off, its gap is dropped from the placement too",
+      },
+      {
+        name: 'arrowShape',
+        type: "'sharp' | 'rounded'",
+        default: "'sharp'",
+        desc: "Arrow tip shape: sharp triangle / rounded soft-cornered square fused with the bubble",
+      },
+      {
+        name: 'borderColor',
+        type: "string",
+        default: "''",
+        desc: "Custom border colour (borderless by default); with a sharp arrow the outline wraps body and arrow into one closed shape — rounded-arrow mode keeps a body-only border",
       },
       {
         name: 'disabled',
