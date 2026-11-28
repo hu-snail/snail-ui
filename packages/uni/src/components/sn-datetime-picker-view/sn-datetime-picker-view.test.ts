@@ -205,6 +205,24 @@ describe('sn-datetime-picker-view', () => {
     });
   });
 
+  describe('wheel band (additive)', () => {
+    it('anchors the shared band to the component root — not the nearest positioned ancestor', () => {
+      // Same §103 regression as sn-picker-view: without a positioning context
+      // on the root the absolutely-placed pill resolved against the demo
+      // card / page and floated above the roller (user-reported H5).
+      // happy-dom's getComputedStyle does not resolve the scoped stylesheet,
+      // so the positioning contract asserts on the SOURCE rule.
+      const w = mountView({ wheel: true });
+      expect(w.find('.sn-datetime-picker-view__wheel-band').exists()).toBe(true);
+      const source = readFileSync(resolve(__dirname, 'sn-datetime-picker-view.vue'), 'utf8');
+      const block = source.slice(
+        source.indexOf('.sn-datetime-picker-view {'),
+        source.indexOf('}', source.indexOf('.sn-datetime-picker-view {')),
+      );
+      expect(block).toContain('position: relative');
+    });
+  });
+
   describe('hooks', () => {
     it('applies the formatter to the labels', () => {
       const w = mountView({

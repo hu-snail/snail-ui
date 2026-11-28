@@ -713,6 +713,24 @@ describe('sn-picker-view', () => {
   });
 
   describe('band slot (additive)', () => {
+    it('anchors the shared band to the component root — not the nearest positioned ancestor', () => {
+      // §103 regression (user report, H5): the pill floated a couple of rows
+      // above the roller — the root had no positioning context, so the
+      // absolutely-placed band resolved against the demo card / page instead.
+      // happy-dom's getComputedStyle does not resolve the scoped stylesheet,
+      // so the positioning contract asserts on the SOURCE rule.
+      const w = mount(SnPickerView, {
+        props: { modelValue: ['a'], columns: [['a', 'b']], wheel: true },
+      });
+      expect(w.find('.sn-picker-view__wheel-band').exists()).toBe(true);
+      const source = readFileSync(resolve(__dirname, 'sn-picker-view.vue'), 'utf8');
+      const block = source.slice(
+        source.indexOf('.sn-picker-view {'),
+        source.indexOf('}', source.indexOf('.sn-picker-view {')),
+      );
+      expect(block).toContain('position: relative');
+    });
+
     it('replaces the shared band paint and reports mode / columnIndex', () => {
       const w = mount(SnPickerView, {
         props: { modelValue: ['a'], columns: [['a', 'b']], wheel: true },
