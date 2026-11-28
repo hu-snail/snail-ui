@@ -81,6 +81,26 @@ const PLACEMENT_TABLE: Record<PopoverPlacement, (math: PlacementMath) => readonl
   'right-end': (c) => [`left: ${c.horizontalX}px; bottom: ${c.offsetY}px;`, `bottom: ${c.arrowY}px; transform: translateY(50%);`],
 };
 
+/**
+ * Rounded-arrow table: the \`ARROW_SQUARE\`px square centred on the anchored
+ * edge point (root-relative), rotated 45° inline. Same anchor values the
+ * sharp table centres its triangle on.
+ */
+const ROUNDED_TABLE: Record<PopoverPlacement, (math: PlacementMath) => string> = {
+  top: (c) => `left: ${c.centreArrowX - 6}px; bottom: ${c.verticalY - 6}px;`,
+  'top-start': (c) => `left: ${c.arrowX - 6}px; bottom: ${c.verticalY - 6}px;`,
+  'top-end': (c) => `right: ${c.arrowX - 6}px; bottom: ${c.verticalY - 6}px;`,
+  bottom: (c) => `left: ${c.centreArrowX - 6}px; top: ${c.verticalY - 6}px;`,
+  'bottom-start': (c) => `left: ${c.arrowX - 6}px; top: ${c.verticalY - 6}px;`,
+  'bottom-end': (c) => `right: ${c.arrowX - 6}px; top: ${c.verticalY - 6}px;`,
+  left: (c) => `top: ${c.centreArrowY - 6}px; right: ${c.horizontalX - 6}px;`,
+  'left-start': (c) => `top: ${c.arrowY - 6}px; right: ${c.horizontalX - 6}px;`,
+  'left-end': (c) => `bottom: ${c.arrowY - 6}px; right: ${c.horizontalX - 6}px;`,
+  right: (c) => `top: ${c.centreArrowY - 6}px; left: ${c.horizontalX - 6}px;`,
+  'right-start': (c) => `top: ${c.arrowY - 6}px; left: ${c.horizontalX - 6}px;`,
+  'right-end': (c) => `bottom: ${c.arrowY - 6}px; left: ${c.horizontalX - 6}px;`,
+};
+
 interface PlacementMath {
   verticalX: number;
   verticalY: number;
@@ -122,6 +142,9 @@ function edgeShift(half: number, offsetAxis: number): number {
   return (half - MIN_CENTERED_EDGE > 0 ? 0 : half - 25) + offsetAxis;
 }
 
+/** Rounded-arrow square size (px) — rotated 45°, centred on the edge. */
+export const ARROW_SQUARE = 12;
+
 /** Border-triangle footprint (px): 2 × the leg. */
 const ARROW_WIDTH = POP_ARROW_SIZE * 2;
 
@@ -137,6 +160,7 @@ function clampArrow(value: number, extent: number): number {
 export function createPopoverPosition(visibleArrow: boolean) {
   const popStyle = ref('');
   const arrowStyle = ref('');
+  const roundedStyle = ref('');
   const popWidth = ref(0);
   const popHeight = ref(0);
   const width = ref(0);
@@ -181,8 +205,13 @@ export function createPopoverPosition(visibleArrow: boolean) {
       centreArrowY: clampArrow(popHeight.value / 2 - y, popHeight.value),
     };
     const [pop, arrow] = PLACEMENT_TABLE[placement](math);
-    popStyle.value = pop;
+    const rounded = ROUNDED_TABLE[placement](math) + ` transform: rotate(45deg);`;
+    // Explicit width from the measurement: an absolute bubble's containing
+    // block is the inline-block root (trigger-sized) — shrink-to-fit would
+    // clamp wide content (slotted bodies) to the trigger's width.
+    popStyle.value = pop + ` width: ${popWidth.value}px;`;
     arrowStyle.value = arrow;
+    roundedStyle.value = rounded;
     // The absolute bubble never flips — the requested placement is the real one.
     actualPlacement.value = placement;
     return { popStyle: popStyle.value, arrowStyle: arrowStyle.value };
@@ -209,6 +238,7 @@ export function createPopoverPosition(visibleArrow: boolean) {
   return {
     popStyle,
     arrowStyle,
+    roundedStyle,
     actualPlacement,
     arrowClass,
     init,

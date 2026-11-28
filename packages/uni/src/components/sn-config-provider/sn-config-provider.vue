@@ -107,3 +107,52 @@ const rootClass = computed(() => [
     <slot />
   </view>
 </template>
+
+<style scoped>
+/*
+ * The dark palette, declared by THIS component's own stylesheet.
+ *
+ * Why a copy of tokens-mp's `.sn-theme-dark` block lives here: on
+ * mini-programs, app.wxss (global) styles cannot match nodes inside a custom
+ * component (default style isolation) — and the provider root IS such a node,
+ * so the global dark rule never landed and the whole subtree stayed light
+ * (user-reported). A scoped rule matches the root it ships with, and the
+ * custom properties then inherit into every child component normally.
+ *
+ * Only LITERAL payloads are mirrored: the brand / feedback hues keep their
+ * identity in dark mode (they resolve from the page-level definitions), and
+ * a var() payload would be unresolvable on WeChat MP anyway — consumers keep
+ * their two-line floors there.
+ */
+.sn-theme-dark {
+  --sn-mp-color-text-primary: #fafafa;
+  --sn-mp-color-text-secondary: #a1a1aa;
+  --sn-mp-color-text-tertiary: #71717a;
+  --sn-mp-color-text-disabled: #52525b;
+  --sn-mp-color-background-surface: #09090b;
+  --sn-mp-color-background-subtle: #27272a;
+  --sn-mp-color-background-elevated: #18181b;
+  --sn-mp-color-background-soft: #27272a;
+  --sn-mp-color-background-sunken: #18181b;
+  --sn-mp-color-border-default: #27272a;
+  --sn-mp-color-border-subtle: #27272a;
+  --sn-mp-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
+  --sn-mp-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
+  --sn-mp-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);
+  --sn-mp-color-feedback-info-soft: rgba(113, 113, 122, 0.22);
+  --sn-mp-color-volcano-soft: rgba(250, 140, 22, 0.22);
+  --sn-mp-color-lightblue-soft: rgba(56, 189, 248, 0.22);
+  --sn-mp-color-cyan-soft: rgba(8, 145, 178, 0.22);
+  --sn-mp-color-pink-soft: rgba(219, 39, 119, 0.22);
+  --sn-mp-color-purple-soft: rgba(124, 58, 237, 0.22);
+  --sn-mp-color-input-bg: #18181b;
+  --sn-mp-color-input-text: #fafafa;
+  --sn-mp-color-input-placeholder: #52525b;
+  --sn-mp-color-input-border: #27272a;
+  --sn-mp-color-control-unchecked: #3f3f46;
+  --sn-mp-color-control-knob: #fafafa;
+  --sn-mp-color-background-overlay: rgba(0, 0, 0, 0.8);
+  --sn-mp-color-background-solid: #000000;
+  --sn-mp-color-text-on-primary: #ffffff;
+}
+</style>

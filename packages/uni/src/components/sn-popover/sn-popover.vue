@@ -119,6 +119,12 @@ const props = withDefaults(
     customClass?: string;
     /** Custom inline style for the root node. */
     customStyle?: string;
+    /** Arrow tip shape. `sharp` (default) is the border triangle;
+     * `rounded` is a soft-cornered square tip. */
+    arrowShape?: 'sharp' | 'rounded';
+    /** Custom bubble border colour. When set, the bubble body draws a 1px
+     * border in this colour (the reference card is borderless by default). */
+    borderColor?: string;
     /** Extra class on the arrow node. */
     customArrow?: string;
     /** Extra class on the bubble node. */
@@ -135,6 +141,8 @@ const props = withDefaults(
     showClose: false,
     customClass: '',
     customStyle: '',
+    arrowShape: 'sharp',
+    borderColor: '',
     customArrow: '',
     customPop: '',
   },
@@ -256,7 +264,16 @@ function menuClick(index: number): void {
 /* ── Placement (wd-popover usePopover) ────────────────────────────────── */
 
 const position = createPopoverPosition(props.visibleArrow);
-const { popStyle, arrowStyle } = position;
+const { popStyle, arrowStyle, roundedStyle } = position;
+
+/**
+ * Bubble border, consumer-coloured: the reference card is borderless — a
+ * set `borderColor` draws a 1px border on the body (the arrow follows the
+ * fill only; a bordered arrow tip is not drawable as a border triangle).
+ */
+const containerStyle = computed(() =>
+  props.borderColor ? `border: 1px solid ${props.borderColor};` : undefined,
+);
 
 /** Root class: the component block + the consumer class. */
 const rootClass = computed(() => ['sn-popover', props.customClass]);
@@ -351,14 +368,33 @@ function runQuery(variant: QueryVariant, selector: string): Promise<MeasuredRect
 }
 
 /**
- * Read one node's rect (px), or `null` when no query flavour can measure it.
- * Flavours are tried in turn until one reports a node with a real size, so a
- * host where the scoped query sees nothing still measures through the
- * page-level one (`utils/uni-host.ts` — the page-level query alone matches
- * the first node in document order inside nested components, so it is the
- * fallback rather than the first choice).
+ * Read one node's rect (px), or `null` when no channel can measure it.
+ *
+ * Channels, in order:
+ *   1. the real DOM (H5 / web): `getBoundingClientRect` on the component
+ *      subtree — authoritative there, and the production H5 bundle
+ *      tree-shakes `uni.createSelectorQuery` away (nothing references it
+ *      statically), so the query channels are MP-only in practice;
+ *   2. the query flavours (mini-program): the component \`$scope\` first,
+ *      then the page-level uni query as fallback (`utils/uni-host.ts`).
  */
+function measureRectDom(selector: string): PopoverRect | null {
+  // Bare `document` is stripped by the uni-app x compiler for non-web
+  // targets — reach it as a globalThis property, which survives everywhere
+  // (mini-programs and uni-app x App simply have no such property).
+  const g = globalThis as { document?: { querySelector?: (sel: string) => Element | null } };
+  const doc = g.document;
+  if (doc === undefined || doc === null || typeof doc.querySelector !== 'function') return null;
+  const node = doc.querySelector('#' + selector);
+  if (node === null) return null;
+  const rect = node.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+  return { left: rect.left, top: rect.top, width: rect.width, height: rect.height, bottom: rect.bottom };
+}
+
 async function measureRect(selector: string): Promise<PopoverRect | null> {
+  const domRect = measureRectDom(selector);
+  if (domRect !== null) return domRect;
   for (const variant of queryVariants()) {
     const rect = await runQuery(variant, selector);
     if (rect !== null && (rect.width ?? 0) > 0 && (rect.height ?? 0) > 0) {
@@ -475,21 +511,27 @@ defineExpose({ open, close, updatePosition });
          shown. It carries no placement styles. -->
     <view :id="posId" class="sn-popover__pos sn-popover__pos--hidden" aria-hidden="true">
       <view :class="['sn-popover__container', props.customPop]">
-        <view
-          v-if="!$slots.content && mode === 'normal'"
-          :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
-        >
-          <text class="sn-popover__text">{{ normalText }}</text>
-        </view>
-        <view
-          v-if="!$slots.content && mode === 'menu' && isMenuContent"
-          :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
-        >
-          <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
-            <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__icon" />
-            <text class="sn-popover__text">{{ item.content }}</text>
+        <!-- The hidden copy mirrors the SHOWN body INCLUDING the #content
+             slot: an empty copy measured padding-only and every slotted
+             bubble sized itself wrong (user-reported). visibility: hidden
+             keeps the duplicate out of sight and untappable. -->
+        <slot name="content">
+          <view
+            v-if="mode === 'normal'"
+            :class="['sn-popover__inner', { 'sn-popover__inner--with-close': props.showClose }]"
+          >
+            <text class="sn-popover__text">{{ normalText }}</text>
           </view>
-        </view>
+          <view
+            v-if="mode === 'menu' && isMenuContent"
+            :class="['sn-popover__menu', { 'sn-popover__menu--with-close': props.showClose }]"
+          >
+            <view v-for="(item, index) in menuItems" :key="index" class="sn-popover__menu-inner">
+              <SnIcon v-if="item.iconClass" :icon="item.iconClass" :size="MENU_ICON_SIZE" custom-class="sn-popover__icon" />
+              <text class="sn-popover__text">{{ item.content }}</text>
+            </view>
+          </view>
+        </slot>
       </view>
     </view>
 
@@ -517,12 +559,21 @@ defineExpose({ open, close, updatePosition });
       -->
       <view
         v-if="props.visibleArrow"
-        :class="['sn-popover__arrow', arrowClass, { 'sn-popover__arrow--shown': showPopover }]"
-        :style="arrowStyle"
+        :class="[
+          'sn-popover__arrow',
+          arrowClass,
+          { 'sn-popover__arrow--shown': showPopover, 'sn-popover__arrow--rounded': props.arrowShape === 'rounded' },
+        ]"
+        :style="props.arrowShape === 'rounded' ? roundedStyle : arrowStyle"
         aria-hidden="true"
       />
-      <SnTransition :show="showPopover" name="fade" @after-enter="updatePosition">
-        <view :id="contentId" :class="['sn-popover__container', props.customPop]" role="dialog">
+      <SnTransition :show="showPopover" name="zoom-in" @after-enter="updatePosition">
+        <view
+          :id="contentId"
+          :class="['sn-popover__container', props.customPop]"
+          :style="containerStyle"
+          role="dialog"
+        >
           <slot name="content">
             <view
               v-if="mode === 'normal'"
@@ -679,7 +730,11 @@ defineExpose({ open, close, updatePosition });
   background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
   color: var(--sn-mp-color-text-secondary);
   color: var(--sn-popover-color, var(--sn-mp-color-text-secondary));
-  box-shadow: var(--sn-mp-shadow-md);
+  /* #ifndef MP */
+  /* Softer than the md token on H5 / App; mini-programs render box-shadow
+   * as hard grey corner patches (no radius) — no shadow there at all. */
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+  /* #endif */
 }
 
 .sn-popover__inner {

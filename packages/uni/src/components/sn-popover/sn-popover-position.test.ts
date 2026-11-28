@@ -56,19 +56,19 @@ describe('sn-popover-position', () => {
     it('centres the bubble on the trigger for every direction', () => {
       const below = styles('bottom');
       // top = arrow 9 + trigger height 44 + gap 10 = 63 (relative to the root).
-      expect(below.popStyle).toBe('left: 60px; top: 63px; transform: translateX(-50%);');
+      expect(below.popStyle).toBe('left: 60px; top: 63px; transform: translateX(-50%); width: 200px;');
       expect(below.arrowStyle).toBe('left: 100px; transform: translateX(-50%);');
 
       const above = styles('top');
-      expect(above.popStyle).toBe('left: 60px; bottom: 63px; transform: translateX(-50%);');
+      expect(above.popStyle).toBe('left: 60px; bottom: 63px; transform: translateX(-50%); width: 200px;');
     });
 
     it('centres vertically for left / right', () => {
       expect(styles('left').popStyle).toBe(
-        'right: 139px; top: 22px; transform: translateY(-50%);',
+        'right: 139px; top: 22px; transform: translateY(-50%); width: 200px;',
       );
       expect(styles('right').popStyle).toBe(
-        'left: 139px; top: 22px; transform: translateY(-50%);',
+        'left: 139px; top: 22px; transform: translateY(-50%); width: 200px;',
       );
       expect(styles('right').arrowStyle).toBe('top: 50px; transform: translateY(-50%);');
     });
@@ -103,7 +103,7 @@ describe('sn-popover-position', () => {
       position.init(trigger, pop);
       // top = 0 (no arrow) + trigger height 44 + gap 10 = 54.
       expect(position.control('bottom', 0).popStyle).toBe(
-        'left: 60px; top: 54px; transform: translateX(-50%);',
+        'left: 60px; top: 54px; transform: translateX(-50%); width: 200px;',
       );
     });
   });
@@ -111,7 +111,7 @@ describe('sn-popover-position', () => {
   describe('control — -start / -end alignment', () => {
     it('aligns top/bottom -start to the trigger start edge', () => {
       const start = styles('bottom-start');
-      expect(start.popStyle).toBe('left: 0px; top: 63px;');
+      expect(start.popStyle).toBe('left: 0px; top: 63px; width: 200px;');
       // pop (200) >= trigger (120) → arrow at trigger width / 2.
       expect(start.arrowStyle).toBe('left: 60px;');
     });
@@ -119,7 +119,7 @@ describe('sn-popover-position', () => {
     it('aligns top/bottom -end to the trigger end edge', () => {
       const end = styles('bottom-end');
       // Only the ARROW carries the translate here — the pop is flush to the edge.
-      expect(end.popStyle).toBe('right: 0px; top: 63px;');
+      expect(end.popStyle).toBe('right: 0px; top: 63px; width: 200px;');
       expect(end.arrowStyle).toBe('right: 60px; transform: translateX(50%);');
     });
 
@@ -147,8 +147,8 @@ describe('sn-popover-position', () => {
 
   describe('control — offset', () => {
     it('folds a number offset on both axes', () => {
-      expect(styles('bottom-start', 10).popStyle).toBe('left: 10px; top: 63px;');
-      expect(styles('left-start', 10).popStyle).toBe('right: 139px; top: 10px;');
+      expect(styles('bottom-start', 10).popStyle).toBe('left: 10px; top: 63px; width: 200px;');
+      expect(styles('left-start', 10).popStyle).toBe('right: 139px; top: 10px; width: 200px;');
     });
 
     it('counter-shifts the arrow by the offset so it keeps pointing at the trigger', () => {
@@ -159,28 +159,28 @@ describe('sn-popover-position', () => {
     });
 
     it('accepts an array offset and defaults y to the first element', () => {
-      expect(styles('bottom-start', [4, 8]).popStyle).toBe('left: 4px; top: 63px;');
+      expect(styles('bottom-start', [4, 8]).popStyle).toBe('left: 4px; top: 63px; width: 200px;');
       expect(styles('bottom-start', [4, 8]).arrowStyle).toBe('left: 56px;');
-      expect(styles('left-start', [4, 8]).popStyle).toBe('right: 139px; top: 8px;');
+      expect(styles('left-start', [4, 8]).popStyle).toBe('right: 139px; top: 8px; width: 200px;');
       expect(styles('left-start', [4, 8]).arrowStyle).toBe('top: 14px;');
       // y defaults to x (4) → arrow at trigger height / 2 − 4.
-      expect(styles('left-start', [4]).popStyle).toBe('right: 139px; top: 4px;');
+      expect(styles('left-start', [4]).popStyle).toBe('right: 139px; top: 4px; width: 200px;');
       expect(styles('left-start', [4]).arrowStyle).toBe('top: 18px;');
     });
 
     it('accepts an object offset', () => {
-      expect(styles('bottom-start', { x: 6, y: 3 }).popStyle).toBe('left: 6px; top: 63px;');
-      expect(styles('left-start', { x: 6, y: 3 }).popStyle).toBe('right: 139px; top: 3px;');
+      expect(styles('bottom-start', { x: 6, y: 3 }).popStyle).toBe('left: 6px; top: 63px; width: 200px;');
+      expect(styles('left-start', { x: 6, y: 3 }).popStyle).toBe('right: 139px; top: 3px; width: 200px;');
       expect(styles('left-start', { x: 6, y: 3 }).arrowStyle).toBe('top: 19px;');
     });
 
     it('compensates for a trigger narrower than 34px', () => {
       const tiny: PopoverRect = { ...trigger, width: 20 };
       // trigger width / 2 = 10 → (10 - 17 > 0 ? 0 : 10 - 25) = -15.
-      expect(styles('bottom-start', 0, pop, tiny).popStyle).toBe('left: -15px; top: 63px;');
+      expect(styles('bottom-start', 0, pop, tiny).popStyle).toBe('left: -15px; top: 63px; width: 200px;');
       // horizontalY (22) is still ≥ 17, so the left / right families shift by 0;
       // horizontalX = trigger width 20 + arrow 9 + gap 10.
-      expect(styles('left-start', 0, pop, tiny).popStyle).toBe('right: 39px; top: 0px;');
+      expect(styles('left-start', 0, pop, tiny).popStyle).toBe('right: 39px; top: 0px; width: 200px;');
     });
   });
 
@@ -190,7 +190,7 @@ describe('sn-popover-position', () => {
       position.init(trigger, pop);
       position.control('bottom-start', 0);
       expect(position.updatePosition({ ...pop, width: 80 })).toBe(true);
-      expect(position.popStyle.value).toBe('left: 0px; top: 63px;');
+      expect(position.popStyle.value).toBe('left: 0px; top: 63px; width: 80px;');
       expect(position.arrowStyle.value).toBe('left: 55px;');
     });
 

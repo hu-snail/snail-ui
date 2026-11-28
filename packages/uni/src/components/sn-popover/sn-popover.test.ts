@@ -301,7 +301,96 @@ describe('sn-popover', () => {
     });
   });
 
-  describe('interaction', () => {
+      it('emits the measured width inline — wide slot content cannot clamp to the trigger', async () => {
+      // §103 regression (content-slot width): the absolute bubble's containing
+      // block is the inline-block root (trigger-sized), so shrink-to-fit
+      // clamped wide slotted bodies to ~90px. The placement now carries the
+      // measured width inline.
+      stubSelectorQuery({
+        target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },
+        pos: { left: 0, top: 0, right: 220, bottom: 120, width: 220, height: 120 },
+        content: { left: 0, top: 0, right: 220, bottom: 120, width: 220, height: 120 },
+      });
+      const w = mount(SnPopover, { props: { modelValue: true, content: '气泡' } });
+      await flushPromises();
+      const style = shownBubble(w)!.attributes('style') ?? '';
+      expect(style).toContain('width: 220px');
+    });
+
+    it('switches the arrow to the rounded square and its rotated style', async () => {
+      stubSelectorQuery({
+        target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },
+        pos: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+        content: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+      });
+      const sharp = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+      await flushPromises();
+      const sharpArrow = shownBubble(sharp)!.find('.sn-popover__arrow');
+      expect(sharpArrow.classes()).not.toContain('sn-popover__arrow--rounded');
+
+      const rounded = mount(SnPopover, {
+        props: { modelValue: true, content: 'x', arrowShape: 'rounded' },
+      });
+      await flushPromises();
+      const arrow = shownBubble(rounded)!.find('.sn-popover__arrow');
+      expect(arrow.classes()).toContain('sn-popover__arrow--rounded');
+      // bottom placement: the square straddles the bubble's TOP edge.
+      const style = arrow.attributes('style') ?? '';
+      expect(style).toContain('rotate(45deg)');
+      expect(style).toContain('top:');
+      expect(style).not.toContain('left: 50%');
+    });
+
+    it('draws a consumer-coloured border on the body when borderColor is set', async () => {
+      const w = mount(SnPopover, {
+        props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
+      });
+      await flushPromises();
+      const container = shownBubble(w)!.find('.sn-popover__container');
+      expect(container.attributes('style') ?? '').toContain('border: 1px solid #2563eb');
+      // Default stays borderless.
+      const plain = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+      await flushPromises();
+      expect(shownBubble(plain)!.find('.sn-popover__container').attributes('style')).toBeUndefined();
+    });
+
+    it('applies a consumer border colour and the rounded arrow on real measurements', async () => {
+      stubSelectorQuery({
+        target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },
+        pos: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+        content: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+      });
+      const w = mount(SnPopover, {
+        props: {
+          modelValue: false,
+          content: '气泡',
+          borderColor: '#2563eb',
+          arrowShape: 'rounded',
+        },
+      });
+      await flushPromises();
+      await w.find('.sn-popover__target').trigger('tap');
+      await flushPromises();
+      const container = shownBubble(w)!.find('.sn-popover__container');
+      expect(container.attributes('style') ?? '').toContain('border: 1px solid #2563eb');
+      const arrow = shownBubble(w)!.find('.sn-popover__arrow');
+      expect(arrow.classes()).toContain('sn-popover__arrow--rounded');
+      // bottom placement: the rounded square straddles the bubble's top edge.
+      const style = arrow.attributes('style') ?? '';
+      expect(style).toContain('rotate(45deg)');
+      expect(style).toContain('top:');
+    });
+
+    it('expands with the zoom-in transition (scale + fade, not a bare fade)', () => {
+      // §103 regression (animation rework request): the bubble expands —
+      // opacity + scale — instead of the bare fade.
+      const w = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+      const html = w.html();
+      expect(html).toContain('sn-transition--zoom-in');
+      expect(html).not.toContain('sn-transition--fade ');
+    });
+
+describe('interaction', () => {
     it('emits update:modelValue and open when the trigger is tapped', async () => {
       const w = mount(SnPopover, { props: { modelValue: false } });
       await w.find('.sn-popover__target').trigger('tap');
@@ -572,6 +661,16 @@ describe('sn-popover', () => {
       );
       expect(base).toContain('position: absolute');
       expect(style).not.toContain('sn-popover__pos--fixed');
+      // The drop shadow is H5 / App only: mini-programs render box-shadow as
+      // hard grey corner patches (no radius) — none there at all.
+      const container = style.slice(
+        style.indexOf('.sn-popover__container {'),
+        style.indexOf('}', style.indexOf('.sn-popover__container {')),
+      );
+      expect(container).toContain('/* #ifndef MP */');
+      expect(container).toContain('box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08)');
+      // ...and the body must not carry the md token shadow any more.
+      expect(container).not.toContain('var(--sn-mp-shadow-md)');
       const hidden = style.slice(
         style.indexOf('.sn-popover__pos--hidden {'),
         style.indexOf('}', style.indexOf('.sn-popover__pos--hidden {')),
