@@ -280,34 +280,34 @@ const containerStyle = computed(() =>
   props.borderColor ? `border: 1px solid ${props.borderColor};` : undefined,
 );
 
-/** Outline geometry per placement family: the triangle-forming border side
- * (matches the arrow family classes — top → arrow-down colours border-top),
- * the outward offset, and the three legs that carry width. */
-const OUTLINE_SPEC_BY_FAMILY: Record<string, { side: string; offset: string; legs: string[] }> = {
-  top: { side: 'top', offset: 'bottom: -11px;', legs: ['top', 'right', 'left'] },
-  bottom: { side: 'bottom', offset: 'top: -11px;', legs: ['bottom', 'right', 'left'] },
-  left: { side: 'left', offset: 'right: -11px;', legs: ['left', 'top', 'bottom'] },
-  right: { side: 'right', offset: 'left: -11px;', legs: ['right', 'top', 'bottom'] },
+/** The two element faces that become the outer slant edges after the 45°
+ * rotation, per placement family. rotate(45deg) maps the square's corners to
+ * points (TL→top, TR→right, BR→bottom, BL→left) — the tip is the corner
+ * pointing at the trigger, and its two adjacent faces are the visible
+ * border. bottom family (apex up) → tip = TL → top + left faces. */
+const BORDERED_FACES_BY_FAMILY: Record<string, [string, string]> = {
+  top: ['right', 'bottom'],
+  bottom: ['top', 'left'],
+  left: ['top', 'right'],
+  right: ['bottom', 'left'],
 };
 
 /**
- * Outline triangle's FULL inline geometry — the fill triangle grown one
- * leg-size and pulled 3px further out. Inline on purpose: the border-triangle
- * silhouette needs the non-forming sides transparent (colouring all four
- * turns the tip into a solid rectangle), and inline beats every stylesheet
- * force that would clamp it back — MP specificity on the equal-specificity
- * `.sn-popover--bordered` fill-deepening rules (which match the outline
- * element too) and the uni-x combinator dropper (2-level descendant
- * selectors do not survive the transform).
+ * Bordered sharp tip's inline geometry: the rounded square's straddle
+ * (12px box centred on the anchored edge, rotate 45°) plus a 1px consumer
+ * border on exactly the two outer faces. Inline on purpose — per-face
+ * border widths ride inline so no stylesheet force (MP specificity, the
+ * uni-x combinator dropper) can flatten them; the background comes from the
+ * shared `.sn-popover__arrow--bordered` two-line palette block.
  */
-const arrowOutlineStyle = computed(() => {
+const arrowBorderStyle = computed(() => {
   if (!props.borderColor || props.arrowShape === 'rounded') return undefined;
   const family = (position.actualPlacement.value ?? props.placement).split('-')[0] ?? '';
-  const spec = OUTLINE_SPEC_BY_FAMILY[family] ?? OUTLINE_SPEC_BY_FAMILY.top;
-  const widths = ['top', 'right', 'bottom', 'left']
-    .map((side) => `border-${side}-width: ${spec.legs.includes(side) ? '11px' : '0'};`)
+  const faces = BORDERED_FACES_BY_FAMILY[family] ?? ['top', 'left'];
+  const borders = faces
+    .map((face) => `border-${face}-width: 1px;border-${face}-color: ${props.borderColor};`)
     .join('');
-  return `${position.arrowStyle.value}${widths}border-${spec.side}-color: ${props.borderColor};${spec.offset}`;
+  return `${position.roundedStyle.value}${borders}`;
 });
 
 /** Root class: the component block + the bordered marker + the consumer class. */
@@ -637,31 +637,28 @@ defineExpose({ open, close, updatePosition });
         coincides with the bubble box (the transition adds no box of its own),
         so the arrow keeps the same coordinates while staying unclipped.
       -->
-      <!-- The arrow LAYER fades as ONE GROUP: the bordered tip is two stacked
-           triangles (blue outline under the white fill) — fading them
-           separately let the blue bleed through the translucent fill
-           mid-animation, reading as "the arrow turns from blue to white"
-           (user-reported). The group carries the opacity gate; the triangles
-           inside stay fully opaque, so their composite colour never shifts.
-           z 501 keeps the whole group above the container, white mouth
-           included, for the whole fade. -->
+      <!-- The arrow LAYER fades as ONE GROUP. z 501 keeps it above the
+           container, white mouth included, for the whole fade. -->
       <view
         v-if="props.visibleArrow"
         :class="['sn-popover__arrow-group', { 'sn-popover__arrow-group--shown': showPopover }]"
         aria-hidden="true"
       >
-        <!-- Bordered mode: an outline triangle UNDER the fill triangle. It
-             protrudes 11px vs the fill's 8px: on the 45° slants that leaves
-             a ~2.1px band of the border colour (3px horizontal) continuing
-             the body's 1px border line around the tip — one closed outline,
-             and thick enough to survive 3x-DPR rounding on mini-program
-             devices (user-reported: the band read thinner than the border). -->
+        <!-- Bordered + sharp: ONE rotated square. Its white interior IS the
+             arrow's background; the consumer border rides only the two faces
+             that become the outer slant edges after the 45° rotation, so the
+             blue converges at the tip — white background, border only, no
+             colour shift and no blue cap (a two-triangle stack either bled
+             blue through the translucent fill mid-fade or left a solid blue
+             cap; user-reported both). Reuses the rounded square's straddle
+             geometry; radius 0 and per-family border faces differ. -->
         <view
           v-if="props.borderColor && props.arrowShape !== 'rounded'"
-          :class="['sn-popover__arrow', 'sn-popover__arrow-outline', arrowClass]"
-          :style="arrowOutlineStyle"
+          :class="['sn-popover__arrow', 'sn-popover__arrow--bordered', arrowClass]"
+          :style="arrowBorderStyle"
         />
         <view
+          v-else
           :class="[
             'sn-popover__arrow',
             arrowClass,
@@ -950,11 +947,11 @@ defineExpose({ open, close, updatePosition });
 /* ── Arrow: a border triangle, the apex pointing at the trigger ───────── */
 
 /* The arrow layer: ONE group that owns the fade. Both triangles inside stay
- * fully opaque at all times — their composite (white fill + border band) is
- * constant, so the entry animation never shifts the tip's colour. The group
- * lives OUTSIDE the fade transition (so no ancestor clip can eat it), which
- * means it must gate its own visibility, or a closed popover leaves a stray
- * triangle floating over the page. */
+ * fully opaque at all times — the group owns the fade, so the entry
+ * animation never shifts the tip's colour. The group lives OUTSIDE the fade
+ * transition (so no ancestor clip can eat it), which means it must gate its
+ * own visibility, or a closed popover leaves a stray triangle floating over
+ * the page. */
 .sn-popover__arrow-group {
   position: absolute;
   top: 0;
@@ -979,16 +976,24 @@ defineExpose({ open, close, updatePosition });
   border-style: solid;
   border-color: transparent;
   pointer-events: none;
-  /* Paint order INSIDE the group: the fill must always cover the outline.
-   * Single-class selectors on purpose — 2-level descendants are dropped by
-   * the uni-x transform, and a dropped outline rule collapses its box onto
-   * the fill's, where an MP paint-order flip renders the tip solid blue
-   * (user-reported). */
-  z-index: 501;
 }
 
-.sn-popover__arrow-outline {
-  z-index: 499;
+/* The bordered sharp tip: a 12px SQUARE (radius 0) sharing the rounded
+ * tip's straddle geometry, rotated 45° inline — its white interior is the
+ * arrow's background, and the consumer border rides only the two faces that
+ * become the outer slant edges (inline, per family), so the blue converges
+ * at the tip: border only, no blue cap, crisp at any DPR. */
+.sn-popover__arrow.sn-popover__arrow--bordered {
+  width: 12px;
+  height: 12px;
+  /* Border-box: the 1px outer faces live INSIDE the 12px straddle box, so
+   * the rotated diamond's protrusion and mouth stay exactly as designed
+   * (content-box would grow the box by the border and skew the centre). */
+  box-sizing: border-box;
+  border-width: 0;
+  border-radius: 0;
+  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated));
 }
 
 /* Bubble above → arrow on the bottom edge → apex DOWN → coloured TOP border. */
@@ -1070,35 +1075,6 @@ defineExpose({ open, close, updatePosition });
 }
 .sn-popover--origin-right .sn-popover__container {
   transform-origin: left center;
-}
-
-/* Bordered mode: the fill triangle grows 1px on every leg so its box bottom
- * reaches 2px INTO the body. Its old 1px overlap stopped exactly at the
- * border strip's lower edge — at fractional zoom ratios (1.4× browser zoom /
- * DPR scaling) the strip's antialiased bottom edge then peeked through the
- * arrow mouth as a faint grey line still "connecting" the two border
- * segments (user-reported). One extra px of white-on-white is invisible and
- * keeps the mouth a clean opening. Placed BEFORE the rounded rule so
- * rounded + border keeps border-width 0 (equal specificity, later wins). */
-.sn-popover--bordered .sn-popover__arrow-up {
-  border-bottom-width: 10px;
-  border-right-width: 10px;
-  border-left-width: 10px;
-}
-.sn-popover--bordered .sn-popover__arrow-down {
-  border-top-width: 10px;
-  border-right-width: 10px;
-  border-left-width: 10px;
-}
-.sn-popover--bordered .sn-popover__arrow-right {
-  border-left-width: 10px;
-  border-top-width: 10px;
-  border-bottom-width: 10px;
-}
-.sn-popover--bordered .sn-popover__arrow-left {
-  border-right-width: 10px;
-  border-top-width: 10px;
-  border-bottom-width: 10px;
 }
 
 /* Rounded arrow tip (arrowShape="rounded"): a filled rounded square

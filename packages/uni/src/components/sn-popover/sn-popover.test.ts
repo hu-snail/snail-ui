@@ -418,90 +418,89 @@ describe('sn-popover', () => {
       expect(shownBubble(plain)!.find('.sn-popover__container').attributes('style')).toBeUndefined();
     });
 
-    it('carries the border around the sharp arrow via an outline triangle', async () => {
+    it('renders the bordered sharp tip as ONE rotated square — white interior, border only', async () => {
+      // §103 regression (user report): the two-triangle stack read as a solid
+      // blue tip (paint-order flip on MP) and its translucent white fill let
+      // the blue bleed through mid-fade. The bordered tip is now a single
+      // rotated square: white background, consumer border on the two outer
+      // faces only.
+      stubSelectorQuery({
+        target: { left: 0, top: 0, right: 100, bottom: 40, width: 100, height: 40 },
+        pos: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+        content: { left: 0, top: 0, right: 200, bottom: 100, width: 200, height: 100 },
+      });
       const w = mount(SnPopover, {
         props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
       });
       await flushPromises();
-      const outline = shownBubble(w)!.find('.sn-popover__arrow-outline');
-      expect(outline.exists()).toBe(true);
-      const style = outline.attributes('style') ?? '';
-      // bottom placement → apex-up triangle → the coloured side is border-bottom.
-      expect(style).toContain('border-bottom-color: #2563eb');
-      // The other three sides must stay transparent — they are the triangle's
-      // silhouette; colouring all four renders a solid rectangle instead.
-      expect(style).not.toContain('border-top-color');
-      expect(style).not.toContain('border-left-color');
-      expect(style).not.toContain('border-right-color');
+      const tip = shownBubble(w)!.find('.sn-popover__arrow--bordered');
+      expect(tip.exists()).toBe(true);
+      // No outline/fill pair — the square IS the arrow.
+      expect(shownBubble(w)!.findAll('.sn-popover__arrow')).toHaveLength(1);
+      // Read the PARSED inline declaration (browsers normalise border-width
+      // longhands into the shorthand). bottom placement → apex up → the
+      // outer faces are top + left.
+      const el = tip.element as HTMLElement;
+      expect(el.style.borderTopWidth).toBe('1px');
+      expect(el.style.borderLeftWidth).toBe('1px');
+      // The inner faces carry NO inline width — their 0 comes from the shape
+      // block's `border-width: 0` (asserted below), keeping the inline
+      // payload to just the outer faces.
+      expect(el.style.borderRightWidth).toBe('');
+      expect(el.style.borderBottomWidth).toBe('');
+      expect(el.style.borderTopColor).toBe('#2563eb');
+      expect(el.style.borderLeftColor).toBe('#2563eb');
+      // The square straddles the anchored edge, rotated 45° inline (the
+      // rounded square's geometry — top: -6px centres it on the edge).
+      expect(el.style.top).toBe('-6px');
+      expect(tip.attributes('style') ?? '').toContain('rotate(45deg)');
+      // The shape block carries the two-line bubble palette (MP contract).
+      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
+      const block = source.slice(
+        source.indexOf('.sn-popover__arrow.sn-popover__arrow--bordered {'),
+        source.indexOf('}', source.indexOf('.sn-popover__arrow.sn-popover__arrow--bordered {')),
+      );
+      expect(block).toContain('width: 12px');
+      expect(block).toContain('border-radius: 0');
+      expect(block).toContain('background-color: var(--sn-popover-bg, var(--sn-mp-color-background-elevated))');
     });
 
-    it('renders no outline triangle without borderColor or in rounded mode', async () => {
+    it('renders no bordered square without borderColor, and none in rounded mode', async () => {
       const plain = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
       await flushPromises();
-      expect(shownBubble(plain)!.find('.sn-popover__arrow-outline').exists()).toBe(false);
+      expect(shownBubble(plain)!.find('.sn-popover__arrow--bordered').exists()).toBe(false);
+      // Borderless keeps the plain border triangle.
+      expect(shownBubble(plain)!.find('.sn-popover__arrow').classes()).not.toContain(
+        'sn-popover__arrow--bordered',
+      );
 
       const rounded = mount(SnPopover, {
         props: { modelValue: true, content: 'x', borderColor: '#2563eb', arrowShape: 'rounded' },
       });
       await flushPromises();
-      expect(shownBubble(rounded)!.find('.sn-popover__arrow-outline').exists()).toBe(false);
+      expect(shownBubble(rounded)!.find('.sn-popover__arrow--bordered').exists()).toBe(false);
+      expect(shownBubble(rounded)!.find('.sn-popover__arrow').classes()).toContain(
+        'sn-popover__arrow--rounded',
+      );
     });
 
-    it('paints the outline triangle 3px past the fill via inline geometry', async () => {
-      const w = mount(SnPopover, {
-        props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
-      });
-      await flushPromises();
-      const outline = shownBubble(w)!.find('.sn-popover__arrow-outline');
-      // 11px protrusion − 8px fill = the ~2.1px slant band continuing the
-      // border — 3px horizontal so 3x-DPR mini-program rounding cannot thin
-      // it below the body border's weight (user-reported: too thin).
-      // Read the PARSED inline declaration (browsers normalise longhands
-      // into the border-width shorthand — string matching would be
-      // environment-dependent). bottom placement → apex-up triangle →
-      // legs bottom/right/left, top 0.
-      const el = outline.element as HTMLElement;
-      expect(el.style.borderTopWidth).toBe('0px');
-      expect(el.style.borderBottomWidth).toBe('11px');
-      expect(el.style.borderRightWidth).toBe('11px');
-      expect(el.style.borderLeftWidth).toBe('11px');
-      // bottom placement → apex-up triangle → coloured border-bottom.
-      expect(el.style.borderBottomColor).toBe('#2563eb');
-      expect(el.style.top).toBe('-11px');
-      // The geometry rides INLINE: stylesheet forces (MP specificity on the
-      // equal-specificity fill-deepening rules that match this element too,
-      // and the uni-x combinator dropper) cannot clamp it back.
-      const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
-      expect(source).not.toContain('.sn-popover__arrow-outline.sn-popover__arrow-down {');
-      expect(source).toContain(':style="arrowOutlineStyle"');
-    });
-
-    it('deepens the bordered fill triangle so the border never ghosts across the mouth', async () => {
+    it('marks the bordered state on the root and leaves plain mode unmarked', async () => {
+      // The bordered sharp tip is a rotated square whose inner half covers
+      // the body's border strip at the mouth — no separate fill-deepening
+      // stylesheet force needed (the old equal-specificity rules collided
+      // with the square's family class and inflated its box to 23px).
       const w = mount(SnPopover, {
         props: { modelValue: true, content: 'x', borderColor: '#2563eb' },
       });
       await flushPromises();
       expect(w.classes()).toContain('sn-popover--bordered');
-      // Plain mode stays unmarked.
       const plain = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
       await flushPromises();
       expect(plain.classes()).not.toContain('sn-popover--bordered');
-
+      // No descendant override rules may come back — they cannot survive the
+      // uni-x transform and they collide with the square's own box.
       const source = readFileSync(resolve(__dirname, 'sn-popover.vue'), 'utf8');
-      const rule = (selector: string) =>
-        source.slice(source.indexOf(selector), source.indexOf('}', source.indexOf(selector)));
-      // The fill's box bottom must reach 2px into the body (10px legs on the
-      // unchanged -8px offset): a 1px overlap stops exactly at the border
-      // strip's lower edge, whose antialiased tail ghosts across the mouth
-      // as a faint grey line at fractional zoom ratios (user-reported).
-      const up = rule('.sn-popover--bordered .sn-popover__arrow-up {');
-      expect(up).toContain('border-bottom-width: 10px');
-      expect(up).toContain('border-right-width: 10px');
-      // The overrides must precede the rounded rule so rounded + border keeps
-      // border-width: 0 (equal specificity — later rule wins).
-      expect(source.indexOf('.sn-popover--bordered .sn-popover__arrow-up {')).toBeLessThan(
-        source.indexOf('.sn-popover__arrow.sn-popover__arrow--rounded {'),
-      );
+      expect(source).not.toContain('.sn-popover--bordered .sn-popover__arrow');
     });
 
     it('applies a consumer border colour and the rounded arrow on real measurements', async () => {
