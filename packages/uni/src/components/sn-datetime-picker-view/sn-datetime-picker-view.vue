@@ -654,6 +654,19 @@ const halfCount = computed(() => Math.floor(visibleCount.value / 2));
 
 /* ── mp-weixin native picker-view branch (AUI-MP-004) ──────────────────── */
 
+/**
+ * Branch flag as a SCRIPT-level conditional-compilation constant — same
+ * rationale as sn-picker-view: uni-app x's mp-weixin compiler wraps
+ * TEMPLATE-level `#ifdef MP-WEIXIN` blocks in a runtime `wx:if="{{r0}}"`
+ * gate whose flag it never assigns (alpha defect), leaving the native
+ * branch unrendered. A script constant compiles per target and the v-if
+ * binds real data.
+ */
+let isMpWeixin = false;
+// #ifdef MP-WEIXIN
+isMpWeixin = true;
+// #endif
+
 /** Native picker-view selection: value index per column. */
 const nativeIndexes = computed<number[]>(() =>
   columns.value.map((column) => {
@@ -732,8 +745,8 @@ const ariaValue = computed(() => {
       sn-picker-view): the native component owns clipping / centering /
       inertia; the wheel band stays an overlay aligned to the indicator row.
     -->
-    <!-- #ifdef MP-WEIXIN -->
     <picker-view
+      v-if="isMpWeixin"
       class="sn-datetime-picker-view__native"
       :value="nativeIndexes"
       :indicator-style="nativeIndicatorStyle"
@@ -756,8 +769,7 @@ const ariaValue = computed(() => {
         </view>
       </picker-view-column>
     </picker-view>
-    <!-- #endif -->
-    <!-- #ifndef MP-WEIXIN -->
+    <template v-else>
     <view
       v-for="(column, columnIndex) in columns"
       :key="column.type"
@@ -808,7 +820,7 @@ const ariaValue = computed(() => {
         /></view>
       </view>
     </view>
-    <!-- #endif -->
+    </template>
     <text class="sn-datetime-picker-view__sr" aria-live="polite">{{ ariaValue }}</text>
   </view>
 </template>
